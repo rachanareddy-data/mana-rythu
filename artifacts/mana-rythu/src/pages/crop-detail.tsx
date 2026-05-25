@@ -8,6 +8,12 @@ import { MapPin, ShieldCheck, Leaf, ChevronLeft, Calendar, ArrowRight, User as U
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 
+function getCropImageSrc(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("/objects/")) return `/api/storage${url}`;
+  return url;
+}
+
 export default function CropDetail() {
   const params = useParams();
   const id = Number(params.id);
@@ -81,8 +87,8 @@ export default function CropDetail() {
     <div className="min-h-screen bg-background pb-24">
       {/* Hero Image Area */}
       <div className="relative h-[50vh] md:h-[60vh] w-full bg-muted overflow-hidden">
-        {crop.imageUrl ? (
-          <img src={crop.imageUrl} alt={crop.name} className="w-full h-full object-cover" />
+        {getCropImageSrc(crop.imageUrl) ? (
+          <img src={getCropImageSrc(crop.imageUrl)!} alt={crop.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-primary/10 flex items-center justify-center">
             <span className="text-9xl font-display font-bold text-primary/20">{crop.name[0]}</span>

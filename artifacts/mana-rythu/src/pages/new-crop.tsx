@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Leaf, MapPin, Tag, Box, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Leaf, MapPin, Tag, Box } from "lucide-react";
 import { motion } from "framer-motion";
+import { CropImageUpload } from "@/components/ui/crop-image-upload";
 
 const cropSchema = z.object({
   name: z.string().min(1, "Crop name is required"),
@@ -192,15 +193,18 @@ export default function NewCrop() {
                   
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Produce Image URL</FormLabel>
-                      <div className="flex gap-4">
-                        <div className="w-24 h-24 rounded-2xl bg-muted/50 border-2 border-dashed border-border flex items-center justify-center overflow-hidden flex-shrink-0">
-                          {field.value ? <img src={field.value} className="w-full h-full object-cover" alt="Preview"/> : <ImageIcon className="w-8 h-8 text-muted-foreground/50"/>}
-                        </div>
-                        <FormControl>
-                          <Input placeholder="Paste image link here" className="h-12 bg-muted/50 rounded-xl mt-6" {...field} value={field.value || ""} />
-                        </FormControl>
-                      </div>
+                      <FormLabel className="text-base flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-blue-600" /> Produce Photo
+                      </FormLabel>
+                      <FormControl>
+                        <CropImageUpload
+                          value={field.value}
+                          onChange={(path) => field.onChange(path ?? "")}
+                        />
+                      </FormControl>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Upload a clear photo of your produce to attract more buyers
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}/>

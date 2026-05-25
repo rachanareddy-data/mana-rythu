@@ -11,6 +11,12 @@ import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, MapPin, ShieldCheck, Leaf, Filter, Tag } from "lucide-react";
 
+function getCropImageSrc(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("/objects/")) return `/api/storage${url}`;
+  return url;
+}
+
 export default function Marketplace() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("");
@@ -164,9 +170,9 @@ export default function Marketplace() {
                 <motion.div key={crop.id} variants={item} layout>
                   <Card className="group h-full overflow-hidden flex flex-col border-border/50 bg-card hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-500 rounded-3xl cursor-pointer">
                     <div className="relative h-64 overflow-hidden bg-muted">
-                      {crop.imageUrl ? (
+                      {getCropImageSrc(crop.imageUrl) ? (
                         <img 
-                          src={crop.imageUrl} 
+                          src={getCropImageSrc(crop.imageUrl)!} 
                           alt={crop.name}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
