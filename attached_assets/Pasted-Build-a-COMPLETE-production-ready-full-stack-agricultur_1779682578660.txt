@@ -1,0 +1,373 @@
+Build a COMPLETE production-ready full-stack agriculture platform called “Mana Rythu” for India.
+
+IMPORTANT:
+- Generate REAL WORKING CODE only
+- NO fake arrays
+- NO mock data
+- NO placeholder logic
+- Everything must be database-driven
+- Use scalable architecture
+- Use TypeScript everywhere
+- Use modern production standards
+
+==================================================
+TECH STACK
+==================================================
+
+Frontend:
+- React
+- TypeScript
+- Vite
+- TailwindCSS
+- React Query
+- React Router DOM
+- Axios
+- @react-google-maps/api
+
+Backend:
+- Node.js
+- Express.js
+- PostgreSQL
+- Drizzle ORM
+- JWT Auth
+- bcryptjs
+- multer
+- OpenAI SDK
+- Axios
+
+Database:
+- PostgreSQL only
+
+==================================================
+APP NAME
+==================================================
+
+Mana Rythu
+Tagline:
+Direct Farm-to-Buyer Marketplace
+
+==================================================
+USER ROLES
+==================================================
+
+1. Farmer
+2. Buyer
+3. Admin
+
+==================================================
+AUTH SYSTEM
+==================================================
+
+Implement FULL authentication system:
+
+Features:
+- Register
+- Login
+- Logout
+- Current user API
+- JWT authentication
+- bcrypt password hashing
+- Role-based access control
+- Protected routes
+
+Create APIs:
+
+POST /api/auth/register
+POST /api/auth/login
+GET /api/auth/me
+POST /api/auth/logout
+
+==================================================
+DATABASE SCHEMA
+==================================================
+
+Use PostgreSQL + Drizzle ORM.
+
+CREATE THESE TABLES:
+
+users:
+- id
+- name
+- email
+- password_hash
+- role
+- verified
+- created_at
+
+crops:
+- id
+- name
+- price
+- qty
+- unit
+- category
+- location
+- latitude
+- longitude
+- farmer_id
+- farmer_name
+- image_url
+- organic
+- verified
+- created_at
+
+transactions:
+- id
+- buyer_id
+- farmer_id
+- crop_id
+- amount
+- status
+- created_at
+
+==================================================
+IMPORTANT:
+GENERATE FULL WORKING FILES
+==================================================
+
+Generate COMPLETE backend and frontend code files.
+
+==================================================
+🔥 FULL WORKING OPENAI EXPRESS BACKEND
+==================================================
+
+Install:
+npm install openai
+
+Environment variable:
+OPENAI_API_KEY=your_key
+
+CREATE FILE:
+server/src/routes/chat.ts
+
+FULL WORKING CODE REQUIRED:
+
+Requirements:
+- Use Express Router
+- Use OpenAI SDK
+- Use async/await
+- Use try/catch
+- Use GPT-4o-mini
+- Return JSON response
+- Production-ready error handling
+
+Create endpoint:
+
+POST /api/chat
+
+Input:
+{
+  "message": "Which crop is best in Telangana?"
+}
+
+System prompt:
+"You are an expert agricultural AI assistant for Indian farmers. Give simple, practical advice about crops, weather, soil, fertilizers, and market prices."
+
+Expected output:
+{
+  "reply": "Based on current conditions..."
+}
+
+IMPORTANT:
+Generate COMPLETE WORKING CODE.
+NO pseudo code.
+NO explanations.
+ONLY REAL IMPLEMENTATION.
+
+==================================================
+🔥 NASA POWER API BACKEND FILE
+==================================================
+
+CREATE FILE:
+server/src/routes/nasaWeather.ts
+
+Requirements:
+- Use REAL NASA POWER API
+- Use axios
+- Use Express Router
+- Use async/await
+- Use proper error handling
+
+NASA API:
+https://power.larc.nasa.gov/api/
+
+Create endpoint:
+
+POST /api/ai/nasa-weather
+
+Input:
+{
+  "lat": 17.385,
+  "lon": 78.486,
+  "month": 6,
+  "crop": "rice"
+}
+
+Fetch REAL satellite climate data:
+- rainfall
+- temperature
+- solar radiation
+
+Logic:
+- Combine satellite data
+- crop type
+- seasonal scoring
+- simple ML-style yield scoring
+
+Return:
+{
+  "yield_prediction": "High",
+  "rainfall": 180,
+  "temperature": 29,
+  "risk_level": "Low",
+  "recommendation": "Ideal conditions for rice farming..."
+}
+
+IMPORTANT:
+Generate FULL RUNNING FILE.
+NO mock logic.
+NO fake values.
+
+==================================================
+🔥 GOOGLE MAPS REACT COMPONENT
+==================================================
+
+CREATE FILE:
+client/src/components/GoogleMapsCrops.tsx
+
+Requirements:
+- Use @react-google-maps/api
+- Functional React component
+- TypeScript
+- Marker clustering
+- InfoWindow popup
+- Modern Tailwind styling
+
+Features:
+- Load crops from backend API
+- GET /api/crops
+- Show marker for each crop
+- Clicking marker opens popup
+
+Popup should show:
+- crop name
+- price
+- farmer name
+- location
+
+Map Features:
+- MarkerClusterer
+- Zoom support
+- Responsive layout
+
+IMPORTANT:
+Generate FULL WORKING COMPONENT CODE.
+NO pseudo code.
+
+==================================================
+IMAGE UPLOAD
+==================================================
+
+Implement:
+- multer image upload
+- Save image_url in database
+
+==================================================
+MARKETPLACE
+==================================================
+
+Create crop marketplace page.
+
+Filters:
+- search
+- category
+- organic
+- verified
+
+Data MUST come from PostgreSQL only.
+
+==================================================
+UPI PAYMENT SYSTEM
+==================================================
+
+Generate UPI payment URL:
+
+upi://pay?pa=merchant@upi&pn=ManaRythu&am=PRICE&cu=INR
+
+Store transactions in PostgreSQL.
+
+==================================================
+ADMIN PANEL
+==================================================
+
+Create admin dashboard.
+
+Features:
+- verify farmers
+- verify crops
+- manage users
+- view transactions
+
+==================================================
+REAL-TIME UPDATES
+==================================================
+
+Use:
+- React Query polling OR WebSockets
+
+==================================================
+FRONTEND UI
+==================================================
+
+Build modern UI using:
+- TailwindCSS
+- cards
+- responsive layouts
+- dashboards
+- animations
+
+Pages:
+- Home
+- Farmer Dashboard
+- Buyer Marketplace
+- Admin Dashboard
+- AI Assistant
+- Maps View
+- Login/Register
+
+==================================================
+SECURITY
+==================================================
+
+Implement:
+- Helmet
+- CORS
+- Rate limiting
+- Zod validation
+- JWT middleware
+- SQL injection safety
+
+==================================================
+ENV VARIABLES
+==================================================
+
+Create .env.example with:
+
+DATABASE_URL=
+JWT_SECRET=
+OPENAI_API_KEY=
+GOOGLE_MAPS_API_KEY=
+
+==================================================
+DEPLOYMENT READY
+==================================================
+
+Project must run with:
+
+Frontend:
+npm run dev
+
+Backend:
+npm run dev
+
+Generate COMPLETE production-ready codebase structure with REAL implementation files.
