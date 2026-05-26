@@ -1,0 +1,198 @@
+Redesign the Mana Rythu landing page hero section and homepage to look like a WORLD-CLASS startup product.
+
+Current design feels too basic.
+Transform it into a PREMIUM, visually stunning experience similar to:
+- Apple
+- Stripe
+- Airbnb
+- Instagram
+- Amazon
+- Notion
+- Linear
+- Modern SaaS startups
+
+==================================================
+🎨 DESIGN GOAL
+==================================================
+
+The homepage should instantly feel:
+- premium
+- modern
+- investor-ready
+- startup-quality
+- visually addictive
+- emotionally powerful
+
+The user should say:
+“Wow, this looks like a real funded startup.”
+
+==================================================
+🌾 HERO SECTION REDESIGN
+==================================================
+
+Current content:
+
+“India's Premier Agri-Tech Marketplace
+Fair prices. Direct from soil.”
+
+Keep the same messaging BUT redesign completely.
+
+==================================================
+✨ HERO REQUIREMENTS
+==================================================
+
+Create a FULL-WIDTH cinematic hero section with:
+
+- modern agriculture background
+- gradient overlays
+- animated floating elements
+- premium typography
+- glassmorphism cards
+- smooth scroll animations
+- rich visual hierarchy
+
+==================================================
+🖼️ VISUAL STYLE
+==================================================
+
+Use:
+- large bold headline
+- modern spacing
+- smooth gradients
+- soft shadows
+- floating stats cards
+- animated badges
+- premium CTA buttons
+- responsive layouts
+
+Add:
+- subtle motion effects
+- premium hover animations
+- floating blur circles
+- modern section transitions
+
+==================================================
+🌈 COLOR SYSTEM
+==================================================
+
+Use premium color palette:
+- emerald green
+- lime gradients
+- warm white
+- earthy dark tones
+- soft orange highlights
+
+Avoid:
+- plain white sections
+- default Tailwind look
+- generic layouts
+
+==================================================
+📊 STATS SECTION
+==================================================
+
+Current stats:
+- Verified Farmers
+- Active Listings
+- Value Generated
+- Organic Certifications
+
+Redesign as:
+- floating animated stat cards
+- glowing gradients
+- counter animations
+- modern glass UI
+- hover interactions
+
+Make them feel like Stripe dashboard cards.
+
+==================================================
+🧠 FEATURES SECTION
+==================================================
+
+Current features:
+- Verified Authenticity
+- Transparent Pricing
+- AI & Climatology
+
+Transform into:
+- premium bento grid layout
+- modern iconography
+- animated feature cards
+- rich illustrations
+- gradient backgrounds
+- interactive hover effects
+
+Style inspiration:
+- Apple product pages
+- Linear.app
+- Notion AI sections
+
+==================================================
+🚀 CTA BUTTONS
+==================================================
+
+Buttons should look premium:
+- gradient buttons
+- glow effects
+- hover scaling
+- smooth animations
+
+Examples:
+- Browse Marketplace
+- Join as Farmer
+
+Should feel like modern startup landing pages.
+
+==================================================
+📱 MOBILE EXPERIENCE
+==================================================
+
+The mobile homepage should feel like:
+- Instagram-quality UI
+- premium app experience
+- smooth scrolling
+- responsive animations
+
+NO broken layouts.
+NO cramped spacing.
+
+==================================================
+✨ ADVANCED EFFECTS
+==================================================
+
+Add:
+- Framer Motion animations
+- scroll reveal effects
+- stagger animations
+- smooth transitions
+- parallax backgrounds
+- blur/glow effects
+
+==================================================
+🔤 TYPOGRAPHY
+==================================================
+
+Use:
+- Inter
+- Poppins
+- Manrope
+
+Create strong hierarchy:
+- massive bold headline
+- elegant subtitles
+- modern spacing
+
+==================================================
+🏆 FINAL GOAL
+==================================================
+
+The final homepage should look:
+- better than most startup websites
+- highly polished
+- visually premium
+- modern SaaS quality
+- capable of impressing recruiters/investors instantly
+
+DO NOT create generic Tailwind sections.
+Focus heavily on aesthetics, spacing, motion, and premium visual design.
