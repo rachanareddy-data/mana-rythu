@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useListCrops } from "@workspace/api-client-react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, ShieldCheck, Leaf, Filter, Tag } from "lucide-react";
+import {
+  Search, MapPin, ShieldCheck, Leaf, SlidersHorizontal,
+  ArrowRight, Sprout, X, ChevronDown,
+} from "lucide-react";
 
 function getCropImageSrc(url: string | null | undefined): string | null {
   if (!url) return null;
@@ -17,234 +16,313 @@ function getCropImageSrc(url: string | null | undefined): string | null {
   return url;
 }
 
+const CATEGORIES = ["All", "Vegetables", "Fruits", "Grains", "Spices", "Other"];
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  Vegetables: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop",
+  Fruits:     "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=800&auto=format&fit=crop",
+  Grains:     "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop",
+  Spices:     "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&auto=format&fit=crop",
+  Other:      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&auto=format&fit=crop",
+};
+
+function SkeletonCard() {
+  return (
+    <div className="rounded-3xl overflow-hidden bg-white/3 border border-white/8 animate-pulse">
+      <div className="h-56 bg-white/8" />
+      <div className="p-5 space-y-3">
+        <div className="h-5 bg-white/8 rounded-full w-3/4" />
+        <div className="h-4 bg-white/8 rounded-full w-1/2" />
+        <div className="h-10 bg-white/8 rounded-2xl mt-4" />
+      </div>
+    </div>
+  );
+}
+
 export default function Marketplace() {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState("All");
   const [organicOnly, setOrganicOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  // Parse params
-  const params: any = {};
+  const params: Record<string, string> = {};
   if (search) params.search = search;
-  if (category && category !== "all") params.category = category;
+  if (category !== "All") params.category = category;
   if (organicOnly) params.organic = "true";
   if (verifiedOnly) params.verified = "true";
 
   const { data: crops, isLoading } = useListCrops(params);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+  const activeFilterCount = [
+    category !== "All",
+    organicOnly,
+    verifiedOnly,
+  ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="bg-primary/5 border-b border-border/50 py-12 md:py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
-        <div className="container relative z-10 px-4 md:px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
-          >
-            <div>
-              <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">Marketplace</h1>
-              <p className="text-lg text-muted-foreground max-w-xl">
-                Source directly from verified farmers. Honest prices, premium quality.
-              </p>
-            </div>
+    <div className="min-h-screen bg-[#0a0f0a] pb-24">
+
+      {/* ── Hero banner ── */}
+      <div className="relative overflow-hidden border-b border-white/8">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?q=80&w=2400&auto=format&fit=crop"
+            alt="Fresh produce"
+            className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.18) saturate(1.1)" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f0a]/60 to-[#0a0f0a]" />
+        </div>
+
+        <div className="relative z-10 container px-4 md:px-8 py-16 md:py-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.22,1,0.36,1] }}>
+            <p className="text-sm font-semibold text-emerald-400 uppercase tracking-widest mb-3">Direct from farm</p>
+            <h1 className="text-4xl md:text-6xl font-display font-black text-white mb-4 leading-tight">
+              The Marketplace
+            </h1>
+            <p className="text-white/50 text-lg max-w-xl mb-8">
+              Browse verified produce from thousands of Indian farmers. No middlemen, honest prices.
+            </p>
           </motion.div>
 
-          {/* Filters Bar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+          {/* Search bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-8 bg-card border border-border/50 rounded-2xl p-4 shadow-sm flex flex-col lg:flex-row gap-4 items-center backdrop-blur-xl"
+            transition={{ delay: 0.15, duration: 0.6, ease: [0.22,1,0.36,1] }}
+            className="flex gap-3"
           >
-            <div className="relative w-full lg:w-[400px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input 
-                placeholder="Search produce, locations..." 
+            <div className="relative flex-1 max-w-xl">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search produce, farmer, location…"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 h-12 bg-background/50 border-border/50 rounded-xl text-base"
+                onChange={e => setSearch(e.target.value)}
+                className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white/8 border border-white/12 text-white placeholder-white/30 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/40 backdrop-blur-sm transition-all"
               />
+              {search && (
+                <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors">
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
-            
-            <div className="w-full h-px lg:w-px lg:h-8 bg-border/50 mx-2"></div>
 
-            <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-[180px] h-12 rounded-xl bg-background/50">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <SelectValue placeholder="All Categories" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Vegetables">Vegetables</SelectItem>
-                  <SelectItem value="Fruits">Fruits</SelectItem>
-                  <SelectItem value="Grains">Grains</SelectItem>
-                  <SelectItem value="Spices">Spices</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex items-center gap-6 px-4">
-                <div className="flex items-center space-x-2">
-                  <Switch 
-                    id="organic" 
-                    checked={organicOnly} 
-                    onCheckedChange={setOrganicOnly} 
-                    className="data-[state=checked]:bg-green-600"
-                  />
-                  <Label htmlFor="organic" className="flex items-center gap-1 cursor-pointer">
-                    <Leaf className="h-4 w-4 text-green-600" /> Organic
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch 
-                    id="verified" 
-                    checked={verifiedOnly} 
-                    onCheckedChange={setVerifiedOnly}
-                    className="data-[state=checked]:bg-blue-600"
-                  />
-                  <Label htmlFor="verified" className="flex items-center gap-1 cursor-pointer">
-                    <ShieldCheck className="h-4 w-4 text-blue-600" /> Verified
-                  </Label>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => setFiltersOpen(v => !v)}
+              className={`h-14 px-5 rounded-2xl border flex items-center gap-2 text-sm font-semibold transition-all ${
+                filtersOpen || activeFilterCount > 0
+                  ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
+                  : "bg-white/8 border-white/12 text-white/60 hover:text-white hover:bg-white/12"
+              }`}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="bg-emerald-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
           </motion.div>
+
+          {/* Expandable filter row */}
+          <AnimatePresence>
+            {filtersOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="flex flex-wrap gap-3 items-center py-1">
+                  {/* Category chips */}
+                  <div className="flex flex-wrap gap-2">
+                    {CATEGORIES.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setCategory(cat)}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                          category === cat
+                            ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+                            : "bg-white/8 text-white/60 hover:bg-white/12 hover:text-white border border-white/10"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="w-px h-8 bg-white/10 mx-1 hidden sm:block" />
+
+                  {/* Toggle chips */}
+                  <button
+                    onClick={() => setOrganicOnly(v => !v)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                      organicOnly
+                        ? "bg-green-500/20 border-green-500/40 text-green-300"
+                        : "bg-white/8 border-white/10 text-white/60 hover:text-white hover:bg-white/12"
+                    }`}
+                  >
+                    <Leaf className="h-4 w-4" /> Organic
+                  </button>
+                  <button
+                    onClick={() => setVerifiedOnly(v => !v)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                      verifiedOnly
+                        ? "bg-blue-500/20 border-blue-500/40 text-blue-300"
+                        : "bg-white/8 border-white/10 text-white/60 hover:text-white hover:bg-white/12"
+                    }`}
+                  >
+                    <ShieldCheck className="h-4 w-4" /> Verified
+                  </button>
+
+                  {activeFilterCount > 0 && (
+                    <button
+                      onClick={() => { setCategory("All"); setOrganicOnly(false); setVerifiedOnly(false); }}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white/40 hover:text-white/70 transition-colors"
+                    >
+                      <X className="h-3 w-3" /> Clear all
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      <div className="container px-4 md:px-6 pt-12">
+      {/* ── Grid ── */}
+      <div className="container px-4 md:px-8 pt-10">
+
+        {/* Results count */}
+        {!isLoading && crops && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-sm text-white/40 mb-6"
+          >
+            {crops.length} listing{crops.length !== 1 ? "s" : ""} found
+            {category !== "All" && <> in <span className="text-white/60">{category}</span></>}
+          </motion.p>
+        )}
+
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse flex flex-col gap-4">
-                <div className="h-64 bg-muted rounded-2xl w-full"></div>
-                <div className="h-6 bg-muted rounded w-3/4"></div>
-                <div className="h-4 bg-muted rounded w-1/2"></div>
-                <div className="h-10 bg-muted rounded-xl w-full mt-2"></div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : crops?.length === 0 ? (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-32 text-center"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-40 text-center"
           >
-            <div className="h-24 w-24 bg-muted/50 rounded-full flex items-center justify-center mb-6">
-              <Search className="h-10 w-10 text-muted-foreground" />
+            <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+              <Sprout className="h-8 w-8 text-white/20" />
             </div>
-            <h3 className="text-2xl font-display font-bold text-foreground">No crops found</h3>
-            <p className="text-muted-foreground mt-2 text-lg">Try adjusting your filters or search terms</p>
-            <Button variant="outline" className="mt-6 rounded-full" onClick={() => {
-              setSearch(""); setCategory("all"); setOrganicOnly(false); setVerifiedOnly(false);
-            }}>
-              Clear Filters
-            </Button>
+            <h3 className="text-xl font-display font-bold text-white mb-2">No produce found</h3>
+            <p className="text-white/40 mb-6">Try different filters or a broader search term</p>
+            <button
+              onClick={() => { setSearch(""); setCategory("All"); setOrganicOnly(false); setVerifiedOnly(false); }}
+              className="px-6 py-2.5 rounded-full bg-white/8 border border-white/12 text-white/70 hover:bg-white/12 text-sm font-semibold transition-all"
+            >
+              Clear all filters
+            </button>
           </motion.div>
         ) : (
-          <motion.div 
-            variants={container}
+          <motion.div
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.06 } } }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
           >
             <AnimatePresence>
-              {crops?.map((crop) => (
-                <motion.div key={crop.id} variants={item} layout>
-                  <Card className="group h-full overflow-hidden flex flex-col border-border/50 bg-card hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-500 rounded-3xl cursor-pointer">
-                    <div className="relative h-64 overflow-hidden bg-muted">
-                      {getCropImageSrc(crop.imageUrl) ? (
-                        <img 
-                          src={getCropImageSrc(crop.imageUrl)!} 
-                          alt={crop.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-primary/5 text-primary text-6xl font-display font-bold opacity-50">
-                          {crop.name[0]}
-                        </div>
-                      )}
-                      
-                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+              {crops?.map((crop) => {
+                const imgSrc = getCropImageSrc(crop.imageUrl) ?? CATEGORY_IMAGES[crop.category] ?? CATEGORY_IMAGES["Other"];
+                return (
+                  <motion.div
+                    key={crop.id}
+                    variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } } }}
+                    whileHover={{ y: -6 }}
+                    layout
+                    className="group relative rounded-3xl overflow-hidden border border-white/8 bg-white/3 cursor-pointer flex flex-col"
+                  >
+                    {/* Image */}
+                    <div className="relative h-52 overflow-hidden bg-white/5">
+                      <img
+                        src={imgSrc}
+                        alt={crop.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                      {/* Badges */}
+                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
                         {crop.organic && (
-                          <Badge className="bg-green-500/90 hover:bg-green-600 backdrop-blur-md text-white border-none px-3 py-1 shadow-lg flex items-center gap-1">
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500/90 backdrop-blur-md text-white text-xs font-bold shadow-lg">
                             <Leaf className="w-3 h-3" /> Organic
-                          </Badge>
+                          </span>
                         )}
                         {crop.verified && (
-                          <Badge className="bg-blue-500/90 hover:bg-blue-600 backdrop-blur-md text-white border-none px-3 py-1 shadow-lg flex items-center gap-1">
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/90 backdrop-blur-md text-white text-xs font-bold shadow-lg">
                             <ShieldCheck className="w-3 h-3" /> Verified
-                          </Badge>
+                          </span>
                         )}
                       </div>
-                      
-                      <div className="absolute top-4 right-4">
-                        <Badge variant="outline" className="bg-background/80 backdrop-blur-md border-border/50 text-foreground font-medium shadow-lg">
+
+                      <div className="absolute top-3 right-3">
+                        <span className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-white/80 text-xs font-semibold border border-white/10">
                           {crop.category}
-                        </Badge>
+                        </span>
                       </div>
 
-                      {/* Gradient overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      {/* Price pinned on image bottom */}
+                      <div className="absolute bottom-3 left-3">
+                        <div className="bg-black/60 backdrop-blur-md rounded-xl px-3 py-1.5 border border-white/10">
+                          <span className="text-white font-black text-lg font-display">₹{crop.price}</span>
+                          <span className="text-white/60 text-xs font-medium">/{crop.unit}</span>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <CardContent className="p-6 flex-1 flex flex-col">
-                      <div className="flex justify-between items-start mb-4 gap-4">
-                        <h3 className="font-display font-bold text-2xl text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                          {crop.name}
-                        </h3>
-                        <div className="text-right whitespace-nowrap bg-primary/10 text-primary px-3 py-1 rounded-lg">
-                          <span className="font-bold text-lg">₹{crop.price}</span>
-                          <span className="text-sm font-medium opacity-80">/{crop.unit}</span>
-                        </div>
+
+                    {/* Card body */}
+                    <div className="flex flex-col flex-1 p-4">
+                      <h3 className="font-display font-black text-white text-lg leading-tight mb-2 group-hover:text-emerald-300 transition-colors line-clamp-1">
+                        {crop.name}
+                      </h3>
+
+                      <div className="flex items-center gap-1.5 text-white/40 text-sm mb-3">
+                        <MapPin className="w-3.5 h-3.5 text-emerald-500/70 shrink-0" />
+                        <span className="line-clamp-1">{crop.location}</span>
                       </div>
-                      
-                      <div className="space-y-3 mt-auto">
-                        <div className="flex items-center text-muted-foreground">
-                          <MapPin className="w-4 h-4 mr-2 text-primary/70" />
-                          <span className="text-sm font-medium line-clamp-1">{crop.location}</span>
-                        </div>
-                        <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">
-                              {crop.farmerName[0]}
-                            </div>
-                            <span className="text-sm font-medium text-foreground">{crop.farmerName}</span>
+
+                      <div className="flex items-center justify-between mb-4 mt-auto">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs">
+                            {crop.farmerName[0]}
                           </div>
-                          <span className="text-xs font-medium bg-muted px-2 py-1 rounded-md text-muted-foreground">
-                            {crop.qty} {crop.unit} left
-                          </span>
+                          <span className="text-sm text-white/50 font-medium truncate max-w-[100px]">{crop.farmerName}</span>
                         </div>
+                        <span className="text-xs text-white/30 bg-white/5 px-2 py-1 rounded-lg border border-white/8">
+                          {crop.qty} {crop.unit}
+                        </span>
                       </div>
-                    </CardContent>
-                    
-                    <CardFooter className="p-6 pt-0 mt-auto">
-                      <Link href={`/crop/${crop.id}`} className="w-full">
-                        <Button className="w-full rounded-xl h-12 text-base font-medium shadow-md shadow-primary/10 group-hover:shadow-primary/25 transition-all">
+
+                      <Link href={`/crop/${crop.id}`}>
+                        <button className="w-full h-11 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/25 hover:border-emerald-500/40 text-emerald-300 text-sm font-bold transition-all flex items-center justify-center gap-2 group/btn">
                           View Details
-                        </Button>
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                        </button>
                       </Link>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              ))}
+                    </div>
+
+                    {/* Hover glow ring */}
+                    <div className="absolute inset-0 rounded-3xl ring-1 ring-emerald-500/0 group-hover:ring-emerald-500/20 transition-all duration-500 pointer-events-none" />
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </motion.div>
         )}
