@@ -1,0 +1,179 @@
+Build a full-stack web application called “Mana Rythu” for farmers and buyers.
+
+GOAL:
+Create a modern, professional, and trustable agriculture marketplace like Uber + Amazon + Government-grade UI system.
+
+TECH STACK:
+- Frontend: React (Vite) + Tailwind CSS
+- Backend: Node.js + Express
+- Database: MongoDB (or in-memory fallback)
+
+---
+
+🎨 UI / DESIGN SYSTEM (VERY IMPORTANT):
+
+The UI must be:
+- Clean, minimal, and professional (Uber / Amazon style)
+- NOT colorful or cluttered
+- Mobile-first responsive design
+- White + green + light gray theme
+- Soft gradient backgrounds only (no heavy images)
+- Subtle farming background pattern (very low opacity only)
+- Card-based layout with spacing like SaaS dashboards
+
+---
+
+🌾 BACKGROUND DESIGN RULE:
+
+- Use a light green gradient background:
+  from-white → light-green-50
+- Add very subtle blurred farming field image ONLY in hero section
+- No full-page background images
+- Keep content readable and clean
+
+---
+
+📱 PAGES:
+
+1. HOME DASHBOARD
+- Hero section with subtle farming background
+- Clean summary cards:
+  - Weather (estimated)
+  - Mandi prices (range format)
+  - Market demand trend
+- “Add Crop” and “Marketplace” quick actions
+
+---
+
+2. ADD CROP PAGE (SMART FORM)
+Fields:
+- Crop Image upload
+- Crop Name (auto-suggested)
+- Quantity
+- Price (user input)
+- Notes (optional)
+
+🤖 AI FEATURE:
+- Suggest crop name from image (mock AI allowed)
+- Suggest fair price range based on crop
+
+IMPORTANT:
+AI must ONLY suggest, NOT auto-set final price.
+
+---
+
+3. MARKETPLACE PAGE
+- Amazon-style product grid cards
+- Each crop card shows:
+  - Crop name
+  - Price range (₹25–₹32/kg format)
+  - Quantity
+  - Location
+  - Last updated time
+
+---
+
+4. FARMER DASHBOARD
+- Simple clean cards only
+- Active crops list
+- No clutter
+- One primary button: “Add Crop”
+
+---
+
+5. BUYER DASHBOARD
+- Browse crops like Amazon products
+- Search + filter by crop name
+
+---
+
+---
+
+🧠 AI FEATURES (LIMITED & SAFE):
+
+- Crop name suggestion from image
+- Fair price suggestion (range only)
+- Market trend indicator:
+  - Rising 📈
+  - Stable ➖
+  - Falling 📉
+
+---
+
+💰 TRUST & TRANSPARENCY SYSTEM:
+
+Every data must include:
+- “Source: Market Average (Estimated)”
+- “Updated time”
+- Price must always be in RANGE format, not fixed value
+
+NO FAKE CLAIMS:
+- Do NOT show “guaranteed price”
+- Do NOT show “100% accuracy”
+- Use words like “estimated” and “market-based”
+
+---
+
+🗄 DATABASE MODELS:
+
+User:
+- id
+- name
+- role (farmer/buyer/admin)
+- verified
+- rating
+
+Crop:
+- id
+- farmerId
+- cropName
+- quantity
+- priceRange
+- location
+- createdAt
+
+Listing:
+- id
+- farmerId
+- cropName
+- priceRange
+- quantity
+- location
+- updatedAt
+
+---
+
+🔌 API ENDPOINTS:
+
+Auth:
+POST /api/register
+POST /api/login
+
+Crops:
+GET /api/crops
+POST /api/crops
+
+Marketplace:
+GET /api/listings
+POST /api/listings
+
+Admin:
+GET /api/users
+PATCH /api/verify/:id
+
+---
+
+⚡ PERFORMANCE RULES:
+- No broken code or missing imports
+- Use fallback mock data if API fails
+- Keep components reusable:
+  Card, Button, Badge, Input
+- Clean folder structure (frontend/backend separated)
+
+---
+
+🚀 FINAL OUTPUT:
+- Fully working MVP
+- Clean Uber/Amazon-style UI
+- Trustable, realistic agriculture data design
+- No clutter, no fake claims
