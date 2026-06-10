@@ -3,20 +3,32 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Mana Rythu API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User operations
+  - name: crops
+    description: Farmer crop management
+  - name: listings
+    description: Marketplace listings
+  - name: admin
+    description: Admin operations
+  - name: dashboard
+    description: Dashboard summaries and analytics
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +36,462 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+
+  /users:
+    get:
+      operationId: getUsers
+      tags: [users]
+      summary: Get all users (admin)
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+        - name: verified
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      operationId: getUserById
+      tags: [users]
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/verify:
+    patch:
+      operationId: verifyUser
+      tags: [admin]
+      summary: Toggle user verification (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyUserInput"
+      responses:
+        "200":
+          description: Verification updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/rate:
+    post:
+      operationId: rateUser
+      tags: [users]
+      summary: Rate a farmer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "200":
+          description: Rating submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /crops:
+    get:
+      operationId: getCrops
+      tags: [crops]
+      summary: Get crops (optionally filtered by farmer)
+      parameters:
+        - name: farmerId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of crops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Crop"
+    post:
+      operationId: createCrop
+      tags: [crops]
+      summary: Create a crop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CropInput"
+      responses:
+        "201":
+          description: Crop created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crop"
+
+  /crops/{id}:
+    get:
+      operationId: getCropById
+      tags: [crops]
+      summary: Get crop by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Crop details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crop"
+    patch:
+      operationId: updateCrop
+      tags: [crops]
+      summary: Update a crop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CropUpdate"
+      responses:
+        "200":
+          description: Crop updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crop"
+    delete:
+      operationId: deleteCrop
+      tags: [crops]
+      summary: Delete a crop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Crop deleted
+
+  /listings:
+    get:
+      operationId: getListings
+      tags: [listings]
+      summary: Get marketplace listings
+      parameters:
+        - name: farmerId
+          in: query
+          schema:
+            type: integer
+        - name: cropName
+          in: query
+          schema:
+            type: string
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+    post:
+      operationId: createListing
+      tags: [listings]
+      summary: Create a listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingInput"
+      responses:
+        "201":
+          description: Listing created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
+  /listings/{id}:
+    get:
+      operationId: getListingById
+      tags: [listings]
+      summary: Get listing by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Listing details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+    patch:
+      operationId: updateListing
+      tags: [listings]
+      summary: Update a listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingUpdate"
+      responses:
+        "200":
+          description: Listing updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+    delete:
+      operationId: deleteListing
+      tags: [listings]
+      summary: Delete a listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Listing deleted
+
+  /listings/{id}/contact:
+    post:
+      operationId: contactFarmer
+      tags: [listings]
+      summary: Buyer contacts farmer about a listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "200":
+          description: Contact request sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactResponse"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/market-prices:
+    get:
+      operationId: getMarketPrices
+      tags: [dashboard]
+      summary: Get current mandi/market prices
+      responses:
+        "200":
+          description: Market prices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MarketPrice"
+
+  /dashboard/recommended-crops:
+    get:
+      operationId: getRecommendedCrops
+      tags: [dashboard]
+      summary: Get recommended crops based on season/demand
+      responses:
+        "200":
+          description: Recommended crops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecommendedCrop"
+
+  /dashboard/weather:
+    get:
+      operationId: getWeather
+      tags: [dashboard]
+      summary: Get weather summary for farming
+      responses:
+        "200":
+          description: Weather data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeatherSummary"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin panel statistics
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +499,328 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [farmer, buyer, admin]
+        verified:
+          type: boolean
+        rating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        phone:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, name, email, role, verified, ratingCount, createdAt]
+
+    RegisterInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [farmer, buyer]
+        phone:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+      required: [name, email, password, role]
+
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required: [user, token]
+
+    VerifyUserInput:
+      type: object
+      properties:
+        verified:
+          type: boolean
+      required: [verified]
+
+    RatingInput:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+      required: [rating]
+
+    Crop:
+      type: object
+      properties:
+        id:
+          type: integer
+        farmerId:
+          type: integer
+        farmerName:
+          type: ["string", "null"]
+        cropName:
+          type: string
+        sowDate:
+          type: ["string", "null"]
+        harvestDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [growing, ready, harvested]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, farmerId, cropName, status, createdAt]
+
+    CropInput:
+      type: object
+      properties:
+        cropName:
+          type: string
+        sowDate:
+          type: ["string", "null"]
+        harvestDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [growing, ready, harvested]
+        notes:
+          type: ["string", "null"]
+      required: [cropName, status]
+
+    CropUpdate:
+      type: object
+      properties:
+        cropName:
+          type: string
+        sowDate:
+          type: ["string", "null"]
+        harvestDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [growing, ready, harvested]
+        notes:
+          type: ["string", "null"]
+
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+        farmerId:
+          type: integer
+        farmerName:
+          type: ["string", "null"]
+        farmerVerified:
+          type: ["boolean", "null"]
+        farmerRating:
+          type: ["number", "null"]
+        cropName:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+        unit:
+          type: string
+        location:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        available:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, farmerId, cropName, price, quantity, unit, location, available, createdAt]
+
+    ListingInput:
+      type: object
+      properties:
+        cropName:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+        unit:
+          type: string
+        location:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+      required: [cropName, price, quantity, unit, location]
+
+    ListingUpdate:
+      type: object
+      properties:
+        cropName:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+        unit:
+          type: string
+        location:
+          type: string
+        description:
+          type: ["string", "null"]
+        available:
+          type: boolean
+
+    ContactInput:
+      type: object
+      properties:
+        message:
+          type: string
+        buyerName:
+          type: string
+        buyerPhone:
+          type: ["string", "null"]
+      required: [message, buyerName]
+
+    ContactResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        farmerPhone:
+          type: ["string", "null"]
+        message:
+          type: string
+      required: [success, message]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalFarmers:
+          type: integer
+        totalBuyers:
+          type: integer
+        totalListings:
+          type: integer
+        totalCrops:
+          type: integer
+        activeListings:
+          type: integer
+        verifiedFarmers:
+          type: integer
+        avgFarmerRating:
+          type: number
+      required: [totalFarmers, totalBuyers, totalListings, totalCrops, activeListings, verifiedFarmers, avgFarmerRating]
+
+    MarketPrice:
+      type: object
+      properties:
+        cropName:
+          type: string
+        price:
+          type: number
+        unit:
+          type: string
+        trend:
+          type: string
+          enum: [up, down, stable]
+        changePercent:
+          type: number
+        location:
+          type: string
+      required: [cropName, price, unit, trend, changePercent, location]
+
+    RecommendedCrop:
+      type: object
+      properties:
+        cropName:
+          type: string
+        season:
+          type: string
+        demandLevel:
+          type: string
+          enum: [high, medium, low]
+        avgPrice:
+          type: number
+        unit:
+          type: string
+        reason:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+      required: [cropName, season, demandLevel, avgPrice, unit, reason]
+
+    WeatherSummary:
+      type: object
+      properties:
+        condition:
+          type: string
+        temperature:
+          type: number
+        humidity:
+          type: number
+        rainfall:
+          type: number
+        location:
+          type: string
+        advisory:
+          type: string
+      required: [condition, temperature, humidity, rainfall, location, advisory]
+
+    AdminStats:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        pendingVerifications:
+          type: integer
+        totalRevenue:
+          type: number
+        activeListings:
+          type: integer
+        newUsersThisWeek:
+          type: integer
+        topCrops:
+          type: array
+          items:
+            type: object
+            properties:
+              cropName:
+                type: string
+              count:
+                type: integer
+            required: [cropName, count]
+      required: [totalUsers, pendingVerifications, totalRevenue, activeListings, newUsersThisWeek, topCrops]
