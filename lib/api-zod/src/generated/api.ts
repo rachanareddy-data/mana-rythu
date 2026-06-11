@@ -469,6 +469,56 @@ export const DeleteReviewParams = zod.object({
 })
 
 
+export const GetNotificationsQueryParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetNotificationsResponse = zod.object({
+  "notifications": zod.array(zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "type": zod.string(),
+  "title": zod.string(),
+  "message": zod.string(),
+  "read": zod.boolean(),
+  "createdAt": zod.string()
+})),
+  "unreadCount": zod.number()
+})
+
+
+export const CreateNotificationBody = zod.object({
+  "userId": zod.number(),
+  "type": zod.string().optional(),
+  "title": zod.string(),
+  "message": zod.string()
+})
+
+
+export const MarkAllNotificationsReadQueryParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const MarkAllNotificationsReadResponse = zod.object({
+  "success": zod.boolean()
+})
+
+
+export const MarkNotificationReadParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const MarkNotificationReadResponse = zod.object({
+  "id": zod.number(),
+  "userId": zod.number(),
+  "type": zod.string(),
+  "title": zod.string(),
+  "message": zod.string(),
+  "read": zod.boolean(),
+  "createdAt": zod.string()
+})
+
+
 export const SuggestCropQueryParams = zod.object({
   "name": zod.coerce.string()
 })

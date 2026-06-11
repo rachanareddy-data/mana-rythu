@@ -19,16 +19,29 @@ const SUGGESTED = [
 
 // Detect script to pick recognition language
 function detectLang(text: string): string {
-  if (/[\u0C00-\u0C7F]/.test(text)) return "te-IN";   // Telugu
-  if (/[\u0900-\u097F]/.test(text)) return "hi-IN";   // Hindi/Devanagari
+  if (/[\u0C00-\u0C7F]/.test(text)) return "te-IN";
+  if (/[\u0900-\u097F]/.test(text)) return "hi-IN";
   return "en-IN";
 }
 
-// Check if SpeechRecognition is available
-const SpeechRecognitionAPI: (new () => { continuous: boolean; interimResults: boolean; lang: string; maxAlternatives: number; start(): void; stop(): void; onstart: (() => void) | null; onresult: ((e: any) => void) | null; onerror: (() => void) | null; onend: (() => void) | null; }) | null =
-  typeof window !== "undefined"
-    ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null)
-    : null;
+// Safe browser feature detection — never access APIs at module load time
+function getSpeechRecognition(): (new () => any) | null {
+  try {
+    if (typeof window === "undefined") return null;
+    const w = window as any;
+    return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function isSpeechSynthesisAvailable(): boolean {
+  try {
+    return typeof window !== "undefined" && "speechSynthesis" in window;
+  } catch {
+    return false;
+  }
+}
 
 export default function AgriAIChat() {
   const [open, setOpen] = useState(false);
@@ -39,9 +52,18 @@ export default function AgriAIChat() {
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [voiceLang, setVoiceLang] = useState("en-IN");
+  // Lazily computed so SSR / non-browser envs never throw
+  const [speechRecognitionAvailable, setSpeechRecognitionAvailable] = useState(false);
+  const [speechSynthesisAvailable, setSpeechSynthesisAvailable] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  // Detect capabilities after mount (client-only)
+  useEffect(() => {
+    setSpeechRecognitionAvailable(getSpeechRecognition() !== null);
+    setSpeechSynthesisAvailable(isSpeechSynthesisAvailable());
+  }, []);
 
   useEffect(() => {
     if (open && inputRef.current) inputRef.current.focus();
@@ -58,14 +80,26 @@ export default function AgriAIChat() {
   }, []);
 
   const speakText = useCallback((text: string, lang: string) => {
-    if (!voiceEnabled || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang;
-    utter.rate = 0.9;
-    utter.pitch = 1;
-    window.speechSynthesis.speak(utter);
-  }, [voiceEnabled]);
+    if (!voiceEnabled || !speechSynthesisAvailable) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang;
+      utter.rate = 0.9;
+      utter.pitch = 1;
+      // iOS Safari requires speak() to be called in a user-gesture context.
+      // We use setTimeout 0 to avoid "operation is insecure" when called from async code.
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.speak(utter);
+        } catch {
+          // Silently ignore — e.g. iOS background tab restriction
+        }
+      }, 0);
+    } catch {
+      // Silently disable voice if not supported
+    }
+  }, [voiceEnabled, speechSynthesisAvailable]);
 
   const sendMessage = useCallback(async (text: string, detectedLang?: string) => {
     const trimmed = text.trim();
@@ -109,45 +143,54 @@ export default function AgriAIChat() {
   }, [loading, nextId, speakText]);
 
   const startListening = useCallback(() => {
+    const SpeechRecognitionAPI = getSpeechRecognition();
     if (!SpeechRecognitionAPI || isListening) return;
 
-    const recognition = new SpeechRecognitionAPI();
-    recognitionRef.current = recognition;
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.lang = voiceLang;
-    recognition.maxAlternatives = 1;
+    try {
+      const recognition = new SpeechRecognitionAPI();
+      recognitionRef.current = recognition;
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = voiceLang;
+      (recognition as any).maxAlternatives = 1;
 
-    recognition.onstart = () => setIsListening(true);
+      recognition.onstart = () => setIsListening(true);
 
-    recognition.onresult = (event: any) => {
-      const transcript = Array.from(event.results as any[])
-        .map((r: any) => r[0].transcript)
-        .join("");
-      setInput(transcript);
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results as any[])
+          .map((r: any) => r[0].transcript)
+          .join("");
+        setInput(transcript);
 
-      // If final result, send automatically
-      if (event.results[event.results.length - 1].isFinal) {
-        const finalLang = detectLang(transcript) !== "en-IN" ? detectLang(transcript) : voiceLang;
-        sendMessage(transcript, finalLang);
-        setIsListening(false);
-      }
-    };
+        if (event.results[event.results.length - 1].isFinal) {
+          const finalLang = detectLang(transcript) !== "en-IN" ? detectLang(transcript) : voiceLang;
+          sendMessage(transcript, finalLang);
+          setIsListening(false);
+        }
+      };
 
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
 
-    recognition.start();
+      recognition.start();
+    } catch {
+      // Speech recognition may throw if mic permission is denied or not HTTPS
+      setIsListening(false);
+    }
   }, [isListening, voiceLang, sendMessage]);
 
   const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      // ignore
+    }
     setIsListening(false);
   }, []);
 
   const toggleVoice = () => {
-    if (voiceEnabled) {
-      window.speechSynthesis?.cancel();
+    if (voiceEnabled && speechSynthesisAvailable) {
+      try { window.speechSynthesis.cancel(); } catch { /* ignore */ }
     }
     setVoiceEnabled(v => !v);
   };
@@ -158,7 +201,9 @@ export default function AgriAIChat() {
 
   const handleClose = () => {
     setOpen(false);
-    window.speechSynthesis?.cancel();
+    if (speechSynthesisAvailable) {
+      try { window.speechSynthesis.cancel(); } catch { /* ignore */ }
+    }
     if (isListening) stopListening();
   };
 
@@ -211,22 +256,24 @@ export default function AgriAIChat() {
               className="text-[10px] bg-white/20 border border-white/30 text-white rounded-md px-1.5 py-1 mr-1 cursor-pointer"
               title="Voice language"
             >
-              <option value="te-IN" className="text-gray-900">తెలుగు</option>
-              <option value="hi-IN" className="text-gray-900">हिंदी</option>
-              <option value="en-IN" className="text-gray-900">English</option>
+              <option value="te-IN">తెలుగు</option>
+              <option value="hi-IN">हिंदी</option>
+              <option value="en-IN">English</option>
             </select>
 
-            {/* Voice output toggle */}
-            <button
-              onClick={toggleVoice}
-              className={cn(
-                "p-1.5 rounded-md transition-colors",
-                voiceEnabled ? "bg-white/30 text-white" : "hover:bg-white/20 text-white/60"
-              )}
-              title={voiceEnabled ? "Disable voice output" : "Enable voice output"}
-            >
-              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
+            {/* Voice output toggle — only show if synthesis is available */}
+            {speechSynthesisAvailable && (
+              <button
+                onClick={toggleVoice}
+                className={cn(
+                  "p-1.5 rounded-md transition-colors",
+                  voiceEnabled ? "bg-white/30 text-white" : "hover:bg-white/20 text-white/60"
+                )}
+                title={voiceEnabled ? "Disable voice output" : "Enable voice output"}
+              >
+                {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+            )}
 
             <button onClick={handleClose} className="p-1 rounded-md hover:bg-white/20 transition-colors">
               <ChevronDown className="w-4 h-4" />
@@ -245,7 +292,7 @@ export default function AgriAIChat() {
                     <p className="font-medium text-green-800 mb-1">నమస్కారం! 🌾 Hello! नमस्ते!</p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       Ask me anything about crops, fertilizers, pests, or farming.
-                      {SpeechRecognitionAPI && " Use the 🎤 mic button to speak!"}
+                      {speechRecognitionAvailable && " Use the 🎤 mic button to speak!"}
                     </p>
                   </div>
                 </div>
@@ -282,8 +329,7 @@ export default function AgriAIChat() {
                     : "bg-white border border-border text-foreground rounded-bl-sm"
                 )}>
                   <p className="leading-relaxed whitespace-pre-wrap">{m.text}</p>
-                  {/* Re-read button for AI messages */}
-                  {m.role === "ai" && !m.error && voiceEnabled && (
+                  {m.role === "ai" && !m.error && voiceEnabled && speechSynthesisAvailable && (
                     <button
                       onClick={() => speakText(m.text, m.lang ?? "en-IN")}
                       className="mt-1 text-[10px] text-green-600 hover:underline flex items-center gap-0.5"
@@ -322,8 +368,7 @@ export default function AgriAIChat() {
               </div>
             )}
             <div className="flex items-center gap-2 bg-gray-50 border border-border rounded-xl px-3 py-2">
-              {/* Voice input button */}
-              {SpeechRecognitionAPI && (
+              {speechRecognitionAvailable && (
                 <button
                   onClick={isListening ? stopListening : startListening}
                   className={cn(
@@ -362,7 +407,7 @@ export default function AgriAIChat() {
               </button>
             </div>
             <p className="text-[10px] text-muted-foreground text-center mt-1.5">
-              {SpeechRecognitionAPI ? "🎤 Voice · " : ""}Agriculture questions · Telugu · Hindi · English
+              {speechRecognitionAvailable ? "🎤 Voice · " : ""}Agriculture questions · Telugu · Hindi · English
             </p>
           </div>
         </div>

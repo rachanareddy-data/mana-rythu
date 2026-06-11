@@ -4,9 +4,9 @@ import { useLanguage, type Lang } from "@/contexts/language";
 import {
   Home, ShoppingBag, Sprout, Shield,
   Bell, Search, LogOut, Menu, X, ChevronRight,
-  ShoppingCart, Plus, Calculator, Globe,
+  ShoppingCart, Plus, Calculator, Globe, Check, CheckCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -54,14 +54,95 @@ function getNavItems(role?: string) {
   return PUBLIC_NAV;
 }
 
+type Notification = {
+  id: number;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+};
+
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function notifTypeColor(type: string) {
+  if (type === "alert") return "bg-red-100 text-red-600";
+  if (type === "price") return "bg-amber-100 text-amber-600";
+  if (type === "order") return "bg-blue-100 text-blue-600";
+  return "bg-green-100 text-green-600";
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { user, logout } = useAuth();
   const { lang, setLang } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifLoading, setNotifLoading] = useState(false);
 
   const navItems = getNavItems(user?.role);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return;
+    setNotifLoading(true);
+    try {
+      const res = await fetch(`/api/notifications?userId=${user.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data.notifications ?? []);
+      }
+    } catch {
+      // silent — bell just shows empty state
+    } finally {
+      setNotifLoading(false);
+    }
+  }, [user]);
+
+  const markRead = useCallback(async (id: number) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    try {
+      await fetch(`/api/notifications/${id}/read`, { method: "PATCH" });
+    } catch {
+      // revert on failure
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: false } : n));
+    }
+  }, []);
+
+  const markAllRead = useCallback(async () => {
+    if (!user) return;
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    try {
+      await fetch(`/api/notifications/read-all?userId=${user.id}`, { method: "PATCH" });
+    } catch {
+      // best-effort
+    }
+  }, [user]);
+
+  const openNotifs = useCallback(() => {
+    setNotifOpen(v => {
+      if (!v) fetchNotifications();
+      return !v;
+    });
+    setLangOpen(false);
+  }, [fetchNotifications]);
+
+  // Close notification panel when navigating
+  useEffect(() => {
+    setNotifOpen(false);
+    setSidebarOpen(false);
+  }, [location]);
 
   const isActive = (href: string) => {
     if (href === "/") return location === "/";
@@ -73,7 +154,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isPublicPage = location === "/login" || location === "/register";
   if (isPublicPage) return <>{children}</>;
 
-  // Bottom nav shows max 4 items
   const bottomNavItems = navItems.slice(0, 4);
 
   return (
@@ -94,8 +174,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-4 py-5 border-b border-sidebar-border h-16 shrink-0">
+        {/* Logo — clicking navigates home */}
+        <Link
+          href="/"
+          onClick={() => setSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-5 border-b border-sidebar-border h-16 shrink-0 hover:bg-sidebar-accent/50 transition-colors"
+        >
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <Sprout className="w-5 h-5 text-primary-foreground" />
           </div>
@@ -103,7 +187,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-bold text-sidebar-foreground text-lg leading-none block">Mana Rythu</span>
             <p className="text-xs text-muted-foreground">Agriculture Platform</p>
           </div>
-        </div>
+        </Link>
 
         {/* Role badge */}
         {user && (
@@ -208,7 +292,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {/* Language switcher */}
             <div className="relative">
               <button
-                onClick={() => setLangOpen(v => !v)}
+                onClick={() => { setLangOpen(v => !v); setNotifOpen(false); }}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-border hover:bg-muted transition-colors text-sm font-medium"
                 title="Change language"
               >
@@ -239,10 +323,116 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Notification bell */}
-            <button className="relative p-2 rounded-xl hover:bg-muted transition-colors">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={openNotifs}
+                className={cn(
+                  "relative p-2 rounded-xl transition-colors",
+                  notifOpen ? "bg-green-100 text-green-700" : "hover:bg-muted text-muted-foreground"
+                )}
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 bg-red-500 rounded-full border-2 border-card text-[9px] font-bold text-white flex items-center justify-center leading-none">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+                {unreadCount === 0 && !notifOpen && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card" />
+                )}
+              </button>
+
+              {/* Notifications dropdown panel */}
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setNotifOpen(false)} />
+                  <div className="absolute right-0 top-11 z-20 w-80 bg-white border border-border rounded-2xl shadow-xl overflow-hidden">
+                    {/* Panel header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-to-r from-green-50 to-emerald-50">
+                      <div className="flex items-center gap-2">
+                        <Bell className="w-4 h-4 text-green-700" />
+                        <span className="font-semibold text-sm text-gray-800">Notifications</span>
+                        {unreadCount > 0 && (
+                          <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0 h-4 min-w-0">
+                            {unreadCount}
+                          </Badge>
+                        )}
+                      </div>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllRead}
+                          className="flex items-center gap-1 text-[11px] text-green-700 hover:text-green-800 font-medium transition-colors"
+                        >
+                          <CheckCheck className="w-3 h-3" />
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Notification list */}
+                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
+                      {notifLoading ? (
+                        <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
+                          <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin mr-2" />
+                          Loading...
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="py-10 flex flex-col items-center gap-2 text-muted-foreground">
+                          <Bell className="w-8 h-8 opacity-30" />
+                          <p className="text-sm font-medium">No notifications yet</p>
+                          <p className="text-xs">You're all caught up!</p>
+                        </div>
+                      ) : (
+                        notifications.map(n => (
+                          <div
+                            key={n.id}
+                            onClick={() => !n.read && markRead(n.id)}
+                            className={cn(
+                              "flex gap-3 px-4 py-3 transition-colors cursor-pointer group",
+                              n.read ? "bg-white hover:bg-gray-50" : "bg-green-50/60 hover:bg-green-50"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold mt-0.5",
+                              notifTypeColor(n.type)
+                            )}>
+                              {n.type === "price" ? "₹" : n.type === "order" ? "📦" : n.type === "alert" ? "!" : "✓"}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-1">
+                                <p className={cn("text-xs font-semibold leading-tight", !n.read && "text-green-900")}>{n.title}</p>
+                                {!n.read && <span className="w-2 h-2 rounded-full bg-green-500 shrink-0 mt-1" />}
+                              </div>
+                              <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
+                              <p className="text-[10px] text-muted-foreground/70 mt-1">{timeAgo(n.createdAt)}</p>
+                            </div>
+                            {!n.read && (
+                              <button
+                                onClick={e => { e.stopPropagation(); markRead(n.id); }}
+                                className="shrink-0 opacity-0 group-hover:opacity-100 p-1 rounded-md hover:bg-green-100 transition-all"
+                                title="Mark as read"
+                              >
+                                <Check className="w-3 h-3 text-green-600" />
+                              </button>
+                            )}
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Panel footer */}
+                    {!user && (
+                      <div className="px-4 py-3 border-t border-border bg-gray-50 text-center">
+                        <p className="text-xs text-muted-foreground">
+                          <Link href="/login" className="text-green-700 font-medium hover:underline" onClick={() => setNotifOpen(false)}>Sign in</Link> to see your notifications
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* User avatar */}
             {user ? (

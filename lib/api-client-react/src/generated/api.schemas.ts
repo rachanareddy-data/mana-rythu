@@ -460,6 +460,28 @@ export interface WeatherSummary {
   advisory: string;
 }
 
+export interface Notification {
+  id: number;
+  userId: number;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationList {
+  notifications: Notification[];
+  unreadCount: number;
+}
+
+export interface CreateNotificationInput {
+  userId: number;
+  type?: string;
+  title: string;
+  message: string;
+}
+
 export type AdminStatsTopCropsItem = {
   cropName: string;
   count: number;
@@ -496,6 +518,18 @@ trend?: string;
 export type GetReviewsParams = {
 toUserId?: number;
 fromUserId?: number;
+};
+
+export type GetNotificationsParams = {
+userId: number;
+};
+
+export type MarkAllNotificationsReadParams = {
+userId: number;
+};
+
+export type MarkAllNotificationsRead200 = {
+  success: boolean;
 };
 
 export type SuggestCropParams = {
