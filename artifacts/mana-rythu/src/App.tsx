@@ -10,6 +10,7 @@ import Home from "@/pages/Home";
 import Marketplace from "@/pages/Marketplace";
 import ListingDetail from "@/pages/ListingDetail";
 import FarmerDashboard from "@/pages/FarmerDashboard";
+import BuyerDashboard from "@/pages/BuyerDashboard";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -54,6 +55,7 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/listing/:id" component={ListingDetail} />
       <Route path="/farmer" component={FarmerDashboard} />
+      <Route path="/buyer" component={BuyerDashboard} />
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />

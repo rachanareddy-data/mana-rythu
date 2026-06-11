@@ -37,9 +37,11 @@ import type {
   ListingUpdate,
   LoginInput,
   MarketPrice,
+  PriceSuggestion,
   RatingInput,
   RecommendedCrop,
   RegisterInput,
+  SuggestPriceParams,
   User,
   VerifyUserInput,
   WeatherSummary
@@ -1547,6 +1549,90 @@ export const useContactFarmer = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getContactFarmerMutationOptions(options));
     }
+
+export const getSuggestPriceUrl = (params: SuggestPriceParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/ai/suggest-price?${stringifiedParams}` : `/api/ai/suggest-price`
+}
+
+/**
+ * @summary Get AI-suggested price range for a crop
+ */
+export const suggestPrice = async (params: SuggestPriceParams, options?: RequestInit): Promise<PriceSuggestion> => {
+
+  return customFetch<PriceSuggestion>(getSuggestPriceUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSuggestPriceQueryKey = (params?: SuggestPriceParams,) => {
+    return [
+    `/api/ai/suggest-price`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSuggestPriceQueryOptions = <TData = Awaited<ReturnType<typeof suggestPrice>>, TError = ErrorType<unknown>>(params: SuggestPriceParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof suggestPrice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSuggestPriceQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof suggestPrice>>> = ({ signal }) => suggestPrice(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof suggestPrice>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SuggestPriceQueryResult = NonNullable<Awaited<ReturnType<typeof suggestPrice>>>
+export type SuggestPriceQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get AI-suggested price range for a crop
+ */
+
+export function useSuggestPrice<TData = Awaited<ReturnType<typeof suggestPrice>>, TError = ErrorType<unknown>>(
+ params: SuggestPriceParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof suggestPrice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSuggestPriceQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetDashboardSummaryUrl = () => {
 

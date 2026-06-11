@@ -5,6 +5,7 @@
  * Mana Rythu API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ListingTrend } from './listingTrend';
 
 export interface Listing {
   id: number;
@@ -16,7 +17,8 @@ export interface Listing {
   /** @nullable */
   farmerRating?: number | null;
   cropName: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   quantity: number;
   unit: string;
   location: string;
@@ -24,6 +26,8 @@ export interface Listing {
   description?: string | null;
   /** @nullable */
   imageUrl?: string | null;
+  trend: ListingTrend;
   available: boolean;
   createdAt: string;
+  updatedAt: string;
 }

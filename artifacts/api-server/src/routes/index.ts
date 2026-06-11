@@ -6,6 +6,7 @@ import cropsRouter from "./crops";
 import listingsRouter from "./listings";
 import dashboardRouter from "./dashboard";
 import adminRouter from "./admin";
+import aiRouter from "./ai";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(cropsRouter);
 router.use(listingsRouter);
 router.use(dashboardRouter);
 router.use(adminRouter);
+router.use(aiRouter);
 
 export default router;

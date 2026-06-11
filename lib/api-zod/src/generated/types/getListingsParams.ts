@@ -12,4 +12,5 @@ cropName?: string;
 location?: string;
 minPrice?: number;
 maxPrice?: number;
+trend?: string;
 };

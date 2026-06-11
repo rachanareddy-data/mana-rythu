@@ -22,6 +22,8 @@ tags:
     description: Admin operations
   - name: dashboard
     description: Dashboard summaries and analytics
+  - name: ai
+    description: AI suggestion endpoints
 
 paths:
   /healthz:
@@ -316,6 +318,10 @@ paths:
           in: query
           schema:
             type: number
+        - name: trend
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: List of listings
@@ -422,6 +428,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContactResponse"
+
+  /ai/suggest-price:
+    get:
+      operationId: suggestPrice
+      tags: [ai]
+      summary: Get AI-suggested price range for a crop
+      parameters:
+        - name: cropName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Price suggestion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceSuggestion"
 
   /dashboard/summary:
     get:
@@ -649,7 +674,9 @@ components:
           type: ["number", "null"]
         cropName:
           type: string
-        price:
+        minPrice:
+          type: number
+        maxPrice:
           type: number
         quantity:
           type: number
@@ -661,18 +688,25 @@ components:
           type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
+        trend:
+          type: string
+          enum: [up, down, stable]
         available:
           type: boolean
         createdAt:
           type: string
-      required: [id, farmerId, cropName, price, quantity, unit, location, available, createdAt]
+        updatedAt:
+          type: string
+      required: [id, farmerId, cropName, minPrice, maxPrice, quantity, unit, location, trend, available, createdAt, updatedAt]
 
     ListingInput:
       type: object
       properties:
         cropName:
           type: string
-        price:
+        minPrice:
+          type: number
+        maxPrice:
           type: number
         quantity:
           type: number
@@ -684,14 +718,19 @@ components:
           type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
-      required: [cropName, price, quantity, unit, location]
+        trend:
+          type: string
+          enum: [up, down, stable]
+      required: [cropName, minPrice, maxPrice, quantity, unit, location]
 
     ListingUpdate:
       type: object
       properties:
         cropName:
           type: string
-        price:
+        minPrice:
+          type: number
+        maxPrice:
           type: number
         quantity:
           type: number
@@ -701,6 +740,9 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        trend:
+          type: string
+          enum: [up, down, stable]
         available:
           type: boolean
 
@@ -725,6 +767,30 @@ components:
         message:
           type: string
       required: [success, message]
+
+    PriceSuggestion:
+      type: object
+      properties:
+        cropName:
+          type: string
+        suggestedMinPrice:
+          type: number
+        suggestedMaxPrice:
+          type: number
+        unit:
+          type: string
+        trend:
+          type: string
+          enum: [up, down, stable]
+        confidence:
+          type: string
+        note:
+          type: string
+        variants:
+          type: array
+          items:
+            type: string
+      required: [cropName, suggestedMinPrice, suggestedMaxPrice, unit, trend, confidence, note, variants]
 
     DashboardSummary:
       type: object
@@ -752,6 +818,10 @@ components:
           type: string
         price:
           type: number
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
         unit:
           type: string
         trend:
@@ -761,7 +831,7 @@ components:
           type: number
         location:
           type: string
-      required: [cropName, price, unit, trend, changePercent, location]
+      required: [cropName, price, minPrice, maxPrice, unit, trend, changePercent, location]
 
     RecommendedCrop:
       type: object
@@ -775,13 +845,17 @@ components:
           enum: [high, medium, low]
         avgPrice:
           type: number
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
         unit:
           type: string
         reason:
           type: string
         imageUrl:
           type: ["string", "null"]
-      required: [cropName, season, demandLevel, avgPrice, unit, reason]
+      required: [cropName, season, demandLevel, avgPrice, minPrice, maxPrice, unit, reason]
 
     WeatherSummary:
       type: object

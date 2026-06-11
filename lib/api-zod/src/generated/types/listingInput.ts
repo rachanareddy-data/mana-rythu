@@ -5,10 +5,12 @@
  * Mana Rythu API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ListingInputTrend } from './listingInputTrend';
 
 export interface ListingInput {
   cropName: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   quantity: number;
   unit: string;
   location: string;
@@ -16,4 +18,5 @@ export interface ListingInput {
   description?: string | null;
   /** @nullable */
   imageUrl?: string | null;
+  trend?: ListingInputTrend;
 }

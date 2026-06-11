@@ -267,7 +267,8 @@ export const GetListingsQueryParams = zod.object({
   "cropName": zod.coerce.string().optional(),
   "location": zod.coerce.string().optional(),
   "minPrice": zod.coerce.number().optional(),
-  "maxPrice": zod.coerce.number().optional()
+  "maxPrice": zod.coerce.number().optional(),
+  "trend": zod.coerce.string().optional()
 })
 
 export const GetListingsResponseItem = zod.object({
@@ -277,14 +278,17 @@ export const GetListingsResponseItem = zod.object({
   "farmerVerified": zod.boolean().nullish(),
   "farmerRating": zod.number().nullish(),
   "cropName": zod.string(),
-  "price": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "quantity": zod.number(),
   "unit": zod.string(),
   "location": zod.string(),
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
-  "createdAt": zod.string()
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
 })
 export const GetListingsResponse = zod.array(GetListingsResponseItem)
 
@@ -294,12 +298,14 @@ export const GetListingsResponse = zod.array(GetListingsResponseItem)
  */
 export const CreateListingBody = zod.object({
   "cropName": zod.string(),
-  "price": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "quantity": zod.number(),
   "unit": zod.string(),
   "location": zod.string(),
   "description": zod.string().nullish(),
-  "imageUrl": zod.string().nullish()
+  "imageUrl": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']).optional()
 })
 
 
@@ -317,14 +323,17 @@ export const GetListingByIdResponse = zod.object({
   "farmerVerified": zod.boolean().nullish(),
   "farmerRating": zod.number().nullish(),
   "cropName": zod.string(),
-  "price": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "quantity": zod.number(),
   "unit": zod.string(),
   "location": zod.string(),
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
-  "createdAt": zod.string()
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
 })
 
 
@@ -337,11 +346,13 @@ export const UpdateListingParams = zod.object({
 
 export const UpdateListingBody = zod.object({
   "cropName": zod.string().optional(),
-  "price": zod.number().optional(),
+  "minPrice": zod.number().optional(),
+  "maxPrice": zod.number().optional(),
   "quantity": zod.number().optional(),
   "unit": zod.string().optional(),
   "location": zod.string().optional(),
   "description": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']).optional(),
   "available": zod.boolean().optional()
 })
 
@@ -352,14 +363,17 @@ export const UpdateListingResponse = zod.object({
   "farmerVerified": zod.boolean().nullish(),
   "farmerRating": zod.number().nullish(),
   "cropName": zod.string(),
-  "price": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "quantity": zod.number(),
   "unit": zod.string(),
   "location": zod.string(),
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
-  "createdAt": zod.string()
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
 })
 
 
@@ -392,6 +406,25 @@ export const ContactFarmerResponse = zod.object({
 
 
 /**
+ * @summary Get AI-suggested price range for a crop
+ */
+export const SuggestPriceQueryParams = zod.object({
+  "cropName": zod.coerce.string()
+})
+
+export const SuggestPriceResponse = zod.object({
+  "cropName": zod.string(),
+  "suggestedMinPrice": zod.number(),
+  "suggestedMaxPrice": zod.number(),
+  "unit": zod.string(),
+  "trend": zod.enum(['up', 'down', 'stable']),
+  "confidence": zod.string(),
+  "note": zod.string(),
+  "variants": zod.array(zod.string())
+})
+
+
+/**
  * @summary Get dashboard summary stats
  */
 export const GetDashboardSummaryResponse = zod.object({
@@ -411,6 +444,8 @@ export const GetDashboardSummaryResponse = zod.object({
 export const GetMarketPricesResponseItem = zod.object({
   "cropName": zod.string(),
   "price": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "unit": zod.string(),
   "trend": zod.enum(['up', 'down', 'stable']),
   "changePercent": zod.number(),
@@ -427,6 +462,8 @@ export const GetRecommendedCropsResponseItem = zod.object({
   "season": zod.string(),
   "demandLevel": zod.enum(['high', 'medium', 'low']),
   "avgPrice": zod.number(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
   "unit": zod.string(),
   "reason": zod.string(),
   "imageUrl": zod.string().nullish()

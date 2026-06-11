@@ -140,6 +140,15 @@ export interface CropUpdate {
   notes?: string | null;
 }
 
+export type ListingTrend = typeof ListingTrend[keyof typeof ListingTrend];
+
+
+export const ListingTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
+
 export interface Listing {
   id: number;
   farmerId: number;
@@ -150,7 +159,8 @@ export interface Listing {
   /** @nullable */
   farmerRating?: number | null;
   cropName: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   quantity: number;
   unit: string;
   location: string;
@@ -158,13 +168,25 @@ export interface Listing {
   description?: string | null;
   /** @nullable */
   imageUrl?: string | null;
+  trend: ListingTrend;
   available: boolean;
   createdAt: string;
+  updatedAt: string;
 }
+
+export type ListingInputTrend = typeof ListingInputTrend[keyof typeof ListingInputTrend];
+
+
+export const ListingInputTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
 
 export interface ListingInput {
   cropName: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   quantity: number;
   unit: string;
   location: string;
@@ -172,16 +194,28 @@ export interface ListingInput {
   description?: string | null;
   /** @nullable */
   imageUrl?: string | null;
+  trend?: ListingInputTrend;
 }
+
+export type ListingUpdateTrend = typeof ListingUpdateTrend[keyof typeof ListingUpdateTrend];
+
+
+export const ListingUpdateTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
 
 export interface ListingUpdate {
   cropName?: string;
-  price?: number;
+  minPrice?: number;
+  maxPrice?: number;
   quantity?: number;
   unit?: string;
   location?: string;
   /** @nullable */
   description?: string | null;
+  trend?: ListingUpdateTrend;
   available?: boolean;
 }
 
@@ -197,6 +231,26 @@ export interface ContactResponse {
   /** @nullable */
   farmerPhone?: string | null;
   message: string;
+}
+
+export type PriceSuggestionTrend = typeof PriceSuggestionTrend[keyof typeof PriceSuggestionTrend];
+
+
+export const PriceSuggestionTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
+
+export interface PriceSuggestion {
+  cropName: string;
+  suggestedMinPrice: number;
+  suggestedMaxPrice: number;
+  unit: string;
+  trend: PriceSuggestionTrend;
+  confidence: string;
+  note: string;
+  variants: string[];
 }
 
 export interface DashboardSummary {
@@ -221,6 +275,8 @@ export const MarketPriceTrend = {
 export interface MarketPrice {
   cropName: string;
   price: number;
+  minPrice: number;
+  maxPrice: number;
   unit: string;
   trend: MarketPriceTrend;
   changePercent: number;
@@ -241,6 +297,8 @@ export interface RecommendedCrop {
   season: string;
   demandLevel: RecommendedCropDemandLevel;
   avgPrice: number;
+  minPrice: number;
+  maxPrice: number;
   unit: string;
   reason: string;
   /** @nullable */
@@ -286,5 +344,10 @@ cropName?: string;
 location?: string;
 minPrice?: number;
 maxPrice?: number;
+trend?: string;
+};
+
+export type SuggestPriceParams = {
+cropName: string;
 };
 

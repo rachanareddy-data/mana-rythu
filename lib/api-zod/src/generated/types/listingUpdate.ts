@@ -5,14 +5,17 @@
  * Mana Rythu API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ListingUpdateTrend } from './listingUpdateTrend';
 
 export interface ListingUpdate {
   cropName?: string;
-  price?: number;
+  minPrice?: number;
+  maxPrice?: number;
   quantity?: number;
   unit?: string;
   location?: string;
   /** @nullable */
   description?: string | null;
+  trend?: ListingUpdateTrend;
   available?: boolean;
 }

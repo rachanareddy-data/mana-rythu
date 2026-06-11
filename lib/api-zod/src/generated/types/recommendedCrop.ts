@@ -12,6 +12,8 @@ export interface RecommendedCrop {
   season: string;
   demandLevel: RecommendedCropDemandLevel;
   avgPrice: number;
+  minPrice: number;
+  maxPrice: number;
   unit: string;
   reason: string;
   /** @nullable */

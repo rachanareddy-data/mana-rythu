@@ -10,6 +10,8 @@ import type { MarketPriceTrend } from './marketPriceTrend';
 export interface MarketPrice {
   cropName: string;
   price: number;
+  minPrice: number;
+  maxPrice: number;
   unit: string;
   trend: MarketPriceTrend;
   changePercent: number;
