@@ -10,239 +10,318 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search, MapPin, Star, CheckCircle2, Package,
   Sprout, X, TrendingUp, TrendingDown, Minus,
-  Clock, ShoppingCart, Filter, Info,
+  Clock, ShoppingCart, SlidersHorizontal, Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
 function TrendBadge({ trend }: { trend: string }) {
-  const map: Record<string, { icon: any; label: string; cls: string }> = {
-    up:     { icon: TrendingUp,   label: "Rising",  cls: "text-green-700 bg-green-50 border-green-200" },
-    down:   { icon: TrendingDown, label: "Falling", cls: "text-red-600 bg-red-50 border-red-200" },
-    stable: { icon: Minus,        label: "Stable",  cls: "text-yellow-700 bg-yellow-50 border-yellow-200" },
-  };
-  const { icon: Icon, label, cls } = map[trend] ?? map.stable;
+  if (trend === "up") return (
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+      <TrendingUp className="w-3 h-3" /> Rising
+    </span>
+  );
+  if (trend === "down") return (
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">
+      <TrendingDown className="w-3 h-3" /> Falling
+    </span>
+  );
   return (
-    <span className={cn("flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border", cls)}>
-      <Icon className="w-3 h-3" /> {label}
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full">
+      <Minus className="w-3 h-3" /> Stable
     </span>
   );
 }
 
-const CROP_CATEGORIES = ["All", "Vegetables", "Grains", "Spices", "Fruits", "Cash Crops"];
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  Vegetables: ["tomato", "onion", "potato", "brinjal", "cabbage", "okra", "carrot", "cauliflower"],
-  Grains: ["rice", "wheat", "maize", "paddy", "bajra", "jowar"],
-  Spices: ["chili", "turmeric", "ginger", "coriander", "pepper"],
-  Fruits: ["mango", "banana", "papaya", "guava", "grape"],
-  "Cash Crops": ["cotton", "groundnut", "sugarcane", "sunflower", "soybean"],
-};
+const CATEGORIES = [
+  { label: "All", keywords: [] },
+  { label: "🌾 Grains", keywords: ["rice", "wheat", "maize", "paddy", "bajra", "jowar", "ragi"] },
+  { label: "🍅 Vegetables", keywords: ["tomato", "onion", "potato", "brinjal", "cabbage", "okra", "carrot", "cauliflower", "beans", "peas"] },
+  { label: "🌶️ Spices", keywords: ["chili", "turmeric", "ginger", "coriander", "pepper", "cumin"] },
+  { label: "🥭 Fruits", keywords: ["mango", "banana", "papaya", "guava", "grape", "orange"] },
+  { label: "💰 Cash Crops", keywords: ["cotton", "groundnut", "sugarcane", "sunflower", "soybean", "tobacco"] },
+];
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
-  const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [trendFilter, setTrendFilter] = useState("");
   const [category, setCategory] = useState("All");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const params: Record<string, string | number> = {};
-  if (location) params.location = location;
-  if (minPrice) params.minPrice = parseFloat(minPrice);
-  if (maxPrice) params.maxPrice = parseFloat(maxPrice);
-  if (trendFilter) params.trend = trendFilter;
+  const apiParams: Record<string, string | number> = {};
+  if (location) apiParams.location = location;
+  if (maxPrice) apiParams.maxPrice = parseFloat(maxPrice);
+  if (trendFilter) apiParams.trend = trendFilter;
 
+  const apiParamsOrUndefined = Object.keys(apiParams).length ? apiParams : undefined;
   const { data: allListings, isLoading } = useGetListings(
-    Object.keys(params).length ? params : undefined,
-    { query: { queryKey: getGetListingsQueryKey(params) } }
+    apiParamsOrUndefined,
+    { query: { queryKey: getGetListingsQueryKey(apiParamsOrUndefined), staleTime: 0 } }
   );
 
-  // Client-side search + category filter
   const listings = allListings?.filter(l => {
     const nameMatch = !search || l.cropName.toLowerCase().includes(search.toLowerCase());
-    const catMatch = category === "All" || (CATEGORY_KEYWORDS[category] ?? []).some(k =>
-      l.cropName.toLowerCase().includes(k)
-    );
+    const catObj = CATEGORIES.find(c => c.label === category);
+    const catMatch = category === "All" || !catObj?.keywords.length ||
+      catObj.keywords.some(k => l.cropName.toLowerCase().includes(k));
     return nameMatch && catMatch;
   });
 
-  const hasFilters = search || location || minPrice || maxPrice || trendFilter || category !== "All";
-  const clearAll = () => { setSearch(""); setLocation(""); setMinPrice(""); setMaxPrice(""); setTrendFilter(""); setCategory("All"); };
+  const hasFilters = search || location || maxPrice || trendFilter || category !== "All";
+  const clearAll = () => {
+    setSearch(""); setLocation(""); setMaxPrice("");
+    setTrendFilter(""); setCategory("All");
+  };
+
+  const firstName = user?.name?.split(" ")[0] ?? "Buyer";
 
   return (
-    <div className="flex flex-col h-full pb-20 lg:pb-0 overflow-hidden">
-      {/* Hero header */}
-      <div className="relative px-6 py-10 text-white shrink-0 overflow-hidden">
-        {/* Farming background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920&q=80')" }}
-        />
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/85 to-emerald-700/70" />
+    <div className="flex flex-col h-full pb-20 lg:pb-0 bg-gray-50/50">
 
-        <div className="relative">
-          <h1 className="text-2xl font-bold mb-1">
-            {user ? `Hello, ${user.name.split(" ")[0]}` : "Browse Crops"}
-          </h1>
-          <p className="text-green-100 text-sm mb-5">Find fresh produce directly from verified farmers</p>
+      {/* ── Hero header ── */}
+      <div className="bg-white border-b border-gray-100 px-5 py-5 shrink-0">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">
+                {user ? `Hello, ${firstName} 👋` : "Browse Fresh Crops"}
+              </h1>
+              <p className="text-sm text-gray-500 mt-0.5">Farm-fresh produce, direct from verified farmers</p>
+            </div>
+            {/* Stats pills */}
+            <div className="hidden sm:flex items-center gap-3">
+              {!isLoading && (
+                <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
+                  {listings?.length ?? 0} crops available
+                </span>
+              )}
+            </div>
+          </div>
 
-          {/* Search bar */}
-          <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2.5 shadow-sm max-w-lg">
-            <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+          {/* Search bar — prominent */}
+          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus-within:border-green-400 focus-within:ring-2 focus-within:ring-green-100 transition-all">
+            <Search className="w-4 h-4 text-gray-400 shrink-0" />
             <input
               type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search for tomato, rice, cotton..."
-              className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground min-w-0"
+              placeholder="Search for tomato, rice, cotton, groundnut..."
+              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-800 placeholder:text-gray-400 min-w-0"
             />
-            {search && (
-              <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground">
+            {search ? (
+              <button onClick={() => setSearch("")} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-4 h-4" />
               </button>
-            )}
+            ) : null}
+          </div>
+
+          {/* Category pills */}
+          <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide pb-0.5">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.label}
+                onClick={() => setCategory(cat.label)}
+                className={cn(
+                  "px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border",
+                  category === cat.label
+                    ? "bg-green-600 text-white border-green-600 shadow-sm"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700"
+                )}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Category pills */}
-      <div className="flex gap-2 px-6 py-3 overflow-x-auto scrollbar-hide shrink-0 border-b border-border bg-card">
-        {CROP_CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={cn(
-              "px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border",
-              category === cat
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
-            )}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      <div className="flex flex-1 overflow-hidden max-w-5xl w-full mx-auto">
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Filter sidebar — desktop */}
-        <aside className="hidden lg:flex flex-col w-56 shrink-0 border-r border-border bg-card p-4 space-y-4 overflow-y-auto">
+        {/* ── Filter sidebar — desktop ── */}
+        <aside className="hidden lg:flex flex-col w-52 shrink-0 px-4 py-5 space-y-5 overflow-y-auto">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-sm flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5" /> Filters
+            <h2 className="font-semibold text-sm text-gray-700 flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
             </h2>
-            {hasFilters && <button onClick={clearAll} className="text-xs text-destructive hover:underline">Clear</button>}
+            {hasFilters && (
+              <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium">Clear all</button>
+            )}
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">Location</p>
-              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Warangal" className="h-8 text-xs" />
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Location</p>
+              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Warangal" className="h-9 text-sm border-gray-200" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">Max Price (₹)</p>
-              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-8 text-xs" type="number" />
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Max Price (₹)</p>
+              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-9 text-sm border-gray-200" type="number" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">Trend</p>
-              {["", "up", "stable", "down"].map(t => (
-                <button
-                  key={t}
-                  onClick={() => setTrendFilter(t)}
-                  className={cn(
-                    "flex items-center gap-1.5 w-full text-left text-xs px-2 py-1.5 rounded-lg transition-colors mb-1",
-                    trendFilter === t ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted"
-                  )}
-                >
-                  {t === "" ? "All trends" : t === "up" ? "📈 Rising" : t === "stable" ? "➖ Stable" : "📉 Falling"}
-                </button>
-              ))}
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Market Trend</p>
+              <div className="space-y-1">
+                {[
+                  { value: "", label: "All trends" },
+                  { value: "up", label: "📈 Rising" },
+                  { value: "stable", label: "➖ Stable" },
+                  { value: "down", label: "📉 Falling" },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setTrendFilter(opt.value)}
+                    className={cn(
+                      "flex items-center w-full text-left text-xs px-2.5 py-2 rounded-lg transition-colors",
+                      trendFilter === opt.value
+                        ? "bg-green-50 text-green-700 font-semibold"
+                        : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </aside>
 
-        {/* Main grid */}
-        <div className="flex-1 overflow-y-auto p-5">
+        {/* ── Main grid ── */}
+        <div className="flex-1 overflow-y-auto p-4 lg:pl-0">
+
           {/* Trust banner */}
-          <div className="flex items-start gap-2 mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
-            <Info className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
-            <p className="text-xs text-blue-700">
-              <span className="font-semibold">Source: Market Average (Estimated).</span> Prices are indicative ranges. Final price is negotiated between buyer and farmer.
+          <div className="flex items-start gap-2 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
+            <Info className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-blue-700 leading-relaxed">
+              <span className="font-semibold">Prices are indicative ranges</span> based on current mandi averages. Final price is agreed between buyer and farmer.
             </p>
           </div>
 
+          {/* Results header */}
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-muted-foreground">
-              {isLoading ? "Loading..." : `${listings?.length ?? 0} crops available`}
+            <p className="text-sm text-gray-500">
+              {isLoading ? "Loading crops…" : <><span className="font-semibold text-gray-800">{listings?.length ?? 0}</span> crops found</>}
             </p>
-            {hasFilters && (
-              <button onClick={clearAll} className="text-xs text-primary hover:underline flex items-center gap-1">
-                <X className="w-3 h-3" /> Clear filters
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {hasFilters && (
+                <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
+                  <X className="w-3 h-3" /> Clear filters
+                </button>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="lg:hidden gap-1.5 h-8 text-xs border-gray-200"
+                onClick={() => setShowMobileFilters(v => !v)}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+                {hasFilters && <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />}
+              </Button>
+            </div>
           </div>
 
+          {/* Mobile filter drawer */}
+          {showMobileFilters && (
+            <div className="lg:hidden bg-white border border-gray-100 rounded-2xl p-4 mb-4 shadow-sm grid grid-cols-2 gap-3">
+              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" className="h-9 text-sm" />
+              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max price ₹" className="h-9 text-sm" type="number" />
+              <select
+                value={trendFilter}
+                onChange={e => setTrendFilter(e.target.value)}
+                className="h-9 col-span-2 rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">All trends</option>
+                <option value="up">📈 Rising</option>
+                <option value="stable">➖ Stable</option>
+                <option value="down">📉 Falling</option>
+              </select>
+            </div>
+          )}
+
+          {/* Grid */}
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {Array.from({ length: 9 }).map((_, i) => <Skeleton key={i} className="h-72 rounded-xl" />)}
+              {Array.from({ length: 9 }).map((_, i) => <Skeleton key={i} className="h-80 rounded-2xl" />)}
             </div>
           ) : listings && listings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {listings.map(l => (
                 <Link key={l.id} href={`/listing/${l.id}`} className="block group">
-                  <Card className="border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all h-full">
+                  <Card className="border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 bg-white overflow-hidden h-full">
                     {/* Image */}
-                    <div className="h-40 rounded-t-xl overflow-hidden bg-gradient-to-br from-green-100 via-emerald-50 to-teal-100 flex items-center justify-center relative">
+                    <div className="h-44 bg-gradient-to-br from-green-100 via-emerald-50 to-teal-100 relative overflow-hidden">
                       {l.imageUrl ? (
-                        <img src={l.imageUrl} alt={l.cropName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <img
+                          src={l.imageUrl}
+                          alt={l.cropName}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
                       ) : (
-                        <Sprout className="w-16 h-16 text-green-400 group-hover:scale-110 transition-transform" />
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Sprout className="w-16 h-16 text-green-300 group-hover:scale-110 transition-transform" />
+                        </div>
                       )}
-                      <div className="absolute top-2 left-2 flex gap-1.5 flex-wrap">
-                        {l.available && <Badge className="text-[10px] py-0 px-1.5">Available</Badge>}
+                      {/* Overlay badges */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      <div className="absolute top-2.5 left-2.5 flex gap-1.5">
                         {l.farmerVerified && (
-                          <span className="bg-white/90 rounded-full p-0.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                          <span className="bg-white/95 backdrop-blur rounded-full p-1 shadow-sm">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                          </span>
+                        )}
+                        {l.available && (
+                          <span className="bg-green-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            FRESH
                           </span>
                         )}
                       </div>
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-2.5 right-2.5">
                         <TrendBadge trend={l.trend} />
                       </div>
                     </div>
 
                     <CardContent className="p-4">
-                      <h3 className="font-semibold text-foreground text-base mb-1 leading-tight">{l.cropName}</h3>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                        <MapPin className="w-3 h-3 shrink-0" /><span className="truncate">{l.location}</span>
+                      {/* Name + location */}
+                      <h3 className="font-bold text-gray-900 text-base mb-0.5 leading-tight">{l.cropName}</h3>
+                      <div className="flex items-center gap-1 text-xs text-gray-400 mb-3">
+                        <MapPin className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{l.location}</span>
                       </div>
 
-                      {/* Price range */}
-                      <div className="flex items-baseline gap-0.5 mb-1">
-                        <span className="text-base font-bold text-primary">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
-                        <span className="text-xs text-muted-foreground">/{l.unit}</span>
+                      {/* Price — prominent */}
+                      <div className="bg-green-50 rounded-lg px-3 py-2 mb-3">
+                        <p className="text-[10px] text-green-600 font-medium mb-0.5">PRICE RANGE</p>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-lg font-bold text-green-700">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
+                          <span className="text-xs text-green-500">/{l.unit}</span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                        <Package className="w-3 h-3" />{l.quantity.toLocaleString()} {l.unit}
-                        <span className="mx-1">·</span>
-                        <Clock className="w-3 h-3" />{formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
+                      {/* Meta row */}
+                      <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
+                        <span className="flex items-center gap-1"><Package className="w-3 h-3" />{l.quantity.toLocaleString()} {l.unit}</span>
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}</span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-border">
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[9px] font-bold text-primary">
+                      {/* Farmer row */}
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-[10px] font-bold text-green-700">
                             {(l.farmerName ?? "F").slice(0, 1).toUpperCase()}
                           </div>
-                          <span className="text-xs text-muted-foreground truncate max-w-24">{l.farmerName ?? "Unknown"}</span>
-                          {l.farmerVerified && <CheckCircle2 className="w-3 h-3 text-primary shrink-0" />}
-                        </div>
-                        {l.farmerRating && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-xs font-medium">{l.farmerRating.toFixed(1)}</span>
+                          <div>
+                            <span className="text-xs font-medium text-gray-700 truncate max-w-20 block">{l.farmerName ?? "Farmer"}</span>
+                            {l.farmerVerified && <span className="text-[9px] text-green-600 font-medium flex items-center gap-0.5"><CheckCircle2 className="w-2.5 h-2.5" /> Verified</span>}
                           </div>
+                        </div>
+                        {l.farmerRating ? (
+                          <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <span className="text-xs font-bold text-amber-700">{l.farmerRating.toFixed(1)}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-lg">View →</span>
                         )}
                       </div>
                     </CardContent>
@@ -251,15 +330,23 @@ export default function BuyerDashboard() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                <ShoppingCart className="w-8 h-8 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-gray-100">
+              <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+                <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
-              <h3 className="font-semibold text-foreground mb-1">No crops found</h3>
-              <p className="text-sm text-muted-foreground max-w-xs mb-4">
-                {hasFilters ? "Try different search terms or filters." : "No crops are listed yet."}
+              <h3 className="font-semibold text-gray-800 mb-1">
+                {hasFilters ? "No crops match your filters" : "No crops listed yet"}
+              </h3>
+              <p className="text-sm text-gray-500 mb-5 max-w-xs">
+                {hasFilters
+                  ? "Try different search terms or remove some filters."
+                  : "Farmers haven't listed crops yet. Check back soon!"}
               </p>
-              {hasFilters && <Button variant="outline" size="sm" onClick={clearAll}>Clear filters</Button>}
+              {hasFilters && (
+                <Button variant="outline" size="sm" onClick={clearAll} className="border-gray-200">
+                  Clear all filters
+                </Button>
+              )}
             </div>
           )}
         </div>

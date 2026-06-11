@@ -1,11 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetCrops, useCreateCrop, useDeleteCrop, getGetCropsQueryKey,
-  useGetListings, useCreateListing, useDeleteListing, getGetListingsQueryKey,
-  useSuggestPrice, getSuggestPriceQueryKey,
-  useSuggestCrop, getSuggestCropQueryKey,
+  useGetListings, useDeleteListing, getGetListingsQueryKey,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -19,53 +17,44 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Sprout, Plus, Trash2, Package, MapPin, ShoppingBag,
-  Calendar, CheckCircle2, Sparkles, TrendingUp, TrendingDown,
-  Minus, ImageIcon, X, Info,
+  Calendar, CheckCircle2, TrendingUp, TrendingDown,
+  Minus, ArrowRight, BarChart3, Leaf, IndianRupee,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
 const STATUS_COLORS: Record<string, string> = {
-  growing:   "bg-blue-100 text-blue-700 border-blue-200",
-  ready:     "bg-green-100 text-green-700 border-green-200",
-  harvested: "bg-gray-100 text-gray-600 border-gray-200",
+  growing:   "bg-blue-50 text-blue-700 border-blue-200",
+  ready:     "bg-emerald-50 text-emerald-700 border-emerald-200",
+  harvested: "bg-gray-50 text-gray-600 border-gray-200",
 };
-const STATUS_ICONS: Record<string, any> = {
-  growing: Sprout, ready: CheckCircle2, harvested: Package,
+const STATUS_DOT: Record<string, string> = {
+  growing: "bg-blue-500", ready: "bg-emerald-500", harvested: "bg-gray-400",
 };
 
 function TrendIcon({ trend }: { trend: string }) {
-  if (trend === "up") return <TrendingUp className="w-3.5 h-3.5 text-green-600" />;
-  if (trend === "down") return <TrendingDown className="w-3.5 h-3.5 text-red-500" />;
-  return <Minus className="w-3.5 h-3.5 text-yellow-500" />;
+  if (trend === "up") return <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />;
+  if (trend === "down") return <TrendingDown className="w-3.5 h-3.5 text-red-400" />;
+  return <Minus className="w-3.5 h-3.5 text-amber-400" />;
 }
 
-function StatCard({ label, value, icon: Icon, color }: { label: string; value: number | string; icon: any; color: string }) {
+function TrendBadge({ trend }: { trend: string }) {
+  if (trend === "up") return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+      <TrendingUp className="w-3 h-3" /> Rising
+    </span>
+  );
+  if (trend === "down") return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">
+      <TrendingDown className="w-3 h-3" /> Falling
+    </span>
+  );
   return (
-    <Card className="border border-border shadow-sm">
-      <CardContent className="p-5 flex items-center gap-4">
-        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", color)}>
-          <Icon className="w-6 h-6" />
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="text-2xl font-bold text-foreground">{value}</p>
-        </div>
-      </CardContent>
-    </Card>
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full">
+      <Minus className="w-3 h-3" /> Stable
+    </span>
   );
 }
-
-type ListingForm = {
-  cropName: string; minPrice: string; maxPrice: string;
-  quantity: string; unit: string; location: string;
-  description: string; imageUrl: string; trend: "up" | "down" | "stable";
-};
-
-const DEFAULT_LISTING: ListingForm = {
-  cropName: "", minPrice: "", maxPrice: "", quantity: "",
-  unit: "kg", location: "", description: "", imageUrl: "", trend: "stable",
-};
 
 export default function FarmerDashboard() {
   const { user } = useAuth();
@@ -73,6 +62,7 @@ export default function FarmerDashboard() {
   const qc = useQueryClient();
   const [, navigate] = useLocation();
   const farmerId = user?.id;
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: crops, isLoading: cropsLoading } = useGetCrops(
     farmerId ? { farmerId } : undefined,
@@ -80,100 +70,20 @@ export default function FarmerDashboard() {
   );
   const { data: listings, isLoading: listingsLoading } = useGetListings(
     farmerId ? { farmerId } : undefined,
-    { query: { queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined) } }
+    { query: { queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined), staleTime: 0 } }
   );
 
   const createCrop = useCreateCrop();
   const deleteCrop = useDeleteCrop();
-  const createListing = useCreateListing();
   const deleteListing = useDeleteListing();
 
-  // Listing modal state
   const [cropModal, setCropModal] = useState(false);
-  const [listingModal, setListingModal] = useState(false);
   const [cropForm, setCropForm] = useState({ cropName: "", sowDate: "", harvestDate: "", status: "growing" as const, notes: "" });
-  const [listingForm, setListingForm] = useState<ListingForm>(DEFAULT_LISTING);
-  const [aiSuggestQuery, setAiSuggestQuery] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  // Autocomplete state
-  const [autocompleteQuery, setAutocompleteQuery] = useState("");
-  const [showAutocomplete, setShowAutocomplete] = useState(false);
-
-  // Debounce autocomplete query 300ms after typing
-  useEffect(() => {
-    if (listingForm.cropName.length < 2) { setAutocompleteQuery(""); return; }
-    const t = setTimeout(() => setAutocompleteQuery(listingForm.cropName), 300);
-    return () => clearTimeout(t);
-  }, [listingForm.cropName]);
-
-  // Live crop name autocomplete
-  const { data: cropSuggestions } = useSuggestCrop(
-    { name: autocompleteQuery },
-    { query: { queryKey: getSuggestCropQueryKey({ name: autocompleteQuery }), enabled: autocompleteQuery.length >= 2, staleTime: 30_000 } }
-  );
-
-  // AI price suggestion — triggers on demand
-  const { data: aiSuggestion, isLoading: aiLoading } = useSuggestPrice(
-    { cropName: aiSuggestQuery },
-    { query: { queryKey: getSuggestPriceQueryKey({ cropName: aiSuggestQuery }), enabled: aiSuggestQuery.length >= 3, staleTime: 60_000 } }
-  );
 
   const invalidateCrops = () => qc.invalidateQueries({ queryKey: getGetCropsQueryKey(farmerId ? { farmerId } : undefined) });
   const invalidateListings = () => {
-    // Invalidate farmer's own filtered view
-    qc.invalidateQueries({ queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined) });
-    // Also invalidate the global listings cache so Marketplace updates instantly
-    qc.invalidateQueries({ queryKey: getGetListingsQueryKey() });
-    qc.invalidateQueries({ queryKey: getGetListingsQueryKey({}) });
-  };
-
-  const handleCropNameChange = (val: string) => {
-    setListingForm(f => ({ ...f, cropName: val }));
-    setShowAutocomplete(true);
-  };
-
-  const selectCropSuggestion = (name: string) => {
-    setListingForm(f => ({ ...f, cropName: name }));
-    setShowAutocomplete(false);
-    // Auto-trigger price suggestion when name is picked
-    setAiSuggestQuery(name);
-  };
-
-  const triggerAiSuggest = () => {
-    if (listingForm.cropName.trim().length >= 3) setAiSuggestQuery(listingForm.cropName.trim());
-    setShowAutocomplete(false);
-  };
-
-  const applyAiSuggestion = () => {
-    if (!aiSuggestion) return;
-    setListingForm(f => ({
-      ...f,
-      minPrice: String(aiSuggestion.suggestedMinPrice),
-      maxPrice: String(aiSuggestion.suggestedMaxPrice),
-      unit: aiSuggestion.unit,
-      trend: aiSuggestion.trend as "up" | "down" | "stable",
-    }));
-    toast({ title: "AI suggestion applied!", description: aiSuggestion.note });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setImagePreview(result);
-      setListingForm(f => ({ ...f, imageUrl: result }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const clearImage = () => {
-    setImagePreview(null);
-    setListingForm(f => ({ ...f, imageUrl: "" }));
-    if (fileRef.current) fileRef.current.value = "";
+    qc.invalidateQueries({ queryKey: ["/api/listings"] });
+    if (farmerId) qc.invalidateQueries({ queryKey: getGetListingsQueryKey({ farmerId }) });
   };
 
   const handleAddCrop = () => {
@@ -182,7 +92,7 @@ export default function FarmerDashboard() {
       { data: { farmerId, cropName: cropForm.cropName, sowDate: cropForm.sowDate || null, harvestDate: cropForm.harvestDate || null, status: cropForm.status, notes: cropForm.notes || null } },
       {
         onSuccess: () => {
-          toast({ title: "Crop added!", description: `${cropForm.cropName} has been added.` });
+          toast({ title: "Crop added!", description: `${cropForm.cropName} is now being tracked.` });
           setCropForm({ cropName: "", sowDate: "", harvestDate: "", status: "growing", notes: "" });
           setCropModal(false);
           invalidateCrops();
@@ -199,222 +109,263 @@ export default function FarmerDashboard() {
     });
   };
 
-  const handleAddListing = () => {
-    const { cropName, minPrice, maxPrice, quantity, location } = listingForm;
-    if (!farmerId || !cropName || !minPrice || !maxPrice || !quantity || !location) return;
-    const min = parseFloat(minPrice), max = parseFloat(maxPrice);
-    if (min > max) { toast({ title: "Min price must be ≤ max price", variant: "destructive" }); return; }
-
-    createListing.mutate(
-      {
-        data: {
-          farmerId,
-          cropName,
-          minPrice: min,
-          maxPrice: max,
-          quantity: parseFloat(quantity),
-          unit: listingForm.unit,
-          location,
-          description: listingForm.description || null,
-          imageUrl: listingForm.imageUrl || null,
-          trend: listingForm.trend,
-        },
-      },
-      {
-        onSuccess: () => {
-          toast({ title: "Listing created!", description: `${cropName} is now live on the marketplace.` });
-          setListingForm(DEFAULT_LISTING);
-          setImagePreview(null);
-          setAiSuggestQuery("");
-          setListingModal(false);
-          invalidateListings();
-        },
-        onError: () => toast({ title: "Failed to create listing", variant: "destructive" }),
-      }
-    );
-  };
-
-  const handleDeleteListing = (id: number) => {
+  const handleDeleteListing = (id: number, name: string) => {
     deleteListing.mutate({ id }, {
-      onSuccess: () => { toast({ title: "Listing removed" }); invalidateListings(); },
-      onError: () => toast({ title: "Failed to delete listing", variant: "destructive" }),
+      onSuccess: () => { toast({ title: `${name} listing removed` }); invalidateListings(); },
+      onError: () => toast({ title: "Failed to remove listing", variant: "destructive" }),
     });
   };
 
   const growing = crops?.filter(c => c.status === "growing").length ?? 0;
   const ready = crops?.filter(c => c.status === "ready").length ?? 0;
-  const harvested = crops?.filter(c => c.status === "harvested").length ?? 0;
   const activeListings = listings?.filter(l => l.available).length ?? 0;
+  const totalValue = listings?.reduce((sum, l) => sum + l.maxPrice * l.quantity, 0) ?? 0;
+  const firstName = user?.name?.split(" ")[0] ?? "Farmer";
 
   return (
-    <div className="p-6 pb-24 lg:pb-8 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Farmer Dashboard</h1>
-          <p className="text-muted-foreground text-sm mt-1">Manage your crops and marketplace listings</p>
-        </div>
-        <div className="flex gap-3">
-          <Button size="sm" className="gap-2" onClick={() => setCropModal(true)}>
-            <Plus className="w-4 h-4" /> Add Crop
-          </Button>
-          <Button size="sm" variant="outline" className="gap-2" onClick={() => navigate("/add-crop")}>
-            <ShoppingBag className="w-4 h-4" /> Sell Crop
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-full bg-gray-50/50">
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Growing" value={growing} icon={Sprout} color="bg-blue-100 text-blue-700" />
-        <StatCard label="Ready to Sell" value={ready} icon={CheckCircle2} color="bg-green-100 text-green-700" />
-        <StatCard label="Harvested" value={harvested} icon={Package} color="bg-gray-100 text-gray-600" />
-        <StatCard label="Active Listings" value={activeListings} icon={ShoppingBag} color="bg-amber-100 text-amber-700" />
-      </div>
-
-      <Tabs defaultValue="crops">
-        <TabsList className="mb-6">
-          <TabsTrigger value="crops" className="gap-2">
-            <Sprout className="w-4 h-4" /> My Crops
-            {crops && <Badge variant="secondary" className="ml-1 text-xs">{crops.length}</Badge>}
-          </TabsTrigger>
-          <TabsTrigger value="listings" className="gap-2">
-            <ShoppingBag className="w-4 h-4" /> Listings
-            {listings && <Badge variant="secondary" className="ml-1 text-xs">{listings.length}</Badge>}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="crops">
-          {cropsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
+      {/* ── Hero header ── */}
+      <div className="bg-white border-b border-gray-100 px-6 py-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+              {firstName.slice(0, 1).toUpperCase()}
             </div>
-          ) : crops && crops.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {crops.map(crop => {
-                const Icon = STATUS_ICONS[crop.status] ?? Sprout;
-                return (
-                  <Card key={crop.id} className="border border-border shadow-sm hover:shadow-md transition-shadow">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-gray-900">Welcome, {firstName}</h1>
+                <Badge className="text-[10px] h-5 px-1.5 bg-green-100 text-green-700 border-green-200 font-medium">
+                  <Leaf className="w-2.5 h-2.5 mr-0.5" /> Farmer
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-500 mt-0.5">Manage your crops and marketplace listings</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="outline" size="sm" className="gap-2 border-gray-200" onClick={() => setCropModal(true)}>
+              <Plus className="w-4 h-4" /> Track Crop
+            </Button>
+            <Button size="sm" className="gap-2 bg-green-600 hover:bg-green-700 shadow-sm" onClick={() => navigate("/add-crop")}>
+              <ShoppingBag className="w-4 h-4" /> Post to Market
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-6 space-y-6 pb-24 lg:pb-8">
+
+        {/* ── Stats row ── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: "Growing", value: cropsLoading ? "—" : growing, icon: Sprout, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
+            { label: "Ready to Sell", value: cropsLoading ? "—" : ready, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-100" },
+            { label: "Active Listings", value: listingsLoading ? "—" : activeListings, icon: ShoppingBag, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100" },
+            { label: "Est. Market Value", value: listingsLoading ? "—" : `₹${(totalValue / 1000).toFixed(0)}K`, icon: IndianRupee, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100" },
+          ].map(({ label, value, icon: Icon, color, bg, border }) => (
+            <Card key={label} className={cn("border shadow-sm hover:shadow-md transition-shadow", border)}>
+              <CardContent className="p-5 flex items-center gap-3">
+                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", bg)}>
+                  <Icon className={cn("w-5 h-5", color)} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 font-medium">{label}</p>
+                  <p className="text-2xl font-bold text-gray-900 leading-none mt-0.5">{value}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* ── Quick CTA when no listings ── */}
+        {!listingsLoading && activeListings === 0 && (
+          <Card className="border border-green-100 bg-gradient-to-r from-green-50 to-emerald-50 shadow-sm">
+            <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-green-700" />
+                </div>
+                <div>
+                  <p className="font-semibold text-green-900">Start selling your crops</p>
+                  <p className="text-sm text-green-700 mt-0.5">Post your first listing to reach thousands of buyers</p>
+                </div>
+              </div>
+              <Button className="gap-2 bg-green-600 hover:bg-green-700 shrink-0" onClick={() => navigate("/add-crop")}>
+                Post Your First Crop <ArrowRight className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* ── Tabs ── */}
+        <Tabs defaultValue="listings">
+          <div className="flex items-center justify-between mb-1">
+            <TabsList className="bg-gray-100 h-9">
+              <TabsTrigger value="listings" className="text-sm h-7 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <ShoppingBag className="w-3.5 h-3.5 mr-1.5" /> Listings
+                {listings && <span className="ml-1.5 text-[10px] bg-gray-200 data-[state=active]:bg-green-100 px-1.5 py-0.5 rounded-full font-medium">{listings.length}</span>}
+              </TabsTrigger>
+              <TabsTrigger value="crops" className="text-sm h-7 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                <Sprout className="w-3.5 h-3.5 mr-1.5" /> My Crops
+                {crops && <span className="ml-1.5 text-[10px] bg-gray-200 px-1.5 py-0.5 rounded-full font-medium">{crops.length}</span>}
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Listings tab */}
+          <TabsContent value="listings" className="mt-3">
+            {listingsLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-2xl" />)}
+              </div>
+            ) : listings && listings.length > 0 ? (
+              <div className="space-y-3">
+                {listings.map(l => (
+                  <Card key={l.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      {/* Image thumbnail */}
+                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center shrink-0">
+                        {l.imageUrl ? (
+                          <img src={l.imageUrl} alt={l.cropName} className="w-full h-full object-cover" />
+                        ) : (
+                          <Sprout className="w-7 h-7 text-green-400" />
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-gray-900">{l.cropName}</span>
+                          <TrendBadge trend={l.trend} />
+                          {l.available
+                            ? <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">● Live</span>
+                            : <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded-full">Inactive</span>
+                          }
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 text-sm flex-wrap">
+                          <span className="font-bold text-green-700">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}<span className="font-normal text-gray-400 text-xs">/{l.unit}</span></span>
+                          <span className="flex items-center gap-1 text-gray-400 text-xs"><Package className="w-3 h-3" />{l.quantity} {l.unit}</span>
+                          <span className="flex items-center gap-1 text-gray-400 text-xs"><MapPin className="w-3 h-3" />{l.location}</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-0.5">Updated {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}</p>
+                      </div>
+
+                      {/* Actions */}
+                      <button
+                        onClick={() => handleDeleteListing(l.id, l.cropName)}
+                        className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                        title="Remove listing"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-gray-100">
+                <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+                  <ShoppingBag className="w-8 h-8 text-gray-300" />
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-1">No listings yet</h3>
+                <p className="text-sm text-gray-500 mb-5 max-w-xs">Post your crops to the marketplace to connect with buyers across Telangana & AP.</p>
+                <Button className="gap-2 bg-green-600 hover:bg-green-700" onClick={() => navigate("/add-crop")}>
+                  <Plus className="w-4 h-4" /> Post First Crop
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Crops tab */}
+          <TabsContent value="crops" className="mt-3">
+            {cropsLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-36 rounded-2xl" />)}
+              </div>
+            ) : crops && crops.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {crops.map(crop => (
+                  <Card key={crop.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white">
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                            <Icon className="w-5 h-5 text-green-700" />
+                          <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                            <Sprout className="w-5 h-5 text-green-600" />
                           </div>
                           <div>
-                            <p className="font-semibold text-foreground">{crop.cropName}</p>
-                            <Badge variant="outline" className={cn("text-xs mt-0.5 border", STATUS_COLORS[crop.status])}>
-                              {crop.status}
-                            </Badge>
+                            <p className="font-semibold text-gray-900 text-sm leading-tight">{crop.cropName}</p>
+                            <span className={cn("inline-flex items-center gap-1 text-[10px] font-semibold mt-0.5 px-1.5 py-0.5 rounded-full border", STATUS_COLORS[crop.status])}>
+                              <span className={cn("w-1.5 h-1.5 rounded-full", STATUS_DOT[crop.status])} />
+                              {crop.status.charAt(0).toUpperCase() + crop.status.slice(1)}
+                            </span>
                           </div>
                         </div>
                         <button
                           onClick={() => handleDeleteCrop(crop.id, crop.cropName)}
-                          className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
+
                       {(crop.sowDate || crop.harvestDate) && (
-                        <div className="space-y-1 mt-3 border-t border-border pt-3">
+                        <div className="space-y-1 border-t border-gray-50 pt-3">
                           {crop.sowDate && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Calendar className="w-3.5 h-3.5" /><span>Sown: {crop.sowDate}</span>
+                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                              <Calendar className="w-3 h-3" /> Sown: {crop.sowDate}
                             </div>
                           )}
                           {crop.harvestDate && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Calendar className="w-3.5 h-3.5 text-primary" /><span>Harvest: {crop.harvestDate}</span>
+                            <div className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
+                              <Calendar className="w-3 h-3" /> Harvest: {crop.harvestDate}
                             </div>
                           )}
                         </div>
                       )}
-                      {crop.notes && (
-                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed line-clamp-2">{crop.notes}</p>
+
+                      {crop.status === "ready" && (
+                        <button
+                          onClick={() => navigate("/add-crop")}
+                          className="mt-3 w-full text-xs text-green-700 font-medium bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg py-1.5 transition-colors flex items-center justify-center gap-1"
+                        >
+                          <ShoppingBag className="w-3 h-3" /> List for Sale
+                        </button>
                       )}
                     </CardContent>
                   </Card>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                <Sprout className="w-8 h-8 text-muted-foreground" />
+                ))}
               </div>
-              <h3 className="font-semibold text-foreground mb-1">No crops yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">Add your first crop to start tracking your harvest.</p>
-              <Button size="sm" onClick={() => setCropModal(true)} className="gap-2"><Plus className="w-4 h-4" /> Add Crop</Button>
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="listings">
-          {listingsLoading ? (
-            <div className="space-y-3">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>
-          ) : listings && listings.length > 0 ? (
-            <div className="space-y-3">
-              {listings.map(l => (
-                <Card key={l.id} className="border border-border shadow-sm">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    {/* Thumbnail */}
-                    <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center shrink-0 overflow-hidden">
-                      {l.imageUrl ? (
-                        <img src={l.imageUrl} alt={l.cropName} className="w-full h-full object-cover" />
-                      ) : (
-                        <Sprout className="w-6 h-6 text-green-600" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-foreground">{l.cropName}</p>
-                        {l.available ? <Badge className="text-xs">Live</Badge> : <Badge variant="outline" className="text-xs">Inactive</Badge>}
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <TrendIcon trend={l.trend} />
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground flex-wrap">
-                        <span className="font-semibold text-primary">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}/{l.unit}</span>
-                        <span className="flex items-center gap-1"><Package className="w-3 h-3" />{l.quantity} {l.unit}</span>
-                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{l.location}</span>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">
-                        Updated {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteListing(l.id)}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                <ShoppingBag className="w-8 h-8 text-muted-foreground" />
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-gray-100">
+                <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+                  <Sprout className="w-8 h-8 text-gray-300" />
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-1">No crops tracked yet</h3>
+                <p className="text-sm text-gray-500 mb-5 max-w-xs">Track your growing crops to monitor harvest dates and plan your listings.</p>
+                <Button variant="outline" className="gap-2 border-gray-200" onClick={() => setCropModal(true)}>
+                  <Plus className="w-4 h-4" /> Add Crop
+                </Button>
               </div>
-              <h3 className="font-semibold text-foreground mb-1">No listings yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">List your crops on the marketplace to connect with buyers.</p>
-              <Button size="sm" onClick={() => setListingModal(true)} className="gap-2"><Plus className="w-4 h-4" /> Create Listing</Button>
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* ── Add Crop modal ── */}
       <Dialog open={cropModal} onOpenChange={setCropModal}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Add New Crop</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sprout className="w-4 h-4 text-green-600" /> Track New Crop
+            </DialogTitle>
+          </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Crop Name *</Label>
-              <Input value={cropForm.cropName} onChange={e => setCropForm(f => ({ ...f, cropName: e.target.value }))} placeholder="e.g. Tomato, Rice..." className="mt-1.5" />
+              <Label className="text-sm font-medium">Crop Name <span className="text-red-500">*</span></Label>
+              <Input value={cropForm.cropName} onChange={e => setCropForm(f => ({ ...f, cropName: e.target.value }))} placeholder="e.g. Tomato, Rice, Cotton..." className="mt-1.5" />
             </div>
             <div>
-              <Label>Status</Label>
+              <Label className="text-sm font-medium">Status</Label>
               <select value={cropForm.status} onChange={e => setCropForm(f => ({ ...f, status: e.target.value as any }))} className="mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 text-sm">
                 <option value="growing">Growing</option>
                 <option value="ready">Ready to harvest</option>
@@ -423,242 +374,23 @@ export default function FarmerDashboard() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Sow Date</Label>
+                <Label className="text-sm font-medium">Sow Date</Label>
                 <Input type="date" value={cropForm.sowDate} onChange={e => setCropForm(f => ({ ...f, sowDate: e.target.value }))} className="mt-1.5" />
               </div>
               <div>
-                <Label>Harvest Date</Label>
+                <Label className="text-sm font-medium">Harvest Date</Label>
                 <Input type="date" value={cropForm.harvestDate} onChange={e => setCropForm(f => ({ ...f, harvestDate: e.target.value }))} className="mt-1.5" />
               </div>
             </div>
             <div>
-              <Label>Notes (optional)</Label>
+              <Label className="text-sm font-medium">Notes</Label>
               <Input value={cropForm.notes} onChange={e => setCropForm(f => ({ ...f, notes: e.target.value }))} placeholder="Any observations..." className="mt-1.5" />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCropModal(false)}>Cancel</Button>
-            <Button onClick={handleAddCrop} disabled={createCrop.isPending || !cropForm.cropName}>
+            <Button onClick={handleAddCrop} disabled={createCrop.isPending || !cropForm.cropName} className="bg-green-600 hover:bg-green-700">
               {createCrop.isPending ? "Adding..." : "Add Crop"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Create Listing modal (with AI + image) ── */}
-      <Dialog open={listingModal} onOpenChange={open => { setListingModal(open); if (!open) { setAiSuggestQuery(""); setImagePreview(null); setListingForm(DEFAULT_LISTING); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Create Marketplace Listing</DialogTitle></DialogHeader>
-          <div className="space-y-5">
-            {/* Crop name + live autocomplete + AI trigger */}
-            <div>
-              <Label>Crop Name *</Label>
-              <div className="flex gap-2 mt-1.5">
-                <div className="flex-1 relative">
-                  <Input
-                    value={listingForm.cropName}
-                    onChange={e => handleCropNameChange(e.target.value)}
-                    onFocus={() => listingForm.cropName.length >= 2 && setShowAutocomplete(true)}
-                    onBlur={() => setTimeout(() => setShowAutocomplete(false), 150)}
-                    placeholder="e.g. Tomato, Rice..."
-                  />
-                  {/* Live autocomplete dropdown */}
-                  {showAutocomplete && cropSuggestions && cropSuggestions.suggestions.length > 0 && (
-                    <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg overflow-hidden">
-                      <p className="px-3 py-1.5 text-[10px] text-muted-foreground font-medium border-b border-border flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-amber-500" /> AI crop suggestions
-                      </p>
-                      {cropSuggestions.suggestions.map(s => (
-                        <button
-                          key={s}
-                          type="button"
-                          onMouseDown={() => selectCropSuggestion(s)}
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-green-800 transition-colors flex items-center gap-2"
-                        >
-                          <Sprout className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5 shrink-0"
-                  onClick={triggerAiSuggest}
-                  disabled={listingForm.cropName.length < 3 || aiLoading}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  {aiLoading ? "Thinking..." : "Get Price"}
-                </Button>
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Type to see crop suggestions · Click "Get Price" for AI price range
-              </p>
-
-              {/* AI Price Suggestion panel */}
-              {aiSuggestion && aiSuggestQuery && (
-                <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 overflow-hidden">
-                  <div className="px-3 py-2 border-b border-amber-200 flex items-center justify-between">
-                    <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" /> AI Price Suggestion
-                    </p>
-                    <Badge variant="outline" className="text-[10px] capitalize border-amber-300 text-amber-700">
-                      {aiSuggestion.confidence} confidence
-                    </Badge>
-                  </div>
-                  <div className="p-3 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-amber-700 font-medium">Suggested price range</p>
-                        <p className="text-lg font-bold text-amber-900">
-                          ₹{aiSuggestion.suggestedMinPrice} – ₹{aiSuggestion.suggestedMaxPrice}
-                          <span className="text-sm font-normal text-amber-700"> / {aiSuggestion.unit}</span>
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 text-xs text-amber-700">
-                        {aiSuggestion.trend === "up" && <TrendingUp className="w-4 h-4 text-green-600" />}
-                        {aiSuggestion.trend === "down" && <TrendingDown className="w-4 h-4 text-red-500" />}
-                        {aiSuggestion.trend === "stable" && <Minus className="w-4 h-4 text-amber-500" />}
-                        <span className="capitalize">{aiSuggestion.trend === "up" ? "Rising" : aiSuggestion.trend === "down" ? "Falling" : "Stable"}</span>
-                      </div>
-                    </div>
-                    {aiSuggestion.variants.length > 0 && (
-                      <div>
-                        <p className="text-[10px] text-amber-700 mb-1 font-medium">Also known as:</p>
-                        <div className="flex gap-1.5 flex-wrap">
-                          {aiSuggestion.variants.slice(0, 4).map(v => (
-                            <button
-                              key={v}
-                              type="button"
-                              onClick={() => selectCropSuggestion(v)}
-                              className="text-[10px] px-2 py-0.5 bg-white border border-amber-300 rounded-full text-amber-700 hover:bg-amber-100 transition-colors"
-                            >
-                              {v}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <p className="text-[10px] text-amber-600 italic">{aiSuggestion.note}</p>
-                    <Button
-                      type="button"
-                      size="sm"
-                      className="w-full gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs"
-                      onClick={applyAiSuggestion}
-                    >
-                      <Sparkles className="w-3 h-3" /> Apply to price fields (you can still edit)
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Price range */}
-            <div>
-              <Label>Price Range (₹) *</Label>
-              <div className="flex items-center gap-2 mt-1.5">
-                <div className="flex-1">
-                  <Input
-                    type="number"
-                    value={listingForm.minPrice}
-                    onChange={e => setListingForm(f => ({ ...f, minPrice: e.target.value }))}
-                    placeholder="Min price"
-                  />
-                  <p className="text-[10px] text-muted-foreground mt-0.5 ml-1">Minimum</p>
-                </div>
-                <span className="text-muted-foreground font-medium">–</span>
-                <div className="flex-1">
-                  <Input
-                    type="number"
-                    value={listingForm.maxPrice}
-                    onChange={e => setListingForm(f => ({ ...f, maxPrice: e.target.value }))}
-                    placeholder="Max price"
-                  />
-                  <p className="text-[10px] text-muted-foreground mt-0.5 ml-1">Maximum</p>
-                </div>
-                <div className="w-20">
-                  <select value={listingForm.unit} onChange={e => setListingForm(f => ({ ...f, unit: e.target.value }))} className="w-full h-10 rounded-md border border-input bg-background px-2 text-sm">
-                    <option value="kg">kg</option>
-                    <option value="quintal">quintal</option>
-                    <option value="ton">ton</option>
-                    <option value="piece">piece</option>
-                  </select>
-                  <p className="text-[10px] text-muted-foreground mt-0.5 ml-1">Unit</p>
-                </div>
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
-                <Info className="w-3 h-3" /> Use a range (e.g. ₹40 – ₹50/kg) for trust and transparency.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Quantity *</Label>
-                <Input type="number" value={listingForm.quantity} onChange={e => setListingForm(f => ({ ...f, quantity: e.target.value }))} placeholder="Available qty" className="mt-1.5" />
-              </div>
-              <div>
-                <Label>Market Trend</Label>
-                <select value={listingForm.trend} onChange={e => setListingForm(f => ({ ...f, trend: e.target.value as any }))} className="mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 text-sm">
-                  <option value="up">📈 Rising</option>
-                  <option value="stable">➖ Stable</option>
-                  <option value="down">📉 Falling</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <Label>Location *</Label>
-              <Input value={listingForm.location} onChange={e => setListingForm(f => ({ ...f, location: e.target.value }))} placeholder="e.g. Warangal, Guntur..." className="mt-1.5" />
-            </div>
-
-            <div>
-              <Label>Description (optional)</Label>
-              <Input value={listingForm.description} onChange={e => setListingForm(f => ({ ...f, description: e.target.value }))} placeholder="Freshly harvested, organic..." className="mt-1.5" />
-            </div>
-
-            {/* Image upload — required */}
-            <div>
-              <Label className="flex items-center gap-1.5">
-                Crop Photo <span className="text-destructive text-xs font-bold">* Required</span>
-              </Label>
-              <p className="text-[10px] text-muted-foreground mt-0.5 mb-1.5">A clear photo of the crop is required to build buyer trust.</p>
-              <div>
-                {imagePreview ? (
-                  <div className="relative w-full h-32 rounded-lg overflow-hidden border border-border">
-                    <img src={imagePreview} alt="Crop preview" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={clearImage}
-                      className="absolute top-2 right-2 p-1 bg-black/50 rounded-full text-white hover:bg-black/70"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => fileRef.current?.click()}
-                    className="w-full h-24 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
-                  >
-                    <ImageIcon className="w-6 h-6 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Click to upload photo</span>
-                  </button>
-                )}
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setListingModal(false)}>Cancel</Button>
-            <Button
-              onClick={handleAddListing}
-              disabled={createListing.isPending || !listingForm.cropName || !listingForm.minPrice || !listingForm.maxPrice || !listingForm.quantity || !listingForm.location || !listingForm.imageUrl}
-            >
-              {createListing.isPending ? "Creating..." : "Create Listing"}
             </Button>
           </DialogFooter>
         </DialogContent>

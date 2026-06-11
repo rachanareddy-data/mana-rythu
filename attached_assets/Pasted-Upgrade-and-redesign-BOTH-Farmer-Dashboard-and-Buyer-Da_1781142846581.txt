@@ -1,0 +1,120 @@
+Upgrade and redesign BOTH Farmer Dashboard and Buyer Dashboard in Mana Rythu application with a premium production-level UI.
+
+GOAL:
+Make dashboards look like modern SaaS platforms (Uber / Amazon / Stripe style) with clean layout, proper spacing, and professional design.
+
+---
+
+🎨 1. GLOBAL UI DESIGN SYSTEM
+
+Apply consistent design across both dashboards:
+
+- White background with light green accents
+- Soft shadows (no harsh borders)
+- 8px spacing system (clean alignment)
+- Rounded cards (12px - 16px radius)
+- Modern font styling
+- Mobile-first responsive design
+
+NO clutter, NO heavy backgrounds inside dashboard.
+
+---
+
+🌾 2. FARMER DASHBOARD DESIGN
+
+Route: /farmer-dashboard
+
+Layout:
+
+📌 Top Header:
+- Welcome message (Farmer name)
+- Small profile badge
+
+📊 Stats Cards Row:
+- Total crops posted
+- Active listings
+- Total earnings (optional placeholder)
+
+➕ Main Action Section:
+- Large “+ Add Crop” button (primary green button)
+- Secondary button: “View My Listings”
+
+🌱 My Listings Section:
+- Card grid layout
+- Each crop card shows:
+  - Image
+  - Crop name
+  - Price range (₹xx – ₹yy/kg)
+  - Quantity
+  - Edit/Delete icons (optional)
+
+---
+
+🛒 3. BUYER DASHBOARD DESIGN
+
+Route: /buyer-dashboard
+
+Layout:
+
+📌 Top Header:
+- Welcome message (Buyer name)
+- Search bar (centered, prominent)
+
+🔍 Filters Section:
+- Crop name filter
+- Price range filter
+- Location filter
+
+🌾 Marketplace Preview:
+- Amazon-style grid cards
+- Each card shows:
+  - Crop image
+  - Crop name
+  - Price range
+  - Location
+  - Trend badge
+
+❌ NO “Add Crop” button in buyer dashboard
+
+---
+
+🔐 4. ROLE-BASED UI RULES
+
+- Farmer sees ONLY farmer dashboard
+- Buyer sees ONLY buyer dashboard
+- No mixing of features
+
+---
+
+⚡ 5. UX IMPROVEMENTS
+
+- Loading skeletons for cards
+- Empty states:
+  - Farmer: "No crops posted yet"
+  - Buyer: "No crops available yet"
+- Smooth hover effects on cards
+- Clean transitions (fade/slide)
+
+---
+
+🛒 6. DATA INTEGRATION
+
+Both dashboards must use:
+GET /api/listings
+
+Farmer dashboard:
+- filter by farmerId
+
+Buyer dashboard:
+- show all listings
+
+---
+
+🚀 FINAL RESULT:
+
+Both dashboards must feel like a real production SaaS platform:
+- Clean
+- Modern
+- Minimal
+- Highly usable
+- Mobile responsive
