@@ -24,7 +24,8 @@ export default function Register() {
       { data: { name: form.name, email: form.email, password: form.password, role: form.role, phone: form.phone || null, location: form.location || null } },
       {
         onSuccess: (data: any) => {
-          login(data.token);
+          // Pass user data so auth context seeds the cache instantly — no race condition
+          login(data.token, data.user);
           toast({ title: "Account created!", description: `Welcome, ${data.user.name}!` });
           const role = form.role;
           if (role === "farmer") navigate("/farmer-dashboard");

@@ -10,12 +10,15 @@ export type AuthUser = {
 };
 
 type AuthCtx = {
-  user: AuthUser | null; token: string | null;
-  login: (token: string) => void; logout: () => void;
+  user: AuthUser | null;
+  token: string | null;
+  isLoading: boolean;
+  login: (token: string, userData?: AuthUser) => void;
+  logout: () => void;
 };
 
 export const AuthContext = createContext<AuthCtx>({
-  user: null, token: null, login: () => {}, logout: () => {},
+  user: null, token: null, isLoading: false, login: () => {}, logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -24,15 +27,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(getAuthToken);
   const qc = useQueryClient();
 
-  const { data: user } = useGetMe({
+  const { data: user, isLoading } = useGetMe({
     query: { queryKey: getGetMeQueryKey(), enabled: !!token, retry: false },
   });
 
-  const login = (t: string) => { setAuthToken(t); setToken(t); };
+  const login = (t: string, userData?: AuthUser) => {
+    setAuthToken(t);
+    setToken(t);
+    // Seed the query cache immediately with the user data from the login
+    // response — avoids a race condition where user is null until /me resolves.
+    if (userData) {
+      qc.setQueryData(getGetMeQueryKey(), userData);
+    }
+  };
+
   const logout = () => { clearAuthToken(); setToken(null); qc.clear(); };
 
   return (
-    <AuthContext.Provider value={{ user: user ?? null, token, login, logout }}>
+    <AuthContext.Provider value={{
+      user: user ?? null,
+      token,
+      isLoading: !!token && isLoading,
+      login,
+      logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );

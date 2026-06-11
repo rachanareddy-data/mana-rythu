@@ -62,7 +62,7 @@ function FieldError({ msg }: { msg?: string }) {
 }
 
 export default function AddCrop() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const qc = useQueryClient();
@@ -170,7 +170,13 @@ export default function AddCrop() {
   };
 
   const handleSubmit = () => {
-    if (!user?.id) { toast({ title: "Please sign in as a farmer", variant: "destructive" }); return; }
+    // Still loading user from /me — wait, don't error
+    if (authLoading) return;
+    if (!user?.id) {
+      toast({ title: "Please sign in as a farmer", variant: "destructive" });
+      navigate("/login");
+      return;
+    }
     if (!validate()) return;
 
     createListing.mutate(
@@ -457,9 +463,11 @@ export default function AddCrop() {
               size="lg"
               className="w-full gap-2 text-base h-12"
               onClick={handleSubmit}
-              disabled={createListing.isPending}
+              disabled={createListing.isPending || authLoading}
             >
-              {createListing.isPending ? (
+              {authLoading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Loading your account...</>
+              ) : createListing.isPending ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Posting to Marketplace...</>
               ) : (
                 <><Package className="w-4 h-4" /> Post Crop to Marketplace <ChevronRight className="w-4 h-4" /></>

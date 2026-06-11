@@ -23,7 +23,8 @@ export default function Login() {
       { data: { email, password } },
       {
         onSuccess: (data: any) => {
-          login(data.token);
+          // Pass user data so auth context seeds the cache instantly — no race condition
+          login(data.token, data.user);
           toast({ title: "Welcome back!", description: `Signed in as ${data.user.name}` });
           const role = data.user?.role;
           if (role === "farmer") navigate("/farmer-dashboard");
