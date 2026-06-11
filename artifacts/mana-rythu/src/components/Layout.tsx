@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import AgriAIChat from "@/components/AgriAIChat";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -229,6 +230,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ))}
         </div>
       </nav>
+
+      {/* Agri AI Chat — floating, available on all pages */}
+      <AgriAIChat />
     </div>
   );
 }

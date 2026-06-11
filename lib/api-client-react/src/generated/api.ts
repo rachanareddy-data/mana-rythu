@@ -21,6 +21,8 @@ import type {
 
 import type {
   AdminStats,
+  AiChat200,
+  AiChatBody,
   AuthResponse,
   ContactInput,
   ContactResponse,
@@ -1635,6 +1637,77 @@ export function useSuggestCrop<TData = Awaited<ReturnType<typeof suggestCrop>>, 
 
 
 
+
+export const getAiChatUrl = () => {
+
+
+
+
+  return `/api/ai/chat`
+}
+
+/**
+ * @summary Ask the Agri AI Assistant a farming question
+ */
+export const aiChat = async (aiChatBody: AiChatBody, options?: RequestInit): Promise<AiChat200> => {
+
+  return customFetch<AiChat200>(getAiChatUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      aiChatBody,)
+  }
+);}
+
+
+
+
+export const getAiChatMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof aiChat>>, TError,{data: BodyType<AiChatBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof aiChat>>, TError,{data: BodyType<AiChatBody>}, TContext> => {
+
+const mutationKey = ['aiChat'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof aiChat>>, {data: BodyType<AiChatBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  aiChat(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AiChatMutationResult = NonNullable<Awaited<ReturnType<typeof aiChat>>>
+    export type AiChatMutationBody = BodyType<AiChatBody>
+    export type AiChatMutationError = ErrorType<void>
+
+    /**
+ * @summary Ask the Agri AI Assistant a farming question
+ */
+export const useAiChat = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof aiChat>>, TError,{data: BodyType<AiChatBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof aiChat>>,
+        TError,
+        {data: BodyType<AiChatBody>},
+        TContext
+      > => {
+      return useMutation(getAiChatMutationOptions(options));
+    }
 
 export const getSuggestPriceUrl = (params: SuggestPriceParams,) => {
   const normalizedParams = new URLSearchParams();

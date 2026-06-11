@@ -420,6 +420,18 @@ export const SuggestCropResponse = zod.object({
 
 
 /**
+ * @summary Ask the Agri AI Assistant a farming question
+ */
+export const AiChatBody = zod.object({
+  "message": zod.string()
+})
+
+export const AiChatResponse = zod.object({
+  "reply": zod.string()
+})
+
+
+/**
  * @summary Get AI-suggested price range for a crop
  */
 export const SuggestPriceQueryParams = zod.object({

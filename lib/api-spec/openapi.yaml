@@ -448,6 +448,37 @@ paths:
               schema:
                 $ref: "#/components/schemas/CropSuggestion"
 
+  /ai/chat:
+    post:
+      operationId: aiChat
+      tags: [ai]
+      summary: Ask the Agri AI Assistant a farming question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              required: [message]
+      responses:
+        "200":
+          description: AI reply
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+                required: [reply]
+        "400":
+          description: Bad request
+        "503":
+          description: AI service not configured
+
   /ai/suggest-price:
     get:
       operationId: suggestPrice

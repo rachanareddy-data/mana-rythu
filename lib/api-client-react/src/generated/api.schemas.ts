@@ -357,6 +357,14 @@ export type SuggestCropParams = {
 name: string;
 };
 
+export type AiChatBody = {
+  message: string;
+};
+
+export type AiChat200 = {
+  reply: string;
+};
+
 export type SuggestPriceParams = {
 cropName: string;
 };

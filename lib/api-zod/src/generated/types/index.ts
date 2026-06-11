@@ -8,6 +8,8 @@
 
 export * from './adminStats';
 export * from './adminStatsTopCropsItem';
+export * from './aiChat200';
+export * from './aiChatBody';
 export * from './authResponse';
 export * from './contactInput';
 export * from './contactResponse';

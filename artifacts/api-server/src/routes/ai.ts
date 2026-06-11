@@ -1,6 +1,47 @@
 import { Router } from "express";
+import OpenAI from "openai";
 
 const router = Router();
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const AGRI_SYSTEM_PROMPT = `You are Agri AI — a farming assistant built into Mana Rythu, an agriculture marketplace for farmers in Telangana and Andhra Pradesh, India.
+
+Your rules:
+1. ONLY answer questions about agriculture: crops, seeds, fertilizers, pesticides, pests, diseases, irrigation, soil, weather, harvesting, storage, market prices, farming methods, and livestock.
+2. If the question is NOT related to farming or agriculture, reply ONLY with: "I only help with farming-related questions. Please ask me about crops, fertilizers, pests, or farming methods."
+3. Detect the language of the user's message and ALWAYS reply in the SAME language (Telugu, Hindi, or English). Never switch languages.
+4. Keep answers SHORT, SIMPLE, and PRACTICAL — as if explaining to a village farmer. Avoid technical jargon.
+5. If asked in Telugu script, respond in Telugu script. If asked in Hindi, respond in Hindi. If in English, respond in English.`;
+
+router.post("/ai/chat", async (req, res) => {
+  const { message } = req.body;
+  if (!message || typeof message !== "string" || message.trim().length === 0) {
+    return res.status(400).json({ error: "message is required" });
+  }
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(503).json({ error: "AI service not configured" });
+  }
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      max_tokens: 400,
+      messages: [
+        { role: "system", content: AGRI_SYSTEM_PROMPT },
+        { role: "user", content: message.trim() },
+      ],
+    });
+    const reply = completion.choices[0]?.message?.content ?? "Sorry, I could not generate a response. Please try again.";
+    return res.json({ reply });
+  } catch (err: any) {
+    req.log.error(err);
+    if (err?.status === 401) return res.status(503).json({ error: "AI service authentication failed" });
+    if (err?.status === 429) return res.status(429).json({ error: "AI rate limit reached. Please try again in a moment." });
+    return res.status(500).json({ error: "AI service error. Please try again." });
+  }
+});
 
 // Mock AI price database — market-average estimates with seasonal adjustments
 const PRICE_DB: Record<string, { min: number; max: number; unit: string; trend: "up" | "down" | "stable"; variants: string[] }> = {
