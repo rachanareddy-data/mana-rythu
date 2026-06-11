@@ -189,8 +189,8 @@ export default function AddCrop() {
       },
       {
         onSuccess: () => {
-          qc.invalidateQueries({ queryKey: getGetListingsQueryKey() });
-          qc.invalidateQueries({ queryKey: getGetListingsQueryKey({}) });
+          // Invalidate all listing queries (prefix match covers filtered + unfiltered)
+          qc.invalidateQueries({ queryKey: ["/api/listings"] });
           if (user?.id) qc.invalidateQueries({ queryKey: getGetListingsQueryKey({ farmerId: user.id }) });
           toast({ title: "Crop posted successfully! 🎉", description: `${form.cropName} is now live on the marketplace.` });
           navigate("/marketplace");

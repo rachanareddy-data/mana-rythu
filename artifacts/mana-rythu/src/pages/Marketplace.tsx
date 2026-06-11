@@ -60,9 +60,10 @@ export default function Marketplace() {
   if (maxPrice) params.maxPrice = parseFloat(maxPrice);
   if (trendFilter) params.trend = trendFilter;
 
+  const listingParams = Object.keys(params).length ? params : undefined;
   const { data: listings, isLoading } = useGetListings(
-    Object.keys(params).length ? params : undefined,
-    { query: { queryKey: getGetListingsQueryKey(params) } }
+    listingParams,
+    { query: { queryKey: getGetListingsQueryKey(listingParams), staleTime: 0 } }
   );
 
   const clearFilters = () => {
