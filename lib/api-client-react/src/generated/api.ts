@@ -26,6 +26,7 @@ import type {
   ContactResponse,
   Crop,
   CropInput,
+  CropSuggestion,
   CropUpdate,
   DashboardSummary,
   GetCropsParams,
@@ -41,6 +42,7 @@ import type {
   RatingInput,
   RecommendedCrop,
   RegisterInput,
+  SuggestCropParams,
   SuggestPriceParams,
   User,
   VerifyUserInput,
@@ -1549,6 +1551,90 @@ export const useContactFarmer = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getContactFarmerMutationOptions(options));
     }
+
+export const getSuggestCropUrl = (params: SuggestCropParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/ai/suggest-crop?${stringifiedParams}` : `/api/ai/suggest-crop`
+}
+
+/**
+ * @summary Get AI crop name suggestions based on partial input
+ */
+export const suggestCrop = async (params: SuggestCropParams, options?: RequestInit): Promise<CropSuggestion> => {
+
+  return customFetch<CropSuggestion>(getSuggestCropUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSuggestCropQueryKey = (params?: SuggestCropParams,) => {
+    return [
+    `/api/ai/suggest-crop`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSuggestCropQueryOptions = <TData = Awaited<ReturnType<typeof suggestCrop>>, TError = ErrorType<unknown>>(params: SuggestCropParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof suggestCrop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSuggestCropQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof suggestCrop>>> = ({ signal }) => suggestCrop(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof suggestCrop>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SuggestCropQueryResult = NonNullable<Awaited<ReturnType<typeof suggestCrop>>>
+export type SuggestCropQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get AI crop name suggestions based on partial input
+ */
+
+export function useSuggestCrop<TData = Awaited<ReturnType<typeof suggestCrop>>, TError = ErrorType<unknown>>(
+ params: SuggestCropParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof suggestCrop>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSuggestCropQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getSuggestPriceUrl = (params: SuggestPriceParams,) => {
   const normalizedParams = new URLSearchParams();

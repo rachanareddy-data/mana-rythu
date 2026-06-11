@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetCrops, useCreateCrop, useDeleteCrop, getGetCropsQueryKey,
   useGetListings, useCreateListing, useDeleteListing, getGetListingsQueryKey,
-  useSuggestPrice,
+  useSuggestPrice, getSuggestPriceQueryKey,
+  useSuggestCrop, getSuggestCropQueryKey,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/App";
 import { useToast } from "@/hooks/use-toast";
@@ -94,21 +95,47 @@ export default function FarmerDashboard() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // AI suggestion — triggers when crop name has 3+ chars
+  // Autocomplete state
+  const [autocompleteQuery, setAutocompleteQuery] = useState("");
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+
+  // Debounce autocomplete query 300ms after typing
+  useEffect(() => {
+    if (listingForm.cropName.length < 2) { setAutocompleteQuery(""); return; }
+    const t = setTimeout(() => setAutocompleteQuery(listingForm.cropName), 300);
+    return () => clearTimeout(t);
+  }, [listingForm.cropName]);
+
+  // Live crop name autocomplete
+  const { data: cropSuggestions } = useSuggestCrop(
+    { name: autocompleteQuery },
+    { query: { queryKey: getSuggestCropQueryKey({ name: autocompleteQuery }), enabled: autocompleteQuery.length >= 2, staleTime: 30_000 } }
+  );
+
+  // AI price suggestion — triggers on demand
   const { data: aiSuggestion, isLoading: aiLoading } = useSuggestPrice(
     { cropName: aiSuggestQuery },
-    { query: { enabled: aiSuggestQuery.length >= 3, staleTime: 60_000 } }
+    { query: { queryKey: getSuggestPriceQueryKey({ cropName: aiSuggestQuery }), enabled: aiSuggestQuery.length >= 3, staleTime: 60_000 } }
   );
 
   const invalidateCrops = () => qc.invalidateQueries({ queryKey: getGetCropsQueryKey(farmerId ? { farmerId } : undefined) });
   const invalidateListings = () => qc.invalidateQueries({ queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined) });
 
-  // Debounce AI query on crop name blur
   const handleCropNameChange = (val: string) => {
     setListingForm(f => ({ ...f, cropName: val }));
+    setShowAutocomplete(true);
   };
+
+  const selectCropSuggestion = (name: string) => {
+    setListingForm(f => ({ ...f, cropName: name }));
+    setShowAutocomplete(false);
+    // Auto-trigger price suggestion when name is picked
+    setAiSuggestQuery(name);
+  };
+
   const triggerAiSuggest = () => {
     if (listingForm.cropName.trim().length >= 3) setAiSuggestQuery(listingForm.cropName.trim());
+    setShowAutocomplete(false);
   };
 
   const applyAiSuggestion = () => {
@@ -415,17 +442,38 @@ export default function FarmerDashboard() {
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Create Marketplace Listing</DialogTitle></DialogHeader>
           <div className="space-y-5">
-            {/* Crop name + AI trigger */}
+            {/* Crop name + live autocomplete + AI trigger */}
             <div>
               <Label>Crop Name *</Label>
               <div className="flex gap-2 mt-1.5">
-                <Input
-                  value={listingForm.cropName}
-                  onChange={e => handleCropNameChange(e.target.value)}
-                  onBlur={triggerAiSuggest}
-                  placeholder="e.g. Tomato"
-                  className="flex-1"
-                />
+                <div className="flex-1 relative">
+                  <Input
+                    value={listingForm.cropName}
+                    onChange={e => handleCropNameChange(e.target.value)}
+                    onFocus={() => listingForm.cropName.length >= 2 && setShowAutocomplete(true)}
+                    onBlur={() => setTimeout(() => setShowAutocomplete(false), 150)}
+                    placeholder="e.g. Tomato, Rice..."
+                  />
+                  {/* Live autocomplete dropdown */}
+                  {showAutocomplete && cropSuggestions && cropSuggestions.suggestions.length > 0 && (
+                    <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg overflow-hidden">
+                      <p className="px-3 py-1.5 text-[10px] text-muted-foreground font-medium border-b border-border flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-amber-500" /> AI crop suggestions
+                      </p>
+                      {cropSuggestions.suggestions.map(s => (
+                        <button
+                          key={s}
+                          type="button"
+                          onMouseDown={() => selectCropSuggestion(s)}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 hover:text-green-800 transition-colors flex items-center gap-2"
+                        >
+                          <Sprout className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Button
                   type="button"
                   variant="outline"
@@ -435,40 +483,67 @@ export default function FarmerDashboard() {
                   disabled={listingForm.cropName.length < 3 || aiLoading}
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  {aiLoading ? "..." : "AI Suggest"}
+                  {aiLoading ? "Thinking..." : "Get Price"}
                 </Button>
               </div>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Type to see crop suggestions · Click "Get Price" for AI price range
+              </p>
 
-              {/* AI Suggestion panel */}
+              {/* AI Price Suggestion panel */}
               {aiSuggestion && aiSuggestQuery && (
-                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                  <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 overflow-hidden">
+                  <div className="px-3 py-2 border-b border-amber-200 flex items-center justify-between">
                     <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" /> AI Price Suggestion
                     </p>
-                    <Badge variant="outline" className="text-[10px] capitalize">{aiSuggestion.confidence} confidence</Badge>
+                    <Badge variant="outline" className="text-[10px] capitalize border-amber-300 text-amber-700">
+                      {aiSuggestion.confidence} confidence
+                    </Badge>
                   </div>
-                  <p className="text-sm font-bold text-amber-900 mb-1">
-                    ₹{aiSuggestion.suggestedMinPrice} – ₹{aiSuggestion.suggestedMaxPrice} / {aiSuggestion.unit}
-                  </p>
-                  {aiSuggestion.variants.length > 0 && (
-                    <div className="flex gap-1.5 flex-wrap mb-2">
-                      {aiSuggestion.variants.slice(0, 3).map(v => (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => setListingForm(f => ({ ...f, cropName: v }))}
-                          className="text-[10px] px-2 py-0.5 bg-white border border-amber-300 rounded-full text-amber-700 hover:bg-amber-100 transition-colors"
-                        >
-                          {v}
-                        </button>
-                      ))}
+                  <div className="p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-amber-700 font-medium">Suggested price range</p>
+                        <p className="text-lg font-bold text-amber-900">
+                          ₹{aiSuggestion.suggestedMinPrice} – ₹{aiSuggestion.suggestedMaxPrice}
+                          <span className="text-sm font-normal text-amber-700"> / {aiSuggestion.unit}</span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-amber-700">
+                        {aiSuggestion.trend === "up" && <TrendingUp className="w-4 h-4 text-green-600" />}
+                        {aiSuggestion.trend === "down" && <TrendingDown className="w-4 h-4 text-red-500" />}
+                        {aiSuggestion.trend === "stable" && <Minus className="w-4 h-4 text-amber-500" />}
+                        <span className="capitalize">{aiSuggestion.trend === "up" ? "Rising" : aiSuggestion.trend === "down" ? "Falling" : "Stable"}</span>
+                      </div>
                     </div>
-                  )}
-                  <p className="text-[10px] text-amber-700 mb-2 italic">{aiSuggestion.note}</p>
-                  <Button type="button" size="sm" variant="outline" className="w-full gap-1.5 border-amber-300 text-amber-800 hover:bg-amber-100 text-xs" onClick={applyAiSuggestion}>
-                    <Sparkles className="w-3 h-3" /> Apply suggestion (you can edit)
-                  </Button>
+                    {aiSuggestion.variants.length > 0 && (
+                      <div>
+                        <p className="text-[10px] text-amber-700 mb-1 font-medium">Also known as:</p>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {aiSuggestion.variants.slice(0, 4).map(v => (
+                            <button
+                              key={v}
+                              type="button"
+                              onClick={() => selectCropSuggestion(v)}
+                              className="text-[10px] px-2 py-0.5 bg-white border border-amber-300 rounded-full text-amber-700 hover:bg-amber-100 transition-colors"
+                            >
+                              {v}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <p className="text-[10px] text-amber-600 italic">{aiSuggestion.note}</p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs"
+                      onClick={applyAiSuggestion}
+                    >
+                      <Sparkles className="w-3 h-3" /> Apply to price fields (you can still edit)
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

@@ -8,6 +8,7 @@
 import type { ListingInputTrend } from './listingInputTrend';
 
 export interface ListingInput {
+  farmerId: number;
   cropName: string;
   minPrice: number;
   maxPrice: number;

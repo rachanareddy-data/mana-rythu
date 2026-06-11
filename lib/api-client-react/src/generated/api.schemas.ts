@@ -110,6 +110,7 @@ export const CropInputStatus = {
 } as const;
 
 export interface CropInput {
+  farmerId: number;
   cropName: string;
   /** @nullable */
   sowDate?: string | null;
@@ -184,6 +185,7 @@ export const ListingInputTrend = {
 } as const;
 
 export interface ListingInput {
+  farmerId: number;
   cropName: string;
   minPrice: number;
   maxPrice: number;
@@ -231,6 +233,10 @@ export interface ContactResponse {
   /** @nullable */
   farmerPhone?: string | null;
   message: string;
+}
+
+export interface CropSuggestion {
+  suggestions: string[];
 }
 
 export type PriceSuggestionTrend = typeof PriceSuggestionTrend[keyof typeof PriceSuggestionTrend];
@@ -345,6 +351,10 @@ location?: string;
 minPrice?: number;
 maxPrice?: number;
 trend?: string;
+};
+
+export type SuggestCropParams = {
+name: string;
 };
 
 export type SuggestPriceParams = {

@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuthToken, clearAuthToken, setAuthToken } from "@/lib/auth";
-import { useGetMe, useLogout } from "@workspace/api-client-react";
+import { useGetMe, useLogout, getGetMeQueryKey } from "@workspace/api-client-react";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Marketplace from "@/pages/Marketplace";
@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
 
 type User = {
   id: number; name: string; email: string; role: string;
-  verified: boolean; rating: number | null; ratingCount: number;
+  verified: boolean; rating?: number | null; ratingCount: number;
   phone?: string | null; location?: string | null; createdAt: string;
 };
 
@@ -36,7 +36,7 @@ export const useAuth = () => useContext(AuthContext);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(getAuthToken);
-  const { data: user, refetch } = useGetMe({ query: { enabled: !!token, retry: false } });
+  const { data: user, refetch } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: !!token, retry: false } });
 
   const login = (t: string) => { setAuthToken(t); setToken(t); };
   const logout = () => { clearAuthToken(); setToken(null); queryClient.clear(); };

@@ -195,6 +195,7 @@ export const GetCropsResponse = zod.array(GetCropsResponseItem)
  * @summary Create a crop
  */
 export const CreateCropBody = zod.object({
+  "farmerId": zod.number(),
   "cropName": zod.string(),
   "sowDate": zod.string().nullish(),
   "harvestDate": zod.string().nullish(),
@@ -297,6 +298,7 @@ export const GetListingsResponse = zod.array(GetListingsResponseItem)
  * @summary Create a listing
  */
 export const CreateListingBody = zod.object({
+  "farmerId": zod.number(),
   "cropName": zod.string(),
   "minPrice": zod.number(),
   "maxPrice": zod.number(),
@@ -402,6 +404,18 @@ export const ContactFarmerResponse = zod.object({
   "success": zod.boolean(),
   "farmerPhone": zod.string().nullish(),
   "message": zod.string()
+})
+
+
+/**
+ * @summary Get AI crop name suggestions based on partial input
+ */
+export const SuggestCropQueryParams = zod.object({
+  "name": zod.coerce.string()
+})
+
+export const SuggestCropResponse = zod.object({
+  "suggestions": zod.array(zod.string())
 })
 
 

@@ -27,6 +27,28 @@ const PRICE_DB: Record<string, { min: number; max: number; unit: string; trend: 
   default:     { min: 20, max: 45, unit: "kg", trend: "stable", variants: [] },
 };
 
+// All known crop names across the price DB for autocomplete
+const ALL_CROP_NAMES = Object.values(PRICE_DB)
+  .flatMap(d => d.variants)
+  .filter(v => v.length > 0);
+
+router.get("/ai/suggest-crop", (req, res) => {
+  const name = (req.query.name as string ?? "").toLowerCase().trim();
+  if (!name || name.length < 2) return res.json({ suggestions: [] });
+
+  const matched = ALL_CROP_NAMES.filter(v => v.toLowerCase().includes(name)).slice(0, 6);
+
+  // If no exact variant match, also check if any key matches
+  const keyMatches = Object.entries(PRICE_DB)
+    .filter(([key]) => key.includes(name) || name.includes(key))
+    .flatMap(([, d]) => d.variants)
+    .filter(v => !matched.includes(v));
+
+  const suggestions = [...new Set([...matched, ...keyMatches])].slice(0, 6);
+
+  return res.json({ suggestions: suggestions.length > 0 ? suggestions : [name.charAt(0).toUpperCase() + name.slice(1)] });
+});
+
 router.get("/ai/suggest-price", (req, res) => {
   const cropName = (req.query.cropName as string ?? "").toLowerCase().trim();
   if (!cropName) return res.status(400).json({ error: "cropName is required" });

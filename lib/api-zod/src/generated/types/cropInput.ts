@@ -8,6 +8,7 @@
 import type { CropInputStatus } from './cropInputStatus';
 
 export interface CropInput {
+  farmerId: number;
   cropName: string;
   /** @nullable */
   sowDate?: string | null;
