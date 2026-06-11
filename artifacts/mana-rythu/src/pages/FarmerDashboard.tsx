@@ -536,10 +536,13 @@ export default function FarmerDashboard() {
               <Input value={listingForm.description} onChange={e => setListingForm(f => ({ ...f, description: e.target.value }))} placeholder="Freshly harvested, organic..." className="mt-1.5" />
             </div>
 
-            {/* Image upload */}
+            {/* Image upload — required */}
             <div>
-              <Label>Crop Photo (optional)</Label>
-              <div className="mt-1.5">
+              <Label className="flex items-center gap-1.5">
+                Crop Photo <span className="text-destructive text-xs font-bold">* Required</span>
+              </Label>
+              <p className="text-[10px] text-muted-foreground mt-0.5 mb-1.5">A clear photo of the crop is required to build buyer trust.</p>
+              <div>
                 {imagePreview ? (
                   <div className="relative w-full h-32 rounded-lg overflow-hidden border border-border">
                     <img src={imagePreview} alt="Crop preview" className="w-full h-full object-cover" />
@@ -570,7 +573,7 @@ export default function FarmerDashboard() {
             <Button variant="outline" onClick={() => setListingModal(false)}>Cancel</Button>
             <Button
               onClick={handleAddListing}
-              disabled={createListing.isPending || !listingForm.cropName || !listingForm.minPrice || !listingForm.maxPrice || !listingForm.quantity || !listingForm.location}
+              disabled={createListing.isPending || !listingForm.cropName || !listingForm.minPrice || !listingForm.maxPrice || !listingForm.quantity || !listingForm.location || !listingForm.imageUrl}
             >
               {createListing.isPending ? "Creating..." : "Create Listing"}
             </Button>

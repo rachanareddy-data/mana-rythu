@@ -1,0 +1,167 @@
+Update the existing “Mana Rythu” application with strict production rules and fix missing features.
+
+CRITICAL INSTRUCTIONS:
+- REMOVE all demo or fake seed data completely
+- DO NOT show any pre-generated crops or listings
+- ALL data must be created only by real users (farmers/buyers)
+- If database is empty, show "No data available yet"
+- Do NOT auto-generate listings or mock marketplace data
+
+---
+
+🔥 REQUIRED FEATURES TO ADD:
+
+---
+
+## 1. 📷 CROP IMAGE UPLOAD (MANDATORY FIX)
+
+In Add Crop form:
+- Add image upload input
+- Preview uploaded image
+- Store image URL or base64
+- Show image in marketplace cards
+
+IMPORTANT:
+- Image is REQUIRED for crop listing
+- Without image, form cannot submit
+
+---
+
+## 2. 🧠 AI SUGGESTION SYSTEM (MUST IMPLEMENT)
+
+Add AI helper in Add Crop page:
+
+### Features:
+- Crop name suggestion (based on typed name or image placeholder logic)
+- Fair price range suggestion
+
+Example output:
+- Crop: Tomato
+- AI Suggestion:
+  - "Tomato / Organic Tomato"
+  - "₹25 – ₹32/kg fair market range"
+
+IMPORTANT RULES:
+- AI ONLY SUGGESTS
+- AI MUST NOT auto-fill or auto-save data
+- User must confirm manually
+
+---
+
+## 3. 💰 PRICE RANGE SYSTEM (MANDATORY)
+
+Replace all fixed prices with:
+
+- minPrice
+- maxPrice
+
+Display format:
+₹40 – ₹50/kg
+
+Never show single fixed price.
+
+---
+
+## 4. 📊 TRUST & TRANSPARENCY SYSTEM
+
+Each listing must show:
+
+- Source: Market Average (Estimated)
+- Last updated timestamp
+- Trend badge:
+  - 📈 Rising
+  - ➖ Stable
+  - 📉 Falling
+
+NO FAKE CLAIMS:
+- No “guaranteed price”
+- No “100% accurate”
+
+---
+
+## 5. 🌾 USER-GENERATED ONLY MARKETPLACE
+
+Marketplace rules:
+
+- Only show crops created by users
+- No default listings
+- No mock data
+- If empty → show:
+  "No crops listed yet. Be the first farmer to add."
+
+---
+
+## 6. 🎨 UI IMPROVEMENT (VERY IMPORTANT)
+
+Make UI clean and premium like Uber/Amazon:
+
+- Remove heavy background images
+- Use clean gradient background only:
+  white → light green
+- Add subtle farming texture ONLY in hero section
+- Use card-based layout
+- Proper spacing (8px system)
+- Mobile-first responsive design
+
+---
+
+## 7. 🛒 MARKETPLACE CARD UPDATE
+
+Each crop card must include:
+
+- Crop image
+- Crop name
+- Quantity
+- Price range (₹xx – ₹yy/kg)
+- Location
+- Trust label
+- Trend badge
+- Time ago
+
+---
+
+## 8. 🧾 DATABASE RULES
+
+Remove all seeded/demo data.
+
+Schema:
+
+User:
+- id
+- name
+- role
+- verified
+- rating
+
+CropListing:
+- id
+- farmerId
+- cropName
+- image
+- minPrice
+- maxPrice
+- quantity
+- location
+- createdAt
+- updatedAt
+
+---
+
+## 9. ⚡ SYSTEM RULES
+
+- No auto-generated data
+- No fake listings
+- No placeholder crops in UI
+- Backend must return empty arrays if no data exists
+- App must never crash even if database is empty
+
+---
+
+## 10. 🚀 FINAL OUTPUT
+
+- Fully working production-ready app
+- Clean Uber + Amazon style UI
+- Real user-generated marketplace only
+- AI suggestion system (non-automated)
+- Image upload working
+- No demo data anywhere
