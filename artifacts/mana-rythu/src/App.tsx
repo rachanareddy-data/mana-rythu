@@ -28,8 +28,10 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/listing/:id" component={ListingDetail} />
       <Route path="/farmer" component={FarmerDashboard} />
+      <Route path="/farmer-dashboard" component={FarmerDashboard} />
       <Route path="/add-crop" component={AddCrop} />
       <Route path="/buyer" component={BuyerDashboard} />
+      <Route path="/buyer-dashboard" component={BuyerDashboard} />
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />

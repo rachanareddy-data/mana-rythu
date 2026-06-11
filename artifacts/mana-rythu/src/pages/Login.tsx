@@ -25,7 +25,11 @@ export default function Login() {
         onSuccess: (data: any) => {
           login(data.token);
           toast({ title: "Welcome back!", description: `Signed in as ${data.user.name}` });
-          navigate("/");
+          const role = data.user?.role;
+          if (role === "farmer") navigate("/farmer-dashboard");
+          else if (role === "buyer") navigate("/buyer-dashboard");
+          else if (role === "admin") navigate("/admin");
+          else navigate("/");
         },
         onError: () => {
           toast({ title: "Sign in failed", description: "Invalid email or password", variant: "destructive" });

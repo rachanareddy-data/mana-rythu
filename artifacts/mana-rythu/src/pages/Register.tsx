@@ -26,7 +26,10 @@ export default function Register() {
         onSuccess: (data: any) => {
           login(data.token);
           toast({ title: "Account created!", description: `Welcome, ${data.user.name}!` });
-          navigate("/");
+          const role = form.role;
+          if (role === "farmer") navigate("/farmer-dashboard");
+          else if (role === "buyer") navigate("/buyer-dashboard");
+          else navigate("/");
         },
         onError: (err: any) => {
           toast({ title: "Registration failed", description: err?.message || "Please try again", variant: "destructive" });

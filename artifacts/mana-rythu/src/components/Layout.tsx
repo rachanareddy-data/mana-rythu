@@ -22,20 +22,20 @@ const PUBLIC_NAV = [
 const FARMER_NAV = [
   { href: "/", label: "Home", icon: Home },
   { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-  { href: "/farmer", label: "My Farm", icon: Sprout },
+  { href: "/farmer-dashboard", label: "My Farm", icon: Sprout },
 ];
 
 const BUYER_NAV = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/buyer", label: "Browse Crops", icon: ShoppingCart },
+  { href: "/buyer-dashboard", label: "Browse Crops", icon: ShoppingCart },
   { href: "/marketplace", label: "All Listings", icon: ShoppingBag },
 ];
 
 const ADMIN_NAV = [
   { href: "/", label: "Home", icon: Home },
   { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-  { href: "/farmer", label: "Farmer View", icon: Sprout },
-  { href: "/buyer", label: "Buyer View", icon: ShoppingCart },
+  { href: "/farmer-dashboard", label: "Farmer View", icon: Sprout },
+  { href: "/buyer-dashboard", label: "Buyer View", icon: ShoppingCart },
   { href: "/admin", label: "Admin Panel", icon: Shield },
 ];
 
@@ -55,6 +55,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isActive = (href: string) => {
     if (href === "/") return location === "/";
+    // Treat /farmer and /farmer-dashboard as the same active state
+    if (href === "/farmer-dashboard") return location === "/farmer-dashboard" || location === "/farmer";
+    if (href === "/buyer-dashboard") return location === "/buyer-dashboard" || location === "/buyer";
     return location.startsWith(href);
   };
 
