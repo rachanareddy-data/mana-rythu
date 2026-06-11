@@ -20,4 +20,8 @@ export interface ListingInput {
   /** @nullable */
   imageUrl?: string | null;
   trend?: ListingInputTrend;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
 }

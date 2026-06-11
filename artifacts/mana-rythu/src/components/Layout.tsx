@@ -1,9 +1,10 @@
 import { useLocation, Link } from "wouter";
 import { useAuth } from "@/contexts/auth";
+import { useLanguage, type Lang } from "@/contexts/language";
 import {
   Home, ShoppingBag, Sprout, Shield,
   Bell, Search, LogOut, Menu, X, ChevronRight,
-  ShoppingCart, Plus,
+  ShoppingCart, Plus, Calculator, Globe,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -22,12 +23,14 @@ const FARMER_NAV = [
   { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
   { href: "/farmer-dashboard", label: "My Farm", icon: Sprout },
   { href: "/add-crop", label: "Post Crop", icon: Plus },
+  { href: "/fair-price", label: "Fair Price", icon: Calculator },
 ];
 
 const BUYER_NAV = [
   { href: "/", label: "Home", icon: Home },
   { href: "/buyer-dashboard", label: "Browse", icon: ShoppingCart },
   { href: "/marketplace", label: "All Crops", icon: ShoppingBag },
+  { href: "/fair-price", label: "Fair Price", icon: Calculator },
 ];
 
 const ADMIN_NAV = [
@@ -37,6 +40,12 @@ const ADMIN_NAV = [
   { href: "/buyer-dashboard", label: "Buyer View", icon: ShoppingCart },
   { href: "/admin", label: "Admin Panel", icon: Shield },
 ];
+
+const LANG_FLAGS: Record<Lang, { label: string; flag: string }> = {
+  en: { label: "English", flag: "🇬🇧" },
+  te: { label: "తెలుగు", flag: "🇮🇳" },
+  hi: { label: "हिंदी", flag: "🇮🇳" },
+};
 
 function getNavItems(role?: string) {
   if (role === "farmer") return FARMER_NAV;
@@ -48,7 +57,9 @@ function getNavItems(role?: string) {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { user, logout } = useAuth();
+  const { lang, setLang } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   const navItems = getNavItems(user?.role);
 
@@ -62,7 +73,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isPublicPage = location === "/login" || location === "/register";
   if (isPublicPage) return <>{children}</>;
 
-  // Bottom nav shows max 4 items (5th gets cut)
+  // Bottom nav shows max 4 items
   const bottomNavItems = navItems.slice(0, 4);
 
   return (
@@ -136,13 +147,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="border-t border-sidebar-border p-3 shrink-0">
           {user ? (
             <div className="flex items-center gap-3 px-1">
-              <Avatar className="w-9 h-9 shrink-0">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                  {user.name.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <Link href={`/profile/${user.id}`} onClick={() => setSidebarOpen(false)}>
+                <Avatar className="w-9 h-9 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
+                    {user.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-sidebar-foreground truncate">{user.name}</p>
+                <Link href={`/profile/${user.id}`} onClick={() => setSidebarOpen(false)}>
+                  <p className="text-sm font-semibold text-sidebar-foreground truncate hover:underline cursor-pointer">{user.name}</p>
+                </Link>
                 <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
               </div>
               <button
@@ -190,6 +205,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2 ml-auto">
+            {/* Language switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(v => !v)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-border hover:bg-muted transition-colors text-sm font-medium"
+                title="Change language"
+              >
+                <Globe className="w-4 h-4 text-muted-foreground" />
+                <span className="hidden sm:inline text-xs">{LANG_FLAGS[lang].flag} {lang.toUpperCase()}</span>
+              </button>
+              {langOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
+                  <div className="absolute right-0 top-10 z-20 w-40 bg-white border border-border rounded-xl shadow-lg overflow-hidden">
+                    {(["en", "te", "hi"] as Lang[]).map(l => (
+                      <button
+                        key={l}
+                        onClick={() => { setLang(l); setLangOpen(false); }}
+                        className={cn(
+                          "w-full text-left px-3 py-2.5 text-sm hover:bg-green-50 flex items-center gap-2 transition-colors",
+                          lang === l && "bg-green-50 font-semibold text-green-700"
+                        )}
+                      >
+                        <span>{LANG_FLAGS[l].flag}</span>
+                        <span>{LANG_FLAGS[l].label}</span>
+                        {lang === l && <span className="ml-auto text-green-600">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
             {/* Notification bell */}
             <button className="relative p-2 rounded-xl hover:bg-muted transition-colors">
               <Bell className="w-5 h-5 text-muted-foreground" />
@@ -198,17 +246,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* User avatar */}
             {user ? (
-              <div className="flex items-center gap-2">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                    {user.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-semibold leading-none">{user.name.split(" ")[0]}</p>
-                  <p className="text-[10px] text-muted-foreground capitalize mt-0.5">{user.role}</p>
+              <Link href={`/profile/${user.id}`}>
+                <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                  <Avatar className="w-8 h-8">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
+                      {user.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden sm:block">
+                    <p className="text-sm font-semibold leading-none">{user.name.split(" ")[0]}</p>
+                    <p className="text-[10px] text-muted-foreground capitalize mt-0.5">{user.role}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ) : (
               <Link href="/login">
                 <Button size="sm" variant="outline" className="text-xs h-8">Sign in</Button>
@@ -237,7 +287,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {/* Active indicator pill */}
                 {active && (
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
                 )}

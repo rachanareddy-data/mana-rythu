@@ -18,4 +18,8 @@ export interface ListingUpdate {
   description?: string | null;
   trend?: ListingUpdateTrend;
   available?: boolean;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
 }

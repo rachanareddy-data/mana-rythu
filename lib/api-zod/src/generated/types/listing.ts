@@ -28,6 +28,10 @@ export interface Listing {
   imageUrl?: string | null;
   trend: ListingTrend;
   available: boolean;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
   createdAt: string;
   updatedAt: string;
 }

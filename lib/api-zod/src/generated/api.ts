@@ -16,9 +16,6 @@ export const HealthCheckResponse = zod.object({
 })
 
 
-/**
- * @summary Register a new user
- */
 export const RegisterBody = zod.object({
   "name": zod.string(),
   "email": zod.string(),
@@ -29,9 +26,6 @@ export const RegisterBody = zod.object({
 })
 
 
-/**
- * @summary Login
- */
 export const LoginBody = zod.object({
   "email": zod.string(),
   "password": zod.string()
@@ -48,15 +42,14 @@ export const LoginResponse = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 }),
   "token": zod.string()
 })
 
 
-/**
- * @summary Get current user
- */
 export const GetMeResponse = zod.object({
   "id": zod.number(),
   "name": zod.string(),
@@ -67,13 +60,12 @@ export const GetMeResponse = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Get all users (admin)
- */
 export const GetUsersQueryParams = zod.object({
   "role": zod.coerce.string().optional(),
   "verified": zod.coerce.boolean().optional()
@@ -89,14 +81,13 @@ export const GetUsersResponseItem = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 })
 export const GetUsersResponse = zod.array(GetUsersResponseItem)
 
 
-/**
- * @summary Get user by ID
- */
 export const GetUserByIdParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -111,13 +102,68 @@ export const GetUserByIdResponse = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Toggle user verification (admin)
- */
+export const GetUserProfileParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetUserProfileResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.enum(['farmer', 'buyer', 'admin']),
+  "verified": zod.boolean(),
+  "rating": zod.number().nullish(),
+  "ratingCount": zod.number(),
+  "phone": zod.string().nullish(),
+  "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
+  "createdAt": zod.string(),
+  "totalListings": zod.number(),
+  "activeListings": zod.number(),
+  "totalReviews": zod.number(),
+  "recentListings": zod.array(zod.object({
+  "id": zod.number(),
+  "farmerId": zod.number(),
+  "farmerName": zod.string().nullish(),
+  "farmerVerified": zod.boolean().nullish(),
+  "farmerRating": zod.number().nullish(),
+  "cropName": zod.string(),
+  "minPrice": zod.number(),
+  "maxPrice": zod.number(),
+  "quantity": zod.number(),
+  "unit": zod.string(),
+  "location": zod.string(),
+  "description": zod.string().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "trend": zod.enum(['up', 'down', 'stable']),
+  "available": zod.boolean(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})),
+  "recentReviews": zod.array(zod.object({
+  "id": zod.number(),
+  "fromUserId": zod.number(),
+  "toUserId": zod.number(),
+  "listingId": zod.number().nullish(),
+  "rating": zod.number(),
+  "comment": zod.string().nullish(),
+  "fromUserName": zod.string(),
+  "toUserName": zod.string(),
+  "fromUserRole": zod.string(),
+  "createdAt": zod.string()
+}))
+})
+
+
 export const VerifyUserParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -136,13 +182,12 @@ export const VerifyUserResponse = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Rate a farmer
- */
 export const RateUserParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -165,13 +210,12 @@ export const RateUserResponse = zod.object({
   "ratingCount": zod.number(),
   "phone": zod.string().nullish(),
   "location": zod.string().nullish(),
+  "bio": zod.string().nullish(),
+  "trustedBuyerScore": zod.number().nullish(),
   "createdAt": zod.string()
 })
 
 
-/**
- * @summary Get crops (optionally filtered by farmer)
- */
 export const GetCropsQueryParams = zod.object({
   "farmerId": zod.coerce.number().optional(),
   "status": zod.coerce.string().optional()
@@ -191,9 +235,6 @@ export const GetCropsResponseItem = zod.object({
 export const GetCropsResponse = zod.array(GetCropsResponseItem)
 
 
-/**
- * @summary Create a crop
- */
 export const CreateCropBody = zod.object({
   "farmerId": zod.number(),
   "cropName": zod.string(),
@@ -204,9 +245,6 @@ export const CreateCropBody = zod.object({
 })
 
 
-/**
- * @summary Get crop by ID
- */
 export const GetCropByIdParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -224,9 +262,6 @@ export const GetCropByIdResponse = zod.object({
 })
 
 
-/**
- * @summary Update a crop
- */
 export const UpdateCropParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -252,17 +287,11 @@ export const UpdateCropResponse = zod.object({
 })
 
 
-/**
- * @summary Delete a crop
- */
 export const DeleteCropParams = zod.object({
   "id": zod.coerce.number()
 })
 
 
-/**
- * @summary Get marketplace listings
- */
 export const GetListingsQueryParams = zod.object({
   "farmerId": zod.coerce.number().optional(),
   "cropName": zod.coerce.string().optional(),
@@ -288,15 +317,14 @@ export const GetListingsResponseItem = zod.object({
   "imageUrl": zod.string().nullish(),
   "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish(),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
 })
 export const GetListingsResponse = zod.array(GetListingsResponseItem)
 
 
-/**
- * @summary Create a listing
- */
 export const CreateListingBody = zod.object({
   "farmerId": zod.number(),
   "cropName": zod.string(),
@@ -307,13 +335,12 @@ export const CreateListingBody = zod.object({
   "location": zod.string(),
   "description": zod.string().nullish(),
   "imageUrl": zod.string().nullish(),
-  "trend": zod.enum(['up', 'down', 'stable']).optional()
+  "trend": zod.enum(['up', 'down', 'stable']).optional(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish()
 })
 
 
-/**
- * @summary Get listing by ID
- */
 export const GetListingByIdParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -334,14 +361,13 @@ export const GetListingByIdResponse = zod.object({
   "imageUrl": zod.string().nullish(),
   "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish(),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
 })
 
 
-/**
- * @summary Update a listing
- */
 export const UpdateListingParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -355,7 +381,9 @@ export const UpdateListingBody = zod.object({
   "location": zod.string().optional(),
   "description": zod.string().nullish(),
   "trend": zod.enum(['up', 'down', 'stable']).optional(),
-  "available": zod.boolean().optional()
+  "available": zod.boolean().optional(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish()
 })
 
 export const UpdateListingResponse = zod.object({
@@ -374,22 +402,18 @@ export const UpdateListingResponse = zod.object({
   "imageUrl": zod.string().nullish(),
   "trend": zod.enum(['up', 'down', 'stable']),
   "available": zod.boolean(),
+  "qualityGrade": zod.string().nullish(),
+  "qualityScore": zod.number().nullish(),
   "createdAt": zod.string(),
   "updatedAt": zod.string()
 })
 
 
-/**
- * @summary Delete a listing
- */
 export const DeleteListingParams = zod.object({
   "id": zod.coerce.number()
 })
 
 
-/**
- * @summary Buyer contacts farmer about a listing
- */
 export const ContactFarmerParams = zod.object({
   "id": zod.coerce.number()
 })
@@ -407,9 +431,44 @@ export const ContactFarmerResponse = zod.object({
 })
 
 
-/**
- * @summary Get AI crop name suggestions based on partial input
- */
+export const GetReviewsQueryParams = zod.object({
+  "toUserId": zod.coerce.number().optional(),
+  "fromUserId": zod.coerce.number().optional()
+})
+
+export const GetReviewsResponseItem = zod.object({
+  "id": zod.number(),
+  "fromUserId": zod.number(),
+  "toUserId": zod.number(),
+  "listingId": zod.number().nullish(),
+  "rating": zod.number(),
+  "comment": zod.string().nullish(),
+  "fromUserName": zod.string(),
+  "toUserName": zod.string(),
+  "fromUserRole": zod.string(),
+  "createdAt": zod.string()
+})
+export const GetReviewsResponse = zod.array(GetReviewsResponseItem)
+
+
+export const createReviewBodyRatingMax = 5;
+
+
+
+export const CreateReviewBody = zod.object({
+  "fromUserId": zod.number(),
+  "toUserId": zod.number(),
+  "listingId": zod.number().nullish(),
+  "rating": zod.number().min(1).max(createReviewBodyRatingMax),
+  "comment": zod.string().nullish()
+})
+
+
+export const DeleteReviewParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
 export const SuggestCropQueryParams = zod.object({
   "name": zod.coerce.string()
 })
@@ -419,9 +478,6 @@ export const SuggestCropResponse = zod.object({
 })
 
 
-/**
- * @summary Ask the Agri AI Assistant a farming question
- */
 export const AiChatBody = zod.object({
   "message": zod.string()
 })
@@ -431,9 +487,6 @@ export const AiChatResponse = zod.object({
 })
 
 
-/**
- * @summary Get AI-suggested price range for a crop
- */
 export const SuggestPriceQueryParams = zod.object({
   "cropName": zod.coerce.string()
 })
@@ -450,9 +503,47 @@ export const SuggestPriceResponse = zod.object({
 })
 
 
-/**
- * @summary Get dashboard summary stats
- */
+export const GradeCropBody = zod.object({
+  "imageUrl": zod.string(),
+  "cropName": zod.string(),
+  "listingId": zod.number().nullish()
+})
+
+export const GradeCropResponse = zod.object({
+  "grade": zod.enum(['A', 'B', 'C']),
+  "score": zod.number(),
+  "label": zod.string(),
+  "notes": zod.string(),
+  "priceMultiplier": zod.number()
+})
+
+
+export const GetFairPriceQueryParams = zod.object({
+  "cropName": zod.coerce.string(),
+  "quantity": zod.coerce.number().optional(),
+  "unit": zod.coerce.string().optional(),
+  "location": zod.coerce.string().optional(),
+  "grade": zod.coerce.string().optional()
+})
+
+export const GetFairPriceResponse = zod.object({
+  "cropName": zod.string(),
+  "marketMin": zod.number(),
+  "marketMax": zod.number(),
+  "fairMin": zod.number(),
+  "fairMax": zod.number(),
+  "unit": zod.string(),
+  "grade": zod.string().nullish(),
+  "breakdown": zod.array(zod.object({
+  "label": zod.string(),
+  "amount": zod.number(),
+  "isDeduction": zod.boolean()
+})),
+  "recommendation": zod.string(),
+  "trend": zod.enum(['up', 'down', 'stable'])
+})
+
+
 export const GetDashboardSummaryResponse = zod.object({
   "totalFarmers": zod.number(),
   "totalBuyers": zod.number(),
@@ -464,9 +555,6 @@ export const GetDashboardSummaryResponse = zod.object({
 })
 
 
-/**
- * @summary Get current mandi/market prices
- */
 export const GetMarketPricesResponseItem = zod.object({
   "cropName": zod.string(),
   "price": zod.number(),
@@ -480,9 +568,6 @@ export const GetMarketPricesResponseItem = zod.object({
 export const GetMarketPricesResponse = zod.array(GetMarketPricesResponseItem)
 
 
-/**
- * @summary Get recommended crops based on season/demand
- */
 export const GetRecommendedCropsResponseItem = zod.object({
   "cropName": zod.string(),
   "season": zod.string(),
@@ -497,9 +582,6 @@ export const GetRecommendedCropsResponseItem = zod.object({
 export const GetRecommendedCropsResponse = zod.array(GetRecommendedCropsResponseItem)
 
 
-/**
- * @summary Get weather summary for farming
- */
 export const GetWeatherResponse = zod.object({
   "condition": zod.string(),
   "temperature": zod.number(),
@@ -510,9 +592,6 @@ export const GetWeatherResponse = zod.object({
 })
 
 
-/**
- * @summary Get admin panel statistics
- */
 export const GetAdminStatsResponse = zod.object({
   "totalUsers": zod.number(),
   "pendingVerifications": zod.number(),

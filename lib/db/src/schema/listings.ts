@@ -16,6 +16,8 @@ export const listingsTable = pgTable("listings", {
   imageUrl: text("image_url"),
   trend: text("trend", { enum: ["up", "down", "stable"] }).notNull().default("stable"),
   available: boolean("available").notNull().default(true),
+  qualityGrade: text("quality_grade", { enum: ["A", "B", "C"] }),
+  qualityScore: real("quality_score"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type AiChat200 = {
-  reply: string;
+export type GetFairPriceParams = {
+cropName: string;
+quantity?: number;
+unit?: string;
+location?: string;
+grade?: string;
 };

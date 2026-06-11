@@ -26,7 +26,7 @@ router.get("/admin/stats", async (req, res) => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    const totalRevenue = listings.reduce((sum, l) => sum + l.price * l.quantity, 0);
+    const totalRevenue = listings.reduce((sum, l) => sum + ((l.minPrice + l.maxPrice) / 2) * l.quantity, 0);
 
     return res.json({
       totalUsers: users.length,

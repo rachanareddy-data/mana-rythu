@@ -5,13 +5,15 @@
  * Mana Rythu API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { UserRole } from './userRole';
+import type { Listing } from './listing';
+import type { Review } from './review';
+import type { UserProfileRole } from './userProfileRole';
 
-export interface User {
+export interface UserProfile {
   id: number;
   name: string;
   email: string;
-  role: UserRole;
+  role: UserProfileRole;
   verified: boolean;
   /** @nullable */
   rating?: number | null;
@@ -25,4 +27,9 @@ export interface User {
   /** @nullable */
   trustedBuyerScore?: number | null;
   createdAt: string;
+  totalListings: number;
+  activeListings: number;
+  totalReviews: number;
+  recentListings: Listing[];
+  recentReviews: Review[];
 }

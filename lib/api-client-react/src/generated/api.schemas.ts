@@ -31,7 +31,98 @@ export interface User {
   phone?: string | null;
   /** @nullable */
   location?: string | null;
+  /** @nullable */
+  bio?: string | null;
+  /** @nullable */
+  trustedBuyerScore?: number | null;
   createdAt: string;
+}
+
+export type UserProfileRole = typeof UserProfileRole[keyof typeof UserProfileRole];
+
+
+export const UserProfileRole = {
+  farmer: 'farmer',
+  buyer: 'buyer',
+  admin: 'admin',
+} as const;
+
+export type ListingTrend = typeof ListingTrend[keyof typeof ListingTrend];
+
+
+export const ListingTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
+
+export interface Listing {
+  id: number;
+  farmerId: number;
+  /** @nullable */
+  farmerName?: string | null;
+  /** @nullable */
+  farmerVerified?: boolean | null;
+  /** @nullable */
+  farmerRating?: number | null;
+  cropName: string;
+  minPrice: number;
+  maxPrice: number;
+  quantity: number;
+  unit: string;
+  location: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  imageUrl?: string | null;
+  trend: ListingTrend;
+  available: boolean;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Review {
+  id: number;
+  fromUserId: number;
+  toUserId: number;
+  /** @nullable */
+  listingId?: number | null;
+  rating: number;
+  /** @nullable */
+  comment?: string | null;
+  fromUserName: string;
+  toUserName: string;
+  fromUserRole: string;
+  createdAt: string;
+}
+
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  role: UserProfileRole;
+  verified: boolean;
+  /** @nullable */
+  rating?: number | null;
+  ratingCount: number;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  location?: string | null;
+  /** @nullable */
+  bio?: string | null;
+  /** @nullable */
+  trustedBuyerScore?: number | null;
+  createdAt: string;
+  totalListings: number;
+  activeListings: number;
+  totalReviews: number;
+  recentListings: Listing[];
+  recentReviews: Review[];
 }
 
 export type RegisterInputRole = typeof RegisterInputRole[keyof typeof RegisterInputRole];
@@ -141,40 +232,6 @@ export interface CropUpdate {
   notes?: string | null;
 }
 
-export type ListingTrend = typeof ListingTrend[keyof typeof ListingTrend];
-
-
-export const ListingTrend = {
-  up: 'up',
-  down: 'down',
-  stable: 'stable',
-} as const;
-
-export interface Listing {
-  id: number;
-  farmerId: number;
-  /** @nullable */
-  farmerName?: string | null;
-  /** @nullable */
-  farmerVerified?: boolean | null;
-  /** @nullable */
-  farmerRating?: number | null;
-  cropName: string;
-  minPrice: number;
-  maxPrice: number;
-  quantity: number;
-  unit: string;
-  location: string;
-  /** @nullable */
-  description?: string | null;
-  /** @nullable */
-  imageUrl?: string | null;
-  trend: ListingTrend;
-  available: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export type ListingInputTrend = typeof ListingInputTrend[keyof typeof ListingInputTrend];
 
 
@@ -197,6 +254,10 @@ export interface ListingInput {
   /** @nullable */
   imageUrl?: string | null;
   trend?: ListingInputTrend;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
 }
 
 export type ListingUpdateTrend = typeof ListingUpdateTrend[keyof typeof ListingUpdateTrend];
@@ -219,6 +280,24 @@ export interface ListingUpdate {
   description?: string | null;
   trend?: ListingUpdateTrend;
   available?: boolean;
+  /** @nullable */
+  qualityGrade?: string | null;
+  /** @nullable */
+  qualityScore?: number | null;
+}
+
+export interface ReviewInput {
+  fromUserId: number;
+  toUserId: number;
+  /** @nullable */
+  listingId?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  /** @nullable */
+  comment?: string | null;
 }
 
 export interface ContactInput {
@@ -239,6 +318,14 @@ export interface CropSuggestion {
   suggestions: string[];
 }
 
+export interface ChatInput {
+  message: string;
+}
+
+export interface ChatReply {
+  reply: string;
+}
+
 export type PriceSuggestionTrend = typeof PriceSuggestionTrend[keyof typeof PriceSuggestionTrend];
 
 
@@ -257,6 +344,59 @@ export interface PriceSuggestion {
   confidence: string;
   note: string;
   variants: string[];
+}
+
+export interface CropGradeInput {
+  imageUrl: string;
+  cropName: string;
+  /** @nullable */
+  listingId?: number | null;
+}
+
+export type CropGradeGrade = typeof CropGradeGrade[keyof typeof CropGradeGrade];
+
+
+export const CropGradeGrade = {
+  A: 'A',
+  B: 'B',
+  C: 'C',
+} as const;
+
+export interface CropGrade {
+  grade: CropGradeGrade;
+  score: number;
+  label: string;
+  notes: string;
+  priceMultiplier: number;
+}
+
+export interface FairPriceBreakdownItem {
+  label: string;
+  amount: number;
+  isDeduction: boolean;
+}
+
+export type FairPriceTrend = typeof FairPriceTrend[keyof typeof FairPriceTrend];
+
+
+export const FairPriceTrend = {
+  up: 'up',
+  down: 'down',
+  stable: 'stable',
+} as const;
+
+export interface FairPrice {
+  cropName: string;
+  marketMin: number;
+  marketMax: number;
+  fairMin: number;
+  fairMax: number;
+  unit: string;
+  /** @nullable */
+  grade?: string | null;
+  breakdown: FairPriceBreakdownItem[];
+  recommendation: string;
+  trend: FairPriceTrend;
 }
 
 export interface DashboardSummary {
@@ -353,19 +493,24 @@ maxPrice?: number;
 trend?: string;
 };
 
+export type GetReviewsParams = {
+toUserId?: number;
+fromUserId?: number;
+};
+
 export type SuggestCropParams = {
 name: string;
 };
 
-export type AiChatBody = {
-  message: string;
-};
-
-export type AiChat200 = {
-  reply: string;
-};
-
 export type SuggestPriceParams = {
 cropName: string;
+};
+
+export type GetFairPriceParams = {
+cropName: string;
+quantity?: number;
+unit?: string;
+location?: string;
+grade?: string;
 };
 

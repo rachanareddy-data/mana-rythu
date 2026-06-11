@@ -115,7 +115,7 @@ router.get("/listings/:id", async (req, res) => {
 router.patch("/listings/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
-  const { cropName, minPrice, maxPrice, quantity, unit, location, description, available, trend } = req.body;
+  const { cropName, minPrice, maxPrice, quantity, unit, location, description, available, trend, qualityGrade, qualityScore } = req.body;
   const updates: Record<string, unknown> = { updatedAt: new Date() };
   if (cropName !== undefined) updates.cropName = cropName;
   if (minPrice !== undefined) updates.minPrice = minPrice;
@@ -126,6 +126,8 @@ router.patch("/listings/:id", async (req, res) => {
   if (description !== undefined) updates.description = description;
   if (available !== undefined) updates.available = available;
   if (trend !== undefined) updates.trend = trend;
+  if (qualityGrade !== undefined) updates.qualityGrade = qualityGrade;
+  if (qualityScore !== undefined) updates.qualityScore = qualityScore;
   try {
     const [updated] = await db.update(listingsTable).set(updates).where(eq(listingsTable.id, id)).returning();
     if (!updated) return res.status(404).json({ error: "Listing not found" });
