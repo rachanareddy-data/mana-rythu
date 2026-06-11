@@ -6,7 +6,7 @@ import {
   useSuggestPrice, getSuggestPriceQueryKey,
   useSuggestCrop, getSuggestCropQueryKey,
 } from "@workspace/api-client-react";
-import { useAuth } from "@/App";
+import { useAuth } from "@/contexts/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -119,7 +119,13 @@ export default function FarmerDashboard() {
   );
 
   const invalidateCrops = () => qc.invalidateQueries({ queryKey: getGetCropsQueryKey(farmerId ? { farmerId } : undefined) });
-  const invalidateListings = () => qc.invalidateQueries({ queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined) });
+  const invalidateListings = () => {
+    // Invalidate farmer's own filtered view
+    qc.invalidateQueries({ queryKey: getGetListingsQueryKey(farmerId ? { farmerId } : undefined) });
+    // Also invalidate the global listings cache so Marketplace updates instantly
+    qc.invalidateQueries({ queryKey: getGetListingsQueryKey() });
+    qc.invalidateQueries({ queryKey: getGetListingsQueryKey({}) });
+  };
 
   const handleCropNameChange = (val: string) => {
     setListingForm(f => ({ ...f, cropName: val }));

@@ -1,5 +1,5 @@
 import { useLocation, Link } from "wouter";
-import { useAuth } from "@/App";
+import { useAuth } from "@/contexts/auth";
 import {
   Home, ShoppingBag, Sprout, Shield,
   Bell, Search, LogOut, Menu, X, ChevronRight,

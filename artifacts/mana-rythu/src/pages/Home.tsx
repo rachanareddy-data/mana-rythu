@@ -3,7 +3,7 @@ import {
   useGetDashboardSummary, useGetMarketPrices,
   useGetRecommendedCrops, useGetWeather,
 } from "@workspace/api-client-react";
-import { useAuth } from "@/App";
+import { useAuth } from "@/contexts/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
