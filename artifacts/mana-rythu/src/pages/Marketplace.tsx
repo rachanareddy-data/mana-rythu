@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useGetListings, getGetListingsQueryKey } from "@workspace/api-client-react";
+import { useAuth } from "@/contexts/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search, Filter, MapPin, Star, CheckCircle2, Package,
   Sprout, SlidersHorizontal, X, TrendingUp, TrendingDown,
-  Minus, Clock, Info,
+  Minus, Clock, Info, Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -43,6 +44,8 @@ function PriceRange({ min, max, unit }: { min: number; max: number; unit: string
 }
 
 export default function Marketplace() {
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -143,6 +146,11 @@ export default function Marketplace() {
                 </button>
               )}
             </div>
+            {user?.role === "farmer" && (
+              <Button size="sm" className="gap-1.5 shrink-0" onClick={() => navigate("/add-crop")}>
+                <Plus className="w-4 h-4" /> Post Crop
+              </Button>
+            )}
             <Button variant="outline" size="sm" className="lg:hidden gap-2 shrink-0" onClick={() => setShowFilters(v => !v)}>
               <SlidersHorizontal className="w-4 h-4" /> Filters
               {hasFilters && <span className="w-2 h-2 bg-primary rounded-full" />}

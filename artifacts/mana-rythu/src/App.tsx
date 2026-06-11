@@ -12,6 +12,7 @@ import BuyerDashboard from "@/pages/BuyerDashboard";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import AddCrop from "@/pages/AddCrop";
 import NotFound from "@/pages/not-found";
 
 export { useAuth } from "@/contexts/auth";
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/listing/:id" component={ListingDetail} />
       <Route path="/farmer" component={FarmerDashboard} />
+      <Route path="/add-crop" component={AddCrop} />
       <Route path="/buyer" component={BuyerDashboard} />
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetCrops, useCreateCrop, useDeleteCrop, getGetCropsQueryKey,
@@ -70,6 +71,7 @@ export default function FarmerDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const qc = useQueryClient();
+  const [, navigate] = useLocation();
   const farmerId = user?.id;
 
   const { data: crops, isLoading: cropsLoading } = useGetCrops(
@@ -255,7 +257,7 @@ export default function FarmerDashboard() {
           <Button size="sm" className="gap-2" onClick={() => setCropModal(true)}>
             <Plus className="w-4 h-4" /> Add Crop
           </Button>
-          <Button size="sm" variant="outline" className="gap-2" onClick={() => setListingModal(true)}>
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => navigate("/add-crop")}>
             <ShoppingBag className="w-4 h-4" /> Sell Crop
           </Button>
         </div>
