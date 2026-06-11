@@ -61,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (isPublicPage) return <>{children}</>;
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-gradient-to-br from-white via-green-50/30 to-emerald-50/50 overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -206,7 +206,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-white via-green-50/40 to-emerald-50/60">
           {children}
         </main>
       </div>

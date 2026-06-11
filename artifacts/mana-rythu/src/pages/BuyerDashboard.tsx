@@ -73,27 +73,37 @@ export default function BuyerDashboard() {
   return (
     <div className="flex flex-col h-full pb-20 lg:pb-0 overflow-hidden">
       {/* Hero header */}
-      <div className="bg-gradient-to-br from-green-700 to-emerald-600 px-6 py-8 text-white shrink-0">
-        <h1 className="text-2xl font-bold mb-1">
-          {user ? `Hello, ${user.name.split(" ")[0]}` : "Browse Crops"}
-        </h1>
-        <p className="text-green-100 text-sm mb-5">Find fresh produce directly from verified farmers</p>
+      <div className="relative px-6 py-10 text-white shrink-0 overflow-hidden">
+        {/* Farming background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920&q=80')" }}
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/85 to-emerald-700/70" />
 
-        {/* Search bar */}
-        <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2.5 shadow-sm">
-          <Search className="w-4 h-4 text-muted-foreground shrink-0" />
-          <input
-            type="search"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search for tomato, rice, cotton..."
-            className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground min-w-0"
-          />
-          {search && (
-            <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground">
-              <X className="w-4 h-4" />
-            </button>
-          )}
+        <div className="relative">
+          <h1 className="text-2xl font-bold mb-1">
+            {user ? `Hello, ${user.name.split(" ")[0]}` : "Browse Crops"}
+          </h1>
+          <p className="text-green-100 text-sm mb-5">Find fresh produce directly from verified farmers</p>
+
+          {/* Search bar */}
+          <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2.5 shadow-sm max-w-lg">
+            <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+            <input
+              type="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search for tomato, rice, cotton..."
+              className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground min-w-0"
+            />
+            {search && (
+              <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

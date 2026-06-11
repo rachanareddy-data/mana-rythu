@@ -62,9 +62,17 @@ export default function Home() {
   return (
     <div className="pb-24 lg:pb-8">
       {/* Hero section */}
-      <div className="relative bg-gradient-to-br from-green-700 via-green-600 to-emerald-500 px-6 py-10 overflow-hidden">
-        {/* Subtle texture dots */}
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+      <div className="relative px-6 py-12 overflow-hidden min-h-[280px] flex items-center">
+        {/* Farming background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80')" }}
+        />
+        {/* Dark gradient overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-green-800/80 to-green-700/60" />
+        {/* Bottom fade into content area */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background/20 to-transparent" />
+
         <div className="relative max-w-2xl">
           <div className="flex items-center gap-2 mb-3">
             <Sprout className="w-5 h-5 text-green-200" />
