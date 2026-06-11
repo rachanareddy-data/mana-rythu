@@ -131,11 +131,10 @@ export default function Login() {
           </form>
 
           <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100">
-            <p className="text-xs text-muted-foreground font-medium mb-2">Demo accounts:</p>
+            <p className="text-xs text-muted-foreground font-medium mb-2">Try demo accounts:</p>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p><span className="font-medium text-foreground">Farmer:</span> farmer@demo.com / demo123</p>
               <p><span className="font-medium text-foreground">Buyer:</span> buyer@demo.com / demo123</p>
-              <p><span className="font-medium text-foreground">Admin:</span> admin@demo.com / demo123</p>
             </div>
           </div>
 

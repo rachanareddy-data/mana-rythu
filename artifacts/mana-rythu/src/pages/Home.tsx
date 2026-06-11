@@ -106,9 +106,9 @@ export default function Home() {
             )}
             {isFarmer && (
               <>
-                <Link href="/farmer">
+                <Link href="/farmer-dashboard">
                   <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
-                    <Plus className="w-4 h-4" /> Add Crop / List for Sale
+                    <Plus className="w-4 h-4" /> My Farm Dashboard
                   </Button>
                 </Link>
                 <Link href="/marketplace">
@@ -120,7 +120,7 @@ export default function Home() {
             )}
             {isBuyer && (
               <>
-                <Link href="/buyer">
+                <Link href="/buyer-dashboard">
                   <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
                     <ShoppingCart className="w-4 h-4" /> Browse Crops
                   </Button>
@@ -309,8 +309,8 @@ export default function Home() {
               </div>
               <div className="flex gap-3 shrink-0">
                 {user ? (
-                  <Link href="/farmer">
-                    <Button className="gap-2"><Plus className="w-4 h-4" /> Add Crop</Button>
+                  <Link href="/farmer-dashboard">
+                    <Button className="gap-2"><Plus className="w-4 h-4" /> Go to Dashboard</Button>
                   </Link>
                 ) : (
                   <>
