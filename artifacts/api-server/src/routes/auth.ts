@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
+import { notify } from "../lib/notify";
 
 const router = Router();
 
@@ -39,6 +40,14 @@ router.post("/auth/register", async (req, res) => {
     }).returning();
     const token = generateToken(user.id);
     activeSessions.set(token, user.id);
+
+    await notify(
+      user.id,
+      "info",
+      "Welcome to Mana Rythu! 🌾",
+      `Hi ${user.name}! Your account is ready. ${user.role === "farmer" ? "Start by posting your first crop listing." : "Browse fresh produce directly from local farmers."}`,
+    );
+
     const { passwordHash: _, ...safeUser } = user;
     return res.status(201).json({
       user: { ...safeUser, rating: safeUser.rating ?? null, createdAt: safeUser.createdAt.toISOString() },

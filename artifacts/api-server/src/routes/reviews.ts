@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db, reviewsTable, usersTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
+import { notify } from "../lib/notify";
 
 const router = Router();
 
@@ -69,6 +70,18 @@ router.post("/reviews", async (req, res) => {
       comment: comment ?? null,
     }).returning();
     await refreshTrustScore(toUserId);
+
+    // Notify the reviewed user
+    const [fromUser] = await db.select({ name: usersTable.name })
+      .from(usersTable).where(eq(usersTable.id, fromUserId)).limit(1);
+    const stars = "★".repeat(rating) + "☆".repeat(5 - rating);
+    await notify(
+      toUserId,
+      "info",
+      `New ${rating}-star review`,
+      `${fromUser?.name ?? "Someone"} gave you ${stars} ${comment ? `— "${comment.slice(0, 80)}"` : ""}`.trim(),
+    );
+
     return res.status(201).json(await serializeReview(review));
   } catch (err) {
     req.log.error(err);

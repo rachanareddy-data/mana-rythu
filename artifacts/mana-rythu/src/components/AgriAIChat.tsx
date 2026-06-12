@@ -79,6 +79,8 @@ export default function AgriAIChat() {
     return id;
   }, []);
 
+  // Safe speak — ONLY call this from a direct user-click handler, never from async code.
+  // iOS/Safari throws "operation is insecure" if speak() is called outside a user gesture.
   const speakText = useCallback((text: string, lang: string) => {
     if (!voiceEnabled || !speechSynthesisAvailable) return;
     try {
@@ -87,15 +89,9 @@ export default function AgriAIChat() {
       utter.lang = lang;
       utter.rate = 0.9;
       utter.pitch = 1;
-      // iOS Safari requires speak() to be called in a user-gesture context.
-      // We use setTimeout 0 to avoid "operation is insecure" when called from async code.
-      setTimeout(() => {
-        try {
-          window.speechSynthesis.speak(utter);
-        } catch {
-          // Silently ignore — e.g. iOS background tab restriction
-        }
-      }, 0);
+      // Suppress the SpeechSynthesisErrorEvent so it never reaches Vite's runtime overlay
+      utter.onerror = () => { /* intentionally suppressed */ };
+      window.speechSynthesis.speak(utter);
     } catch {
       // Silently disable voice if not supported
     }
@@ -129,7 +125,8 @@ export default function AgriAIChat() {
       } else {
         const aiMsg: Message = { id: nextId(), role: "ai", text: data.reply, lang };
         setMessages(prev => [...prev, aiMsg]);
-        speakText(data.reply, lang);
+        // Do NOT auto-speak here — calling speechSynthesis.speak() after await fetch()
+        // triggers "operation is insecure" on iOS/Safari. Use the "Listen again" button instead.
       }
     } catch {
       setMessages(prev => [...prev, {

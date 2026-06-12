@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db, listingsTable, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { notify } from "../lib/notify";
 
 const router = Router();
 
@@ -78,6 +79,14 @@ router.post("/listings", async (req, res) => {
       trend: trend || "stable",
       available: true,
     }).returning();
+
+    await notify(
+      farmerId,
+      "info",
+      `Listing live: ${cropName}`,
+      `Your ${cropName} listing (${quantity} ${unit || "kg"} @ ₹${minPrice}–₹${maxPrice}) is now live on the marketplace.`,
+    );
+
     return res.status(201).json(serializeListing(listing));
   } catch (err) {
     req.log.error(err);
@@ -164,6 +173,13 @@ router.post("/listings/:id/contact", async (req, res) => {
       .where(eq(listingsTable.id, id))
       .limit(1);
     if (!result) return res.status(404).json({ error: "Listing not found" });
+    await notify(
+      result.listing.farmerId,
+      "order",
+      `Buyer inquiry: ${result.listing.cropName}`,
+      `${buyerName} is interested in your ${result.listing.cropName} listing. Message: "${message.slice(0, 100)}"`,
+    );
+
     return res.json({
       success: true,
       farmerPhone: result.farmerPhone ?? null,

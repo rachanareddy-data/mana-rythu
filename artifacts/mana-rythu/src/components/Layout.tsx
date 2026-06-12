@@ -94,11 +94,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const fetchNotifications = useCallback(async () => {
-    if (!user) return;
+  const fetchNotifications = useCallback(async (uid: number) => {
     setNotifLoading(true);
     try {
-      const res = await fetch(`/api/notifications?userId=${user.id}`);
+      const res = await fetch(`/api/notifications?userId=${uid}`);
       if (res.ok) {
         const data = await res.json();
         setNotifications(data.notifications ?? []);
@@ -108,14 +107,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     } finally {
       setNotifLoading(false);
     }
-  }, [user]);
+  }, []);
 
   const markRead = useCallback(async (id: number) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     try {
       await fetch(`/api/notifications/${id}/read`, { method: "PATCH" });
     } catch {
-      // revert on failure
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: false } : n));
     }
   }, []);
@@ -132,13 +130,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const openNotifs = useCallback(() => {
     setNotifOpen(v => {
-      if (!v) fetchNotifications();
+      if (!v && user) fetchNotifications(user.id);
       return !v;
     });
     setLangOpen(false);
-  }, [fetchNotifications]);
+  }, [fetchNotifications, user]);
 
-  // Close notification panel when navigating
+  // Auto-fetch notifications whenever the logged-in user changes (login/logout)
+  useEffect(() => {
+    if (user?.id) {
+      fetchNotifications(user.id);
+    } else {
+      setNotifications([]);
+    }
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Poll for new notifications every 30s while logged in
+  useEffect(() => {
+    if (!user?.id) return;
+    const interval = setInterval(() => fetchNotifications(user.id), 30_000);
+    return () => clearInterval(interval);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close panels when navigating
   useEffect(() => {
     setNotifOpen(false);
     setSidebarOpen(false);
@@ -337,9 +351,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 bg-red-500 rounded-full border-2 border-card text-[9px] font-bold text-white flex items-center justify-center leading-none">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
-                )}
-                {unreadCount === 0 && !notifOpen && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card" />
                 )}
               </button>
 
