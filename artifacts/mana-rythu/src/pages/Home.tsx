@@ -4,6 +4,7 @@ import {
   useGetRecommendedCrops, useGetWeather,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
+import { useLanguage } from "@/contexts/language";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ function DemandBadge({ level }: { level: string }) {
 
 export default function Home() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { data: summary, isLoading: sumLoading } = useGetDashboardSummary();
   const { data: prices, isLoading: pricesLoading } = useGetMarketPrices();
   const { data: crops, isLoading: cropsLoading } = useGetRecommendedCrops();
@@ -80,26 +82,26 @@ export default function Home() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-2 leading-tight">
             {user
-              ? `Welcome back, ${user.name.split(" ")[0]}`
-              : "Connect Farmers to Markets"}
+              ? `${t("welcome")}, ${user.name.split(" ")[0]}`
+              : t("connectFarmersToMarkets")}
           </h1>
           <p className="text-green-100 text-sm mb-6 leading-relaxed max-w-lg">
-            {isFarmer && "List your crops with AI-suggested fair prices. Reach buyers directly from your dashboard."}
-            {isBuyer && "Browse fresh produce directly from verified farmers. Get the best price with full transparency."}
-            {isAdmin && "Monitor platform health, verify farmers, and manage all listings."}
-            {!user && "A transparent, direct-to-buyer agriculture marketplace for Telangana and Andhra Pradesh farmers."}
+            {isFarmer && t("farmerHeroDesc")}
+            {isBuyer && t("buyerHeroDesc")}
+            {isAdmin && t("adminHeroDesc")}
+            {!user && t("manaPlatformDesc")}
           </p>
           <div className="flex flex-wrap gap-3">
             {!user && (
               <>
                 <Link href="/register">
                   <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
-                    <Plus className="w-4 h-4" /> Join as Farmer
+                    <Plus className="w-4 h-4" /> {t("joinAsFarmer")}
                   </Button>
                 </Link>
                 <Link href="/marketplace">
                   <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 gap-2">
-                    <ShoppingBag className="w-4 h-4" /> Browse Crops
+                    <ShoppingBag className="w-4 h-4" /> {t("browseCrops")}
                   </Button>
                 </Link>
               </>
@@ -108,12 +110,12 @@ export default function Home() {
               <>
                 <Link href="/farmer-dashboard">
                   <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
-                    <Plus className="w-4 h-4" /> My Farm Dashboard
+                    <Plus className="w-4 h-4" /> {t("myFarmDashboard")}
                   </Button>
                 </Link>
                 <Link href="/marketplace">
                   <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 gap-2">
-                    <ShoppingBag className="w-4 h-4" /> View Marketplace
+                    <ShoppingBag className="w-4 h-4" /> {t("viewMarketplace")}
                   </Button>
                 </Link>
               </>
@@ -122,12 +124,12 @@ export default function Home() {
               <>
                 <Link href="/buyer-dashboard">
                   <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
-                    <ShoppingCart className="w-4 h-4" /> Browse Crops
+                    <ShoppingCart className="w-4 h-4" /> {t("browseCrops")}
                   </Button>
                 </Link>
                 <Link href="/marketplace">
                   <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 gap-2">
-                    <ShoppingBag className="w-4 h-4" /> All Listings
+                    <ShoppingBag className="w-4 h-4" /> {t("allListings")}
                   </Button>
                 </Link>
               </>
@@ -135,7 +137,7 @@ export default function Home() {
             {isAdmin && (
               <Link href="/admin">
                 <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2">
-                  Admin Panel
+                  {t("adminPanel")}
                 </Button>
               </Link>
             )}
@@ -154,14 +156,20 @@ export default function Home() {
             ))
           ) : summary ? (
             <>
-              <StatCard label="Registered Farmers" value={summary.totalFarmers.toLocaleString()} icon={Sprout} color="bg-green-100 text-green-700" />
-              <StatCard label="Active Buyers" value={summary.totalBuyers.toLocaleString()} icon={Users} color="bg-blue-100 text-blue-700" />
-              <StatCard label="Active Listings" value={summary.activeListings.toLocaleString()} icon={ShoppingBag} color="bg-amber-100 text-amber-700" />
-              <StatCard label="Verified Farmers" value={summary.verifiedFarmers.toLocaleString()} icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
+              <StatCard label={t("registeredFarmers")} value={summary.totalFarmers.toLocaleString()} icon={Sprout} color="bg-green-100 text-green-700" />
+              <StatCard label={t("activeBuyers")} value={summary.totalBuyers.toLocaleString()} icon={Users} color="bg-blue-100 text-blue-700" />
+              <StatCard label={t("activeListings")} value={summary.activeListings.toLocaleString()} icon={ShoppingBag} color="bg-amber-100 text-amber-700" />
+              <StatCard label={t("verifiedFarmers")} value={summary.verifiedFarmers.toLocaleString()} icon={CheckCircle2} color="bg-emerald-100 text-emerald-700" />
             </>
           ) : (
             Array.from({ length: 4 }).map((_, i) => (
-              <StatCard key={i} label={["Registered Farmers","Active Buyers","Active Listings","Verified Farmers"][i]} value={0} icon={[Sprout,Users,ShoppingBag,CheckCircle2][i]} color={["bg-green-100 text-green-700","bg-blue-100 text-blue-700","bg-amber-100 text-amber-700","bg-emerald-100 text-emerald-700"][i]} />
+              <StatCard
+                key={i}
+                label={[t("registeredFarmers"), t("activeBuyers"), t("activeListings"), t("verifiedFarmers")][i]}
+                value={0}
+                icon={[Sprout, Users, ShoppingBag, CheckCircle2][i]}
+                color={["bg-green-100 text-green-700", "bg-blue-100 text-blue-700", "bg-amber-100 text-amber-700", "bg-emerald-100 text-emerald-700"][i]}
+              />
             ))
           )}
         </div>
@@ -172,7 +180,7 @@ export default function Home() {
           <Card className="border border-border shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2">
-                <Cloud className="w-4 h-4 text-blue-500" /> Weather Advisory
+                <Cloud className="w-4 h-4 text-blue-500" /> {t("weatherAdvisory")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -187,7 +195,7 @@ export default function Home() {
                   <div className="flex flex-wrap gap-4 mb-3">
                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Droplets className="w-3.5 h-3.5 text-blue-500" />
-                      <span>{weather.humidity}% Humidity</span>
+                      <span>{weather.humidity}% {t("humidity")}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Droplets className="w-3.5 h-3.5 text-sky-400" />
@@ -205,16 +213,16 @@ export default function Home() {
           <Card className="lg:col-span-2 border border-border shadow-sm">
             <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <CardTitle className="text-base font-semibold flex items-center gap-2">
-                <BarChart2 className="w-4 h-4 text-amber-500" /> Today's Mandi Prices
+                <BarChart2 className="w-4 h-4 text-amber-500" /> {t("todaysMandiPrices")}
               </CardTitle>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">Estimated</Badge>
+                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">{t("estimated")}</Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-start gap-1.5 mb-3 text-[11px] text-muted-foreground">
                 <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-400" />
-                <span>Source: Market Average (Estimated). Not a guaranteed price.</span>
+                <span>Source: Market Average ({t("estimated")}). Not a guaranteed price.</span>
               </div>
               {pricesLoading ? (
                 <div className="space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div>
@@ -251,14 +259,14 @@ export default function Home() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                <Leaf className="w-5 h-5 text-primary" /> Crops to Consider This Season
+                <Leaf className="w-5 h-5 text-primary" /> {t("cropsThisSeason")}
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                <Info className="w-3 h-3" /> Advisory only — price ranges are market estimates, not guarantees
+                <Info className="w-3 h-3" /> {t("advisoryOnly")}
               </p>
             </div>
             <Link href="/marketplace" className="text-sm text-primary font-medium flex items-center gap-1 hover:underline shrink-0">
-              Marketplace <ArrowRight className="w-3.5 h-3.5" />
+              {t("marketplace")} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           {cropsLoading ? (
@@ -299,26 +307,24 @@ export default function Home() {
               </div>
               <div className="flex-1 text-center sm:text-left">
                 <h3 className="font-bold text-foreground text-lg mb-1">
-                  {user ? "List your first crop" : "Start selling on Mana Rythu"}
+                  {user ? t("listFirstCropTitle") : t("startSellingTitle")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {user
-                    ? "Add a crop with a photo and AI-suggested fair price. Buyers will find you."
-                    : "Register as a farmer and list your crops directly to buyers across Telangana and AP."}
+                  {user ? t("listFirstCropDesc") : t("startSellingDesc")}
                 </p>
               </div>
               <div className="flex gap-3 shrink-0">
                 {user ? (
                   <Link href="/farmer-dashboard">
-                    <Button className="gap-2"><Plus className="w-4 h-4" /> Go to Dashboard</Button>
+                    <Button className="gap-2"><Plus className="w-4 h-4" /> {t("goToDashboard")}</Button>
                   </Link>
                 ) : (
                   <>
                     <Link href="/register">
-                      <Button className="gap-2"><Plus className="w-4 h-4" /> Register</Button>
+                      <Button className="gap-2"><Plus className="w-4 h-4" /> {t("register")}</Button>
                     </Link>
                     <Link href="/login">
-                      <Button variant="outline">Sign in</Button>
+                      <Button variant="outline">{t("signIn")}</Button>
                     </Link>
                   </>
                 )}

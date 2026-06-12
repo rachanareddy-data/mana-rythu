@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useGetListings, getGetListingsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth";
+import { useLanguage } from "@/contexts/language";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,28 +20,29 @@ import LogisticsEstimator from "@/components/LogisticsEstimator";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
-const POLL_INTERVAL = 15_000; // 15 seconds
+const POLL_INTERVAL = 15_000;
 
-function TrendBadge({ trend }: { trend: string }) {
+function TrendBadge({ trend, rising, stable, falling }: { trend: string; rising: string; stable: string; falling: string }) {
   if (trend === "up") return (
     <span className="flex items-center gap-1 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
-      <TrendingUp className="w-3 h-3" /> Rising
+      <TrendingUp className="w-3 h-3" /> {rising}
     </span>
   );
   if (trend === "down") return (
     <span className="flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">
-      <TrendingDown className="w-3 h-3" /> Falling
+      <TrendingDown className="w-3 h-3" /> {falling}
     </span>
   );
   return (
     <span className="flex items-center gap-1 text-[10px] font-semibold text-yellow-700 bg-yellow-50 border border-yellow-200 px-1.5 py-0.5 rounded-full">
-      <Minus className="w-3 h-3" /> Stable
+      <Minus className="w-3 h-3" /> {stable}
     </span>
   );
 }
 
 export default function Marketplace() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [, navigate] = useLocation();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
@@ -72,13 +74,12 @@ export default function Marketplace() {
     }
   );
 
-  // Flash refresh indicator when a background poll completes
   useEffect(() => {
     if (!isFetching) {
       setLastRefresh(new Date());
       setJustRefreshed(true);
-      const t = setTimeout(() => setJustRefreshed(false), 1500);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => setJustRefreshed(false), 1500);
+      return () => clearTimeout(timer);
     }
     return undefined;
   }, [isFetching]);
@@ -93,6 +94,13 @@ export default function Marketplace() {
   const hasFilters = !!(search || locationFilter || minPrice || maxPrice || trendFilter);
   const activeFilterCount = [search, locationFilter, minPrice, maxPrice, trendFilter].filter(Boolean).length;
 
+  const trendOptions = [
+    { value: "", label: t("allTrends") },
+    { value: "up", label: `📈 ${t("rising")}` },
+    { value: "stable", label: `➖ ${t("stable")}` },
+    { value: "down", label: `📉 ${t("falling")}` },
+  ];
+
   return (
     <div className="flex h-full pb-20 lg:pb-0">
 
@@ -100,38 +108,33 @@ export default function Marketplace() {
       <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-border bg-card p-5 space-y-5 overflow-y-auto">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-foreground flex items-center gap-2">
-            <Filter className="w-4 h-4" /> Filters
+            <Filter className="w-4 h-4" /> {t("filter")}
           </h2>
           {hasFilters && (
-            <button onClick={clearFilters} className="text-xs text-destructive hover:underline">Clear all</button>
+            <button onClick={clearFilters} className="text-xs text-destructive hover:underline">{t("clearAll")}</button>
           )}
         </div>
 
         <div className="space-y-4">
           <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Crop Name</Label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("cropName")}</Label>
             <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="e.g. Rice, Tomato..." className="mt-2 h-9 text-sm" />
           </div>
           <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Location</Label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("location")}</Label>
             <Input value={locationFilter} onChange={e => setLocationFilter(e.target.value)} placeholder="e.g. Hyderabad" className="mt-2 h-9 text-sm" />
           </div>
           <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Price Range (₹/unit)</Label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("priceRange")} (₹/unit)</Label>
             <div className="flex gap-2 mt-2">
               <Input value={minPrice} onChange={e => setMinPrice(e.target.value)} placeholder="Min" className="h-9 text-sm" type="number" />
               <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max" className="h-9 text-sm" type="number" />
             </div>
           </div>
           <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Market Trend</Label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("marketTrend")}</Label>
             <div className="flex flex-col gap-1.5 mt-2">
-              {[
-                { value: "", label: "All trends" },
-                { value: "up", label: "📈 Rising" },
-                { value: "stable", label: "➖ Stable" },
-                { value: "down", label: "📉 Falling" },
-              ].map(opt => (
+              {trendOptions.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => setTrendFilter(opt.value)}
@@ -159,9 +162,13 @@ export default function Marketplace() {
               "w-2 h-2 rounded-full transition-colors",
               isFetching ? "bg-amber-400 animate-pulse" : justRefreshed ? "bg-green-500" : "bg-green-400"
             )} />
-            <span>{isFetching ? "Refreshing..." : `Updated ${formatDistanceToNow(lastRefresh, { addSuffix: true })}`}</span>
+            <span>
+              {isFetching
+                ? t("refreshing")
+                : `${t("updated")} ${formatDistanceToNow(lastRefresh, { addSuffix: true })}`}
+            </span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">Auto-refreshes every 15s</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{t("autoRefreshes")}</p>
         </div>
       </aside>
 
@@ -178,7 +185,7 @@ export default function Marketplace() {
                 type="search"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Search crops..."
+                placeholder={t("searchCrops")}
                 className="bg-transparent border-none outline-none text-sm flex-1 min-w-0"
               />
               {search && (
@@ -203,7 +210,7 @@ export default function Marketplace() {
             {/* Farmer: post crop */}
             {user?.role === "farmer" && (
               <Button size="sm" className="gap-1.5 shrink-0 hidden sm:flex" onClick={() => navigate("/add-crop")}>
-                <Plus className="w-4 h-4" /> Post Crop
+                <Plus className="w-4 h-4" /> {t("postCrop")}
               </Button>
             )}
 
@@ -215,7 +222,7 @@ export default function Marketplace() {
               onClick={() => setShowFilters(v => !v)}
             >
               <SlidersHorizontal className="w-4 h-4" />
-              <span className="hidden sm:inline">Filters</span>
+              <span className="hidden sm:inline">{t("filter")}</span>
               {activeFilterCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground rounded-full text-[10px] flex items-center justify-center font-bold">
                   {activeFilterCount}
@@ -229,23 +236,18 @@ export default function Marketplace() {
             <div className="mt-3 pt-3 border-t border-border space-y-3 lg:hidden">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1">Location</p>
+                  <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1">{t("location")}</p>
                   <Input value={locationFilter} onChange={e => setLocationFilter(e.target.value)} placeholder="e.g. Warangal" className="h-9 text-sm" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1">Max Price (₹)</p>
+                  <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1">{t("maxPriceLabel")}</p>
                   <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-9 text-sm" type="number" />
                 </div>
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1.5">Market Trend</p>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase mb-1.5">{t("marketTrend")}</p>
                 <div className="flex gap-2">
-                  {[
-                    { value: "", label: "All" },
-                    { value: "up", label: "📈 Rising" },
-                    { value: "stable", label: "➖ Stable" },
-                    { value: "down", label: "📉 Falling" },
-                  ].map(opt => (
+                  {trendOptions.map(opt => (
                     <button
                       key={opt.value}
                       onClick={() => setTrendFilter(opt.value)}
@@ -262,7 +264,7 @@ export default function Marketplace() {
                 </div>
               </div>
               {hasFilters && (
-                <button onClick={clearFilters} className="text-xs text-destructive hover:underline">Clear all filters</button>
+                <button onClick={clearFilters} className="text-xs text-destructive hover:underline">{t("clearAll")} {t("filter").toLowerCase()}</button>
               )}
             </div>
           )}
@@ -274,7 +276,7 @@ export default function Marketplace() {
           <div className="flex items-start gap-2 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
             <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
             <p className="text-xs text-blue-700 leading-relaxed">
-              <span className="font-semibold">Prices are indicative ranges</span> based on current mandi averages. Final price is agreed between buyer and farmer.
+              {t("pricesIndicative")}
             </p>
           </div>
 
@@ -285,7 +287,7 @@ export default function Marketplace() {
                 {isLoading ? (
                   <Skeleton className="h-4 w-24" />
                 ) : (
-                  <span>{listings?.length ?? 0} crops found</span>
+                  <span>{listings?.length ?? 0} {t("cropsFound")}</span>
                 )}
               </div>
               {/* Live dot */}
@@ -294,12 +296,12 @@ export default function Marketplace() {
                   "w-1.5 h-1.5 rounded-full",
                   isFetching ? "bg-amber-400 animate-pulse" : "bg-green-500"
                 )} />
-                <span className="hidden sm:inline">{isFetching ? "Refreshing" : "Live"}</span>
+                <span className="hidden sm:inline">{isFetching ? t("refreshing") : t("live")}</span>
               </div>
             </div>
             {hasFilters && (
               <button onClick={clearFilters} className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1">
-                <X className="w-3 h-3" /> Clear filters
+                <X className="w-3 h-3" /> {t("clearFilters")}
               </button>
             )}
           </div>
@@ -325,17 +327,16 @@ export default function Marketplace() {
                       ) : (
                         <Sprout className="w-16 h-16 text-green-300 group-hover:scale-110 transition-transform" />
                       )}
-                      {/* Overlays */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                       <div className="absolute top-2.5 left-2.5 flex gap-1.5">
                         {l.available && (
                           <span className="flex items-center gap-1 text-[10px] font-semibold text-white bg-green-600/90 backdrop-blur px-2 py-0.5 rounded-full">
-                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> Available
+                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> {t("available")}
                           </span>
                         )}
                       </div>
                       <div className="absolute top-2.5 right-2.5">
-                        <TrendBadge trend={l.trend} />
+                        <TrendBadge trend={l.trend} rising={t("rising")} stable={t("stable")} falling={t("falling")} />
                       </div>
                       {l.farmerVerified && (
                         <div className="absolute bottom-2.5 right-2.5 bg-white/90 backdrop-blur rounded-full p-1">
@@ -351,9 +352,9 @@ export default function Marketplace() {
                         <span className="truncate">{l.location}</span>
                       </div>
 
-                      {/* Price — highlighted box */}
+                      {/* Price */}
                       <div className="bg-green-50 border border-green-100 rounded-xl px-3 py-2 mb-2.5">
-                        <p className="text-[10px] text-green-600 font-medium uppercase tracking-wide mb-0.5">Price Range</p>
+                        <p className="text-[10px] text-green-600 font-medium uppercase tracking-wide mb-0.5">{t("priceRange")}</p>
                         <div className="flex items-baseline gap-1">
                           <span className="text-lg font-bold text-green-700">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
                           <span className="text-xs text-muted-foreground">/{l.unit}</span>
@@ -362,7 +363,7 @@ export default function Marketplace() {
 
                       <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
                         <Package className="w-3.5 h-3.5 shrink-0" />
-                        <span>{l.quantity.toLocaleString()} {l.unit} available</span>
+                        <span>{l.quantity.toLocaleString()} {l.unit} {t("available")}</span>
                       </div>
 
                       {/* Footer */}
@@ -388,7 +389,7 @@ export default function Marketplace() {
                             <span className="text-xs font-semibold text-amber-700">{l.farmerRating.toFixed(1)}</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-muted-foreground italic shrink-0">Est. price</span>
+                          <span className="text-[10px] text-muted-foreground italic shrink-0">{t("estPrice")}</span>
                         )}
                       </div>
                     </CardContent>
@@ -401,13 +402,13 @@ export default function Marketplace() {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">
                 <Sprout className="w-8 h-8 text-green-300" />
               </div>
-              <h3 className="font-semibold text-foreground mb-1">No crops found</h3>
+              <h3 className="font-semibold text-foreground mb-1">{t("nocropsFound")}</h3>
               <p className="text-sm text-muted-foreground max-w-xs mb-4">
-                {hasFilters ? "Try adjusting your filters to see more results." : "No crops are listed yet. Check back soon!"}
+                {hasFilters ? t("tryAdjustFilters") : t("noListedYet")}
               </p>
               {hasFilters && (
                 <Button variant="outline" size="sm" onClick={clearFilters} className="gap-1.5">
-                  <X className="w-3.5 h-3.5" /> Clear filters
+                  <X className="w-3.5 h-3.5" /> {t("clearFilters")}
                 </Button>
               )}
             </div>

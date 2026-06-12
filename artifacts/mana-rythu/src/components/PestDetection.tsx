@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
+import { useLanguage } from "@/contexts/language";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
@@ -20,18 +20,19 @@ interface PestResult {
 }
 
 const SEVERITY_CONFIG = {
-  Low:    { label: "Low Risk",    color: "bg-green-50 text-green-700 border-green-200",  icon: ShieldCheck,  bar: "bg-green-500",  header: "bg-green-50 border-green-200" },
-  Medium: { label: "Moderate",    color: "bg-amber-50 text-amber-700 border-amber-200",  icon: AlertTriangle, bar: "bg-amber-500", header: "bg-amber-50 border-amber-200" },
-  High:   { label: "High Risk",   color: "bg-red-50 text-red-700 border-red-200",        icon: ShieldAlert,  bar: "bg-red-500",    header: "bg-red-50 border-red-200" },
+  Low:    { label: "Low Risk",  color: "bg-green-50 text-green-700 border-green-200",  icon: ShieldCheck,   bar: "bg-green-500",  header: "bg-green-50 border-green-200" },
+  Medium: { label: "Moderate",  color: "bg-amber-50 text-amber-700 border-amber-200",  icon: AlertTriangle, bar: "bg-amber-500",  header: "bg-amber-50 border-amber-200" },
+  High:   { label: "High Risk", color: "bg-red-50 text-red-700 border-red-200",        icon: ShieldAlert,   bar: "bg-red-500",    header: "bg-red-50 border-red-200" },
 };
 
 export default function PestDetection({ cropName }: { cropName?: string }) {
+  const { t } = useLanguage();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PestResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [lang, setLang] = useState<"en" | "te">("en");
+  const [resultLang, setResultLang] = useState<"en" | "te">("en");
   const [customCrop, setCustomCrop] = useState(cropName ?? "");
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -98,15 +99,19 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             <div className="w-8 h-8 rounded-xl bg-orange-100 flex items-center justify-center shrink-0">
               <Bug className="w-4 h-4 text-orange-600" />
             </div>
-            <span className="text-orange-900">AI Pest & Disease Detection</span>
-            <span className="ml-auto text-[10px] font-normal text-orange-500 bg-orange-100 px-2 py-0.5 rounded-full border border-orange-200">AI Powered</span>
+            <span className="text-orange-900">{t("pestAITitle")}</span>
+            <span className="ml-auto text-[10px] font-normal text-orange-500 bg-orange-100 px-2 py-0.5 rounded-full border border-orange-200">
+              {t("aiPowered")}
+            </span>
           </CardTitle>
         </CardHeader>
 
         <CardContent className="p-5 space-y-4">
           {/* Crop name input */}
           <div>
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5 block">Crop Name</label>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5 block">
+              {t("pestCropName")}
+            </label>
             <input
               type="text"
               value={customCrop}
@@ -118,7 +123,9 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
 
           {/* Upload area */}
           <div>
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5 block">Leaf / Crop Image</label>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5 block">
+              {t("uploadCropImage")}
+            </label>
             {!imagePreview ? (
               <button
                 type="button"
@@ -129,8 +136,8 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
                   <Camera className="w-7 h-7 text-orange-500" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-gray-700">Upload crop/leaf photo</p>
-                  <p className="text-xs text-gray-400 mt-0.5">JPG, PNG, WebP — max 5 MB</p>
+                  <p className="text-sm font-semibold text-gray-700">{t("uploadCropImageBtn")}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{t("uploadCropImageDesc")}</p>
                 </div>
                 <span className="text-xs text-orange-600 font-medium bg-orange-50 border border-orange-200 px-3 py-1 rounded-full">
                   <Upload className="w-3 h-3 inline mr-1" />Browse
@@ -163,9 +170,9 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             className="w-full gap-2 bg-orange-600 hover:bg-orange-700 text-white shadow-sm"
           >
             {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Analysing image...</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> {t("analysingImage")}</>
             ) : (
-              <><Zap className="w-4 h-4" /> Detect Pest / Disease</>
+              <><Zap className="w-4 h-4" /> {t("detectPestBtn")}</>
             )}
           </Button>
         </CardContent>
@@ -200,7 +207,7 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
                   {sev.label}
                 </span>
                 <span className="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-2.5 py-1">
-                  {result.confidence}% confident
+                  {result.confidence}% {t("confidence").toLowerCase()}
                 </span>
               </div>
             </div>
@@ -208,7 +215,7 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             {/* Confidence bar */}
             <div className="mt-3">
               <div className="flex justify-between text-[10px] text-gray-400 mb-1">
-                <span>Confidence</span><span>{result.confidence}%</span>
+                <span>{t("confidence")}</span><span>{result.confidence}%</span>
               </div>
               <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <div className={cn("h-full rounded-full transition-all", sev.bar)} style={{ width: `${result.confidence}%` }} />
@@ -217,12 +224,24 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
           </div>
 
           <CardContent className="p-5 space-y-4">
-            {/* Language toggle */}
+            {/* Language toggle — EN / Telugu (always, independent of app lang) */}
             <div className="flex gap-1.5">
-              <button onClick={() => setLang("en")} className={cn("flex-1 text-xs font-medium py-1.5 rounded-lg border transition-colors", lang === "en" ? "bg-gray-900 text-white border-gray-900" : "text-gray-500 border-gray-200 hover:bg-gray-50")}>
-                English
+              <button
+                onClick={() => setResultLang("en")}
+                className={cn(
+                  "flex-1 text-xs font-medium py-1.5 rounded-lg border transition-colors",
+                  resultLang === "en" ? "bg-gray-900 text-white border-gray-900" : "text-gray-500 border-gray-200 hover:bg-gray-50"
+                )}
+              >
+                {t("english")}
               </button>
-              <button onClick={() => setLang("te")} className={cn("flex-1 text-xs font-medium py-1.5 rounded-lg border transition-colors", lang === "te" ? "bg-gray-900 text-white border-gray-900" : "text-gray-500 border-gray-200 hover:bg-gray-50")}>
+              <button
+                onClick={() => setResultLang("te")}
+                className={cn(
+                  "flex-1 text-xs font-medium py-1.5 rounded-lg border transition-colors",
+                  resultLang === "te" ? "bg-gray-900 text-white border-gray-900" : "text-gray-500 border-gray-200 hover:bg-gray-50"
+                )}
+              >
                 తెలుగు
               </button>
             </div>
@@ -231,10 +250,10 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             <div>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold">Rx</span>
-                Treatment Steps
+                {t("treatmentSteps")}
               </p>
               <ul className="space-y-2">
-                {(lang === "te" ? result.treatments_te : result.treatments_en).map((step, i) => (
+                {(resultLang === "te" ? result.treatments_te : result.treatments_en).map((step, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
                     <span className="w-5 h-5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
@@ -249,10 +268,10 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             <div className="border-t border-gray-100 pt-3">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                Prevention Tips
+                {t("preventionTips")}
               </p>
               <ul className="space-y-2">
-                {(lang === "te" ? result.prevention_te : result.prevention_en).map((tip, i) => (
+                {(resultLang === "te" ? result.prevention_te : result.prevention_en).map((tip, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0 mt-2" />
                     {tip}
@@ -264,7 +283,7 @@ export default function PestDetection({ cropName }: { cropName?: string }) {
             {result.disease === "Healthy Crop" && (
               <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
-                <p className="text-sm text-green-800 font-medium">Your crop looks healthy — no treatment needed!</p>
+                <p className="text-sm text-green-800 font-medium">{t("healthyCropMsg")}</p>
               </div>
             )}
           </CardContent>

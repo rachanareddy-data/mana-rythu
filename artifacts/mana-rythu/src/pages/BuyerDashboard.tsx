@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useGetListings, getGetListingsQueryKey } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
+import { useLanguage } from "@/contexts/language";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,20 +16,20 @@ import {
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
-function TrendBadge({ trend }: { trend: string }) {
+function TrendBadge({ trend, rising, stable, falling }: { trend: string; rising: string; stable: string; falling: string }) {
   if (trend === "up") return (
     <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
-      <TrendingUp className="w-3 h-3" /> Rising
+      <TrendingUp className="w-3 h-3" /> {rising}
     </span>
   );
   if (trend === "down") return (
     <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">
-      <TrendingDown className="w-3 h-3" /> Falling
+      <TrendingDown className="w-3 h-3" /> {falling}
     </span>
   );
   return (
     <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full">
-      <Minus className="w-3 h-3" /> Stable
+      <Minus className="w-3 h-3" /> {stable}
     </span>
   );
 }
@@ -44,6 +45,7 @@ const CATEGORIES = [
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -78,6 +80,13 @@ export default function BuyerDashboard() {
 
   const firstName = user?.name?.split(" ")[0] ?? "Buyer";
 
+  const trendOptions = [
+    { value: "", label: t("allTrends") },
+    { value: "up", label: `📈 ${t("rising")}` },
+    { value: "stable", label: `➖ ${t("stable")}` },
+    { value: "down", label: `📉 ${t("falling")}` },
+  ];
+
   return (
     <div className="flex flex-col h-full pb-20 lg:pb-0 bg-gray-50/50">
 
@@ -87,15 +96,15 @@ export default function BuyerDashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-xl font-bold text-gray-900">
-                {user ? `Hello, ${firstName} 👋` : "Browse Fresh Crops"}
+                {user ? `Hello, ${firstName} 👋` : t("browseCrops")}
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5">Farm-fresh produce, direct from verified farmers</p>
+              <p className="text-sm text-gray-500 mt-0.5">{t("browseFreshProduce")}</p>
             </div>
             {/* Stats pills */}
             <div className="hidden sm:flex items-center gap-3">
               {!isLoading && (
                 <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
-                  {listings?.length ?? 0} crops available
+                  {listings?.length ?? 0} {t("available")}
                 </span>
               )}
             </div>
@@ -144,31 +153,26 @@ export default function BuyerDashboard() {
         <aside className="hidden lg:flex flex-col w-52 shrink-0 px-4 py-5 space-y-5 overflow-y-auto">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-sm text-gray-700 flex items-center gap-1.5">
-              <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+              <SlidersHorizontal className="w-3.5 h-3.5" /> {t("filter")}
             </h2>
             {hasFilters && (
-              <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium">Clear all</button>
+              <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium">{t("clearAll")}</button>
             )}
           </div>
 
           <div className="space-y-4">
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Location</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("location")}</p>
               <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Warangal" className="h-9 text-sm border-gray-200" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Max Price (₹)</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("maxPriceLabel")}</p>
               <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-9 text-sm border-gray-200" type="number" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Market Trend</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("marketTrend")}</p>
               <div className="space-y-1">
-                {[
-                  { value: "", label: "All trends" },
-                  { value: "up", label: "📈 Rising" },
-                  { value: "stable", label: "➖ Stable" },
-                  { value: "down", label: "📉 Falling" },
-                ].map(opt => (
+                {trendOptions.map(opt => (
                   <button
                     key={opt.value}
                     onClick={() => setTrendFilter(opt.value)}
@@ -194,19 +198,21 @@ export default function BuyerDashboard() {
           <div className="flex items-start gap-2 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
             <Info className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
             <p className="text-xs text-blue-700 leading-relaxed">
-              <span className="font-semibold">Prices are indicative ranges</span> based on current mandi averages. Final price is agreed between buyer and farmer.
+              {t("pricesIndicative")}
             </p>
           </div>
 
           {/* Results header */}
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-gray-500">
-              {isLoading ? "Loading crops…" : <><span className="font-semibold text-gray-800">{listings?.length ?? 0}</span> crops found</>}
+              {isLoading
+                ? t("loading")
+                : <><span className="font-semibold text-gray-800">{listings?.length ?? 0}</span> {t("cropsFound")}</>}
             </p>
             <div className="flex items-center gap-2">
               {hasFilters && (
                 <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
-                  <X className="w-3 h-3" /> Clear filters
+                  <X className="w-3 h-3" /> {t("clearFilters")}
                 </button>
               )}
               <Button
@@ -215,7 +221,7 @@ export default function BuyerDashboard() {
                 className="lg:hidden gap-1.5 h-8 text-xs border-gray-200"
                 onClick={() => setShowMobileFilters(v => !v)}
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+                <SlidersHorizontal className="w-3.5 h-3.5" /> {t("filter")}
                 {hasFilters && <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />}
               </Button>
             </div>
@@ -224,17 +230,16 @@ export default function BuyerDashboard() {
           {/* Mobile filter drawer */}
           {showMobileFilters && (
             <div className="lg:hidden bg-white border border-gray-100 rounded-2xl p-4 mb-4 shadow-sm grid grid-cols-2 gap-3">
-              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" className="h-9 text-sm" />
-              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="Max price ₹" className="h-9 text-sm" type="number" />
+              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder={t("location")} className="h-9 text-sm" />
+              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder={t("maxPriceLabel")} className="h-9 text-sm" type="number" />
               <select
                 value={trendFilter}
                 onChange={e => setTrendFilter(e.target.value)}
                 className="h-9 col-span-2 rounded-md border border-input bg-background px-3 text-sm"
               >
-                <option value="">All trends</option>
-                <option value="up">📈 Rising</option>
-                <option value="stable">➖ Stable</option>
-                <option value="down">📉 Falling</option>
+                {trendOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
           )}
@@ -277,7 +282,7 @@ export default function BuyerDashboard() {
                         )}
                       </div>
                       <div className="absolute top-2.5 right-2.5">
-                        <TrendBadge trend={l.trend} />
+                        <TrendBadge trend={l.trend} rising={t("rising")} stable={t("stable")} falling={t("falling")} />
                       </div>
                     </div>
 
@@ -291,7 +296,7 @@ export default function BuyerDashboard() {
 
                       {/* Price — prominent */}
                       <div className="bg-green-50 rounded-lg px-3 py-2 mb-3">
-                        <p className="text-[10px] text-green-600 font-medium mb-0.5">PRICE RANGE</p>
+                        <p className="text-[10px] text-green-600 font-medium mb-0.5">{t("priceRange").toUpperCase()}</p>
                         <div className="flex items-baseline gap-1">
                           <span className="text-lg font-bold text-green-700">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
                           <span className="text-xs text-green-500">/{l.unit}</span>
@@ -312,7 +317,11 @@ export default function BuyerDashboard() {
                           </div>
                           <div>
                             <span className="text-xs font-medium text-gray-700 truncate max-w-20 block">{l.farmerName ?? "Farmer"}</span>
-                            {l.farmerVerified && <span className="text-[9px] text-green-600 font-medium flex items-center gap-0.5"><CheckCircle2 className="w-2.5 h-2.5" /> Verified</span>}
+                            {l.farmerVerified && (
+                              <span className="text-[9px] text-green-600 font-medium flex items-center gap-0.5">
+                                <CheckCircle2 className="w-2.5 h-2.5" /> {t("verified")}
+                              </span>
+                            )}
                           </div>
                         </div>
                         {l.farmerRating ? (
@@ -321,7 +330,7 @@ export default function BuyerDashboard() {
                             <span className="text-xs font-bold text-amber-700">{l.farmerRating.toFixed(1)}</span>
                           </div>
                         ) : (
-                          <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-lg">View →</span>
+                          <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-lg">{t("view")} →</span>
                         )}
                       </div>
                     </CardContent>
@@ -335,16 +344,14 @@ export default function BuyerDashboard() {
                 <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
               <h3 className="font-semibold text-gray-800 mb-1">
-                {hasFilters ? "No crops match your filters" : "No crops listed yet"}
+                {hasFilters ? t("noCropsMatchFilter") : t("nocropsFound")}
               </h3>
               <p className="text-sm text-gray-500 mb-5 max-w-xs">
-                {hasFilters
-                  ? "Try different search terms or remove some filters."
-                  : "Farmers haven't listed crops yet. Check back soon!"}
+                {hasFilters ? t("adjustFiltersOrBrowse") : t("noListedYet")}
               </p>
               {hasFilters && (
                 <Button variant="outline" size="sm" onClick={clearAll} className="border-gray-200">
-                  Clear all filters
+                  {t("clearAll")} {t("filter").toLowerCase()}
                 </Button>
               )}
             </div>

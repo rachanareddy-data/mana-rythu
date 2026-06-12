@@ -6,8 +6,9 @@ import {
   useGetListings, useDeleteListing, getGetListingsQueryKey,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
+import { useLanguage } from "@/contexts/language";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,26 +26,26 @@ import PestDetection from "@/components/PestDetection";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
-const STATUS_CONFIG: Record<string, { label: string; dot: string; badge: string }> = {
-  growing:   { label: "Growing",   dot: "bg-blue-500",    badge: "bg-blue-50 text-blue-700 border-blue-200" },
-  ready:     { label: "Ready",     dot: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  harvested: { label: "Harvested", dot: "bg-gray-400",    badge: "bg-gray-50 text-gray-600 border-gray-200" },
+const STATUS_CONFIG: Record<string, { labelKey: string; dot: string; badge: string }> = {
+  growing:   { labelKey: "growing",     dot: "bg-blue-500",    badge: "bg-blue-50 text-blue-700 border-blue-200" },
+  ready:     { labelKey: "readyToSell", dot: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  harvested: { labelKey: "harvested",   dot: "bg-gray-400",    badge: "bg-gray-50 text-gray-600 border-gray-200" },
 };
 
-function TrendBadge({ trend }: { trend: string }) {
+function TrendBadge({ trend, rising, stable, falling }: { trend: string; rising: string; stable: string; falling: string }) {
   if (trend === "up") return (
     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
-      <TrendingUp className="w-3 h-3" /> Rising
+      <TrendingUp className="w-3 h-3" /> {rising}
     </span>
   );
   if (trend === "down") return (
     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">
-      <TrendingDown className="w-3 h-3" /> Falling
+      <TrendingDown className="w-3 h-3" /> {falling}
     </span>
   );
   return (
     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full">
-      <Minus className="w-3 h-3" /> Stable
+      <Minus className="w-3 h-3" /> {stable}
     </span>
   );
 }
@@ -88,6 +89,7 @@ function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, load
 
 export default function FarmerDashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const qc = useQueryClient();
   const [, navigate] = useLocation();
@@ -167,12 +169,12 @@ export default function FarmerDashboard() {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-xl font-bold text-white">Welcome, {firstName}</h1>
+                  <h1 className="text-xl font-bold text-white">{t("welcome")}, {firstName}</h1>
                   <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-white bg-white/20 px-2 py-0.5 rounded-full border border-white/30">
                     <Leaf className="w-2.5 h-2.5" /> Farmer
                   </span>
                 </div>
-                <p className="text-sm text-green-100 mt-0.5">Manage your crops and marketplace listings</p>
+                <p className="text-sm text-green-100 mt-0.5">{t("manageCrops")}</p>
               </div>
             </div>
             <div className="flex gap-2 sm:gap-3">
@@ -182,14 +184,14 @@ export default function FarmerDashboard() {
                 className="gap-1.5 bg-white/10 border-white/30 text-white hover:bg-white/20 text-xs sm:text-sm"
                 onClick={() => setCropModal(true)}
               >
-                <Plus className="w-4 h-4" /> Track Crop
+                <Plus className="w-4 h-4" /> {t("trackCrop")}
               </Button>
               <Button
                 size="sm"
                 className="gap-1.5 bg-white text-green-700 hover:bg-green-50 shadow-sm font-semibold text-xs sm:text-sm"
                 onClick={() => navigate("/add-crop")}
               >
-                <ShoppingBag className="w-4 h-4" /> Post to Market
+                <ShoppingBag className="w-4 h-4" /> {t("postToMarket")}
               </Button>
             </div>
           </div>
@@ -200,36 +202,36 @@ export default function FarmerDashboard() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
-            label="Growing"
+            label={t("growing")}
             value={growing}
-            subtext={growing === 1 ? "crop in progress" : "crops in progress"}
+            subtext={t("cropsInProgress")}
             icon={Sprout}
             gradient="bg-gradient-to-br from-blue-500 to-blue-600"
             iconColor="text-white"
             loading={cropsLoading}
           />
           <StatCard
-            label="Ready to Sell"
+            label={t("readyToSell")}
             value={ready}
-            subtext={ready > 0 ? "ready to harvest" : "none ready yet"}
+            subtext={ready > 0 ? t("readyToSell") : t("noneReadyYet")}
             icon={CheckCircle2}
             gradient="bg-gradient-to-br from-emerald-500 to-green-600"
             iconColor="text-white"
             loading={cropsLoading}
           />
           <StatCard
-            label="Active Listings"
+            label={t("activeListings")}
             value={activeListings}
-            subtext={activeListings === 1 ? "live on market" : "live on market"}
+            subtext={t("liveOnMarket")}
             icon={BarChart3}
             gradient="bg-gradient-to-br from-violet-500 to-purple-600"
             iconColor="text-white"
             loading={listingsLoading}
           />
           <StatCard
-            label="Est. Value"
+            label={t("estValue")}
             value={`₹${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(1)}K` : totalValue}`}
-            subtext="across all listings"
+            subtext={t("acrossAllListings")}
             icon={IndianRupee}
             gradient="bg-gradient-to-br from-amber-500 to-orange-500"
             iconColor="text-white"
@@ -249,12 +251,12 @@ export default function FarmerDashboard() {
                   <ShoppingBag className="w-5 h-5 text-green-700" />
                 </div>
                 <div>
-                  <p className="font-semibold text-green-900 text-sm sm:text-base">Start selling your crops</p>
-                  <p className="text-xs sm:text-sm text-green-700 mt-0.5">Post your first listing to reach thousands of buyers</p>
+                  <p className="font-semibold text-green-900 text-sm sm:text-base">{t("startSellCTA")}</p>
+                  <p className="text-xs sm:text-sm text-green-700 mt-0.5">{t("startSellCTADesc")}</p>
                 </div>
               </div>
               <Button className="gap-2 bg-green-600 hover:bg-green-700 shrink-0 text-sm" onClick={() => navigate("/add-crop")}>
-                Post Your First Crop <ArrowRight className="w-4 h-4" />
+                {t("postYourFirstCrop")} <ArrowRight className="w-4 h-4" />
               </Button>
             </CardContent>
           </Card>
@@ -266,22 +268,21 @@ export default function FarmerDashboard() {
             <TabsList className="bg-gray-100 h-9 p-1">
               <TabsTrigger value="listings" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
                 <ShoppingBag className="w-3.5 h-3.5" />
-                <span>Listings</span>
+                <span>{t("listings")}</span>
                 {listings && (
                   <span className="text-[10px] bg-gray-200 data-[state=active]:bg-green-100 px-1.5 py-0.5 rounded-full font-semibold">{listings.length}</span>
                 )}
               </TabsTrigger>
               <TabsTrigger value="crops" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
                 <Sprout className="w-3.5 h-3.5" />
-                <span>My Crops</span>
+                <span>{t("myCrops")}</span>
                 {crops && (
                   <span className="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded-full font-semibold">{crops.length}</span>
                 )}
               </TabsTrigger>
               <TabsTrigger value="pest" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
                 <Bug className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Pest</span>
-                <span className="sm:hidden">AI</span>
+                <span>{t("pest")}</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -310,10 +311,10 @@ export default function FarmerDashboard() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap mb-1">
                           <span className="font-semibold text-gray-900 text-sm">{l.cropName}</span>
-                          <TrendBadge trend={l.trend} />
+                          <TrendBadge trend={l.trend} rising={t("rising")} stable={t("stable")} falling={t("falling")} />
                           {l.available
                             ? <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Live
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> {t("live")}
                               </span>
                             : <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded-full">Inactive</span>
                           }
@@ -332,7 +333,7 @@ export default function FarmerDashboard() {
                         </div>
                         <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          Updated {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
+                          {t("updated")} {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
                         </p>
                       </div>
 
@@ -341,14 +342,14 @@ export default function FarmerDashboard() {
                         <button
                           onClick={() => navigate(`/listing/${l.id}`)}
                           className="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
-                          title="View listing"
+                          title={t("view")}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteListing(l.id, l.cropName)}
                           className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-                          title="Remove listing"
+                          title={t("delete")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -359,12 +360,12 @@ export default function FarmerDashboard() {
 
                 {/* Summary footer */}
                 <div className="flex items-center justify-between px-1 pt-1">
-                  <p className="text-xs text-gray-400">{listings.length} listing{listings.length !== 1 ? "s" : ""} total</p>
+                  <p className="text-xs text-gray-400">{listings.length} {t("listings").toLowerCase()} total</p>
                   <button
                     onClick={() => navigate("/add-crop")}
                     className="text-xs text-green-600 font-medium hover:underline flex items-center gap-1"
                   >
-                    <Plus className="w-3 h-3" /> Add another
+                    <Plus className="w-3 h-3" /> {t("addAnother")}
                   </button>
                 </div>
               </div>
@@ -373,10 +374,10 @@ export default function FarmerDashboard() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">
                   <ShoppingBag className="w-8 h-8 text-green-400" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">No listings yet</h3>
-                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">Post your crops to the marketplace to connect with buyers across Telangana & AP.</p>
+                <h3 className="font-semibold text-gray-800 mb-1">{t("noListings")}</h3>
+                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">{t("noListingsDesc")}</p>
                 <Button className="gap-2 bg-green-600 hover:bg-green-700 shadow-sm" onClick={() => navigate("/add-crop")}>
-                  <Plus className="w-4 h-4" /> Post First Crop
+                  <Plus className="w-4 h-4" /> {t("postFirstCrop")}
                 </Button>
               </div>
             )}
@@ -392,6 +393,7 @@ export default function FarmerDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {crops.map(crop => {
                   const cfg = STATUS_CONFIG[crop.status] ?? STATUS_CONFIG.growing;
+                  const statusLabel = crop.status === "harvested" ? "Harvested" : t(cfg.labelKey as any);
                   return (
                     <Card key={crop.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white overflow-hidden group">
                       {/* Top color stripe */}
@@ -411,7 +413,7 @@ export default function FarmerDashboard() {
                               <p className="font-semibold text-gray-900 text-sm leading-tight truncate">{crop.cropName}</p>
                               <span className={cn("inline-flex items-center gap-1 text-[10px] font-semibold mt-0.5 px-1.5 py-0.5 rounded-full border", cfg.badge)}>
                                 <span className={cn("w-1.5 h-1.5 rounded-full", cfg.dot, crop.status === "growing" && "animate-pulse")} />
-                                {cfg.label}
+                                {statusLabel}
                               </span>
                             </div>
                           </div>
@@ -428,13 +430,13 @@ export default function FarmerDashboard() {
                             {crop.sowDate && (
                               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                                 <Calendar className="w-3 h-3 text-gray-400" />
-                                <span>Sown: <span className="font-medium text-gray-700">{crop.sowDate}</span></span>
+                                <span>{t("sowDate")}: <span className="font-medium text-gray-700">{crop.sowDate}</span></span>
                               </div>
                             )}
                             {crop.harvestDate && (
                               <div className="flex items-center gap-1.5 text-xs text-green-600">
                                 <Calendar className="w-3 h-3" />
-                                <span>Harvest: <span className="font-semibold">{crop.harvestDate}</span></span>
+                                <span>{t("expectedHarvest")}: <span className="font-semibold">{crop.harvestDate}</span></span>
                               </div>
                             )}
                           </div>
@@ -449,7 +451,7 @@ export default function FarmerDashboard() {
                             onClick={() => navigate("/add-crop")}
                             className="w-full text-xs text-green-700 font-semibold bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl py-2 transition-colors flex items-center justify-center gap-1.5"
                           >
-                            <ShoppingBag className="w-3.5 h-3.5" /> List for Sale →
+                            <ShoppingBag className="w-3.5 h-3.5" /> {t("listForSale")}
                           </button>
                         )}
                       </CardContent>
@@ -462,74 +464,87 @@ export default function FarmerDashboard() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">
                   <Sprout className="w-8 h-8 text-green-400" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">No crops tracked yet</h3>
-                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">Track your growing crops to monitor harvest dates and plan your listings.</p>
-                <Button variant="outline" className="gap-2 border-gray-200 hover:bg-green-50 hover:border-green-300" onClick={() => setCropModal(true)}>
-                  <Plus className="w-4 h-4" /> Track First Crop
+                <h3 className="font-semibold text-gray-800 mb-1">{t("noCrops")}</h3>
+                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">{t("noCropsDesc")}</p>
+                <Button variant="outline" className="gap-2" onClick={() => setCropModal(true)}>
+                  <Plus className="w-4 h-4" /> {t("trackFirstCrop")}
                 </Button>
               </div>
             )}
           </TabsContent>
 
-          {/* ── Pest Detection tab ── */}
+          {/* ── Pest tab ── */}
           <TabsContent value="pest" className="mt-0">
-            <PestDetection cropName={crops?.[0]?.cropName} />
+            <PestDetection />
           </TabsContent>
         </Tabs>
       </div>
 
-      {/* ── Track Crop modal ── */}
+      {/* ── Track Crop dialog ── */}
       <Dialog open={cropModal} onOpenChange={setCropModal}>
-        <DialogContent className="max-w-md mx-4 sm:mx-auto">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
-                <Sprout className="w-4 h-4 text-green-600" />
-              </div>
-              Track New Crop
+              <Sprout className="w-5 h-5 text-green-600" /> {t("trackNewCrop")}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 py-2">
             <div>
-              <Label className="text-sm font-medium">Crop Name <span className="text-red-500">*</span></Label>
+              <Label className="text-sm font-medium">{t("cropNameLabel")} *</Label>
               <Input
                 value={cropForm.cropName}
                 onChange={e => setCropForm(f => ({ ...f, cropName: e.target.value }))}
-                placeholder="e.g. Tomato, Rice, Cotton..."
-                className="mt-1.5 h-11"
+                placeholder="e.g. Tomato, Rice..."
+                className="mt-1.5"
               />
-            </div>
-            <div>
-              <Label className="text-sm font-medium">Status</Label>
-              <select
-                value={cropForm.status}
-                onChange={e => setCropForm(f => ({ ...f, status: e.target.value as "growing" | "ready" | "harvested" }))}
-                className="mt-1.5 w-full h-11 rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="growing">🌱 Growing</option>
-                <option value="ready">✅ Ready to harvest</option>
-                <option value="harvested">📦 Harvested</option>
-              </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-sm font-medium">Sow Date</Label>
-                <Input type="date" value={cropForm.sowDate} onChange={e => setCropForm(f => ({ ...f, sowDate: e.target.value }))} className="mt-1.5 h-11" />
+                <Label className="text-sm font-medium">{t("sowDate")}</Label>
+                <Input type="date" value={cropForm.sowDate} onChange={e => setCropForm(f => ({ ...f, sowDate: e.target.value }))} className="mt-1.5" />
               </div>
               <div>
-                <Label className="text-sm font-medium">Harvest Date</Label>
-                <Input type="date" value={cropForm.harvestDate} onChange={e => setCropForm(f => ({ ...f, harvestDate: e.target.value }))} className="mt-1.5 h-11" />
+                <Label className="text-sm font-medium">{t("expectedHarvest")}</Label>
+                <Input type="date" value={cropForm.harvestDate} onChange={e => setCropForm(f => ({ ...f, harvestDate: e.target.value }))} className="mt-1.5" />
               </div>
             </div>
             <div>
-              <Label className="text-sm font-medium">Notes</Label>
-              <Input value={cropForm.notes} onChange={e => setCropForm(f => ({ ...f, notes: e.target.value }))} placeholder="Any observations..." className="mt-1.5 h-11" />
+              <Label className="text-sm font-medium">{t("status")}</Label>
+              <div className="flex gap-2 mt-1.5">
+                {(["growing", "ready", "harvested"] as const).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => setCropForm(f => ({ ...f, status: s }))}
+                    className={cn(
+                      "flex-1 py-2 px-3 rounded-xl text-xs font-medium border transition-colors capitalize",
+                      cropForm.status === s
+                        ? "bg-green-600 text-white border-green-600"
+                        : "border-border text-muted-foreground hover:border-green-300"
+                    )}
+                  >
+                    {s === "growing" ? t("growing") : s === "ready" ? t("readyToSell") : "Harvested"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium">{t("notes")}</Label>
+              <Input
+                value={cropForm.notes}
+                onChange={e => setCropForm(f => ({ ...f, notes: e.target.value }))}
+                placeholder="Optional notes..."
+                className="mt-1.5"
+              />
             </div>
           </div>
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setCropModal(false)}>Cancel</Button>
-            <Button onClick={handleAddCrop} disabled={createCrop.isPending || !cropForm.cropName} className="bg-green-600 hover:bg-green-700">
-              {createCrop.isPending ? "Adding..." : "Add Crop"}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setCropModal(false)}>{t("cancel")}</Button>
+            <Button
+              onClick={handleAddCrop}
+              disabled={!cropForm.cropName || createCrop.isPending}
+              className="gap-2 bg-green-600 hover:bg-green-700"
+            >
+              {createCrop.isPending ? t("loading") : <><Plus className="w-4 h-4" /> {t("save")}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

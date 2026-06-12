@@ -1,6 +1,7 @@
 import { useLocation, Link } from "wouter";
 import { useAuth } from "@/contexts/auth";
 import { useLanguage, type Lang } from "@/contexts/language";
+import { type TranslationKey } from "@/lib/translations";
 import {
   Home, ShoppingBag, Sprout, Shield,
   Bell, Search, LogOut, Menu, X, ChevronRight,
@@ -13,41 +14,41 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import AgriAIChat from "@/components/AgriAIChat";
 
-const PUBLIC_NAV = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-];
-
-const FARMER_NAV = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-  { href: "/farmer-dashboard", label: "My Farm", icon: Sprout },
-  { href: "/add-crop", label: "Post Crop", icon: Plus },
-  { href: "/fair-price", label: "Fair Price", icon: Calculator },
-];
-
-const BUYER_NAV = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/buyer-dashboard", label: "Browse", icon: ShoppingCart },
-  { href: "/marketplace", label: "All Crops", icon: ShoppingBag },
-  { href: "/fair-price", label: "Fair Price", icon: Calculator },
-];
-
-const ADMIN_NAV = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-  { href: "/farmer-dashboard", label: "Farmer View", icon: Sprout },
-  { href: "/buyer-dashboard", label: "Buyer View", icon: ShoppingCart },
-  { href: "/admin", label: "Admin Panel", icon: Shield },
-];
-
 const LANG_FLAGS: Record<Lang, { label: string; flag: string }> = {
   en: { label: "English", flag: "🇬🇧" },
   te: { label: "తెలుగు", flag: "🇮🇳" },
   hi: { label: "हिंदी", flag: "🇮🇳" },
 };
 
-function getNavItems(role?: string) {
+function getNavItems(role: string | undefined, t: (k: TranslationKey) => string) {
+  const PUBLIC_NAV = [
+    { href: "/", label: t("home"), icon: Home },
+    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
+  ];
+
+  const FARMER_NAV = [
+    { href: "/", label: t("home"), icon: Home },
+    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
+    { href: "/farmer-dashboard", label: t("myFarm"), icon: Sprout },
+    { href: "/add-crop", label: t("postCrop"), icon: Plus },
+    { href: "/fair-price", label: t("fairPrice"), icon: Calculator },
+  ];
+
+  const BUYER_NAV = [
+    { href: "/", label: t("home"), icon: Home },
+    { href: "/buyer-dashboard", label: t("browse"), icon: ShoppingCart },
+    { href: "/marketplace", label: t("allCrops"), icon: ShoppingBag },
+    { href: "/fair-price", label: t("fairPrice"), icon: Calculator },
+  ];
+
+  const ADMIN_NAV = [
+    { href: "/", label: t("home"), icon: Home },
+    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
+    { href: "/farmer-dashboard", label: t("farmerView"), icon: Sprout },
+    { href: "/buyer-dashboard", label: t("buyerView"), icon: ShoppingCart },
+    { href: "/admin", label: t("adminPanel"), icon: Shield },
+  ];
+
   if (role === "farmer") return FARMER_NAV;
   if (role === "buyer") return BUYER_NAV;
   if (role === "admin") return ADMIN_NAV;
@@ -83,14 +84,14 @@ function notifTypeColor(type: string) {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { user, logout } = useAuth();
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
 
-  const navItems = getNavItems(user?.role);
+  const navItems = getNavItems(user?.role, t);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -261,7 +262,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <button
                 onClick={logout}
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
-                title="Sign out"
+                title={t("signOut")}
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -269,10 +270,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ) : (
             <div className="space-y-1.5">
               <Link href="/login" className="flex items-center justify-center text-sm font-semibold py-2.5 px-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-                Sign in
+                {t("signIn")}
               </Link>
               <Link href="/register" className="flex items-center justify-center text-sm font-medium py-2.5 px-3 rounded-xl border border-border text-foreground hover:bg-muted transition-colors">
-                Register
+                {t("register")}
               </Link>
             </div>
           )}
@@ -297,7 +298,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Search className="w-4 h-4 text-muted-foreground shrink-0" />
             <input
               type="search"
-              placeholder="Search crops, markets..."
+              placeholder={t("searchCrops")}
               className="bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground flex-1 min-w-0"
             />
           </div>
@@ -344,7 +345,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   "relative p-2 rounded-xl transition-colors",
                   notifOpen ? "bg-green-100 text-green-700" : "hover:bg-muted text-muted-foreground"
                 )}
-                aria-label="Notifications"
+                aria-label={t("notifications")}
               >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -363,7 +364,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-to-r from-green-50 to-emerald-50">
                       <div className="flex items-center gap-2">
                         <Bell className="w-4 h-4 text-green-700" />
-                        <span className="font-semibold text-sm text-gray-800">Notifications</span>
+                        <span className="font-semibold text-sm text-gray-800">{t("notifications")}</span>
                         {unreadCount > 0 && (
                           <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0 h-4 min-w-0">
                             {unreadCount}
@@ -376,7 +377,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           className="flex items-center gap-1 text-[11px] text-green-700 hover:text-green-800 font-medium transition-colors"
                         >
                           <CheckCheck className="w-3 h-3" />
-                          Mark all read
+                          {t("markAllRead")}
                         </button>
                       )}
                     </div>
@@ -386,13 +387,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       {notifLoading ? (
                         <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
                           <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin mr-2" />
-                          Loading...
+                          {t("loading")}
                         </div>
                       ) : notifications.length === 0 ? (
                         <div className="py-10 flex flex-col items-center gap-2 text-muted-foreground">
                           <Bell className="w-8 h-8 opacity-30" />
-                          <p className="text-sm font-medium">No notifications yet</p>
-                          <p className="text-xs">You're all caught up!</p>
+                          <p className="text-sm font-medium">{t("noNotifications")}</p>
+                          <p className="text-xs text-center px-4">{t("noNotifDesc")}</p>
                         </div>
                       ) : (
                         notifications.map(n => (
@@ -436,7 +437,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     {!user && (
                       <div className="px-4 py-3 border-t border-border bg-gray-50 text-center">
                         <p className="text-xs text-muted-foreground">
-                          <Link href="/login" className="text-green-700 font-medium hover:underline" onClick={() => setNotifOpen(false)}>Sign in</Link> to see your notifications
+                          <Link href="/login" className="text-green-700 font-medium hover:underline" onClick={() => setNotifOpen(false)}>{t("signIn")}</Link> to see your notifications
                         </p>
                       </div>
                     )}
@@ -462,7 +463,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             ) : (
               <Link href="/login">
-                <Button size="sm" variant="outline" className="text-xs h-8">Sign in</Button>
+                <Button size="sm" variant="outline" className="text-xs h-8">{t("signIn")}</Button>
               </Link>
             )}
           </div>
