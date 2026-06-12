@@ -1,19 +1,30 @@
 import { Router } from "express";
 import { db, listingsTable, usersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { notify } from "../lib/notify";
+
+async function incrementTrustScore(userId: number, delta: number) {
+  try {
+    await db.update(usersTable)
+      .set({ trustScore: sql`LEAST(100, GREATEST(0, trust_score + ${delta}))` })
+      .where(eq(usersTable.id, userId));
+  } catch {
+    // best-effort — never throw
+  }
+}
 
 const router = Router();
 
 function serializeListing(
   listing: typeof listingsTable.$inferSelect,
-  farmer?: { name: string | null; verified: boolean | null; rating: number | null } | null
+  farmer?: { name: string | null; verified: boolean | null; rating: number | null; trustScore?: number | null } | null
 ) {
   return {
     ...listing,
     farmerName: farmer?.name ?? null,
     farmerVerified: farmer?.verified ?? null,
     farmerRating: farmer?.rating ?? null,
+    farmerTrustScore: farmer?.trustScore ?? 50,
     createdAt: listing.createdAt.toISOString(),
     updatedAt: listing.updatedAt.toISOString(),
   };
@@ -28,6 +39,7 @@ router.get("/listings", async (req, res) => {
         farmerName: usersTable.name,
         farmerVerified: usersTable.verified,
         farmerRating: usersTable.rating,
+        farmerTrustScore: usersTable.trustScore,
       })
       .from(listingsTable)
       .leftJoin(usersTable, eq(listingsTable.farmerId, usersTable.id));
@@ -50,6 +62,7 @@ router.get("/listings", async (req, res) => {
       name: r.farmerName,
       verified: r.farmerVerified,
       rating: r.farmerRating,
+      trustScore: r.farmerTrustScore,
     })));
   } catch (err) {
     req.log.error(err);
@@ -86,6 +99,8 @@ router.post("/listings", async (req, res) => {
       `Listing live: ${cropName}`,
       `Your ${cropName} listing (${quantity} ${unit || "kg"} @ ₹${minPrice}–₹${maxPrice}) is now live on the marketplace.`,
     );
+    // +5 trust for creating a listing
+    await incrementTrustScore(farmerId, 5);
 
     return res.status(201).json(serializeListing(listing));
   } catch (err) {
@@ -179,6 +194,8 @@ router.post("/listings/:id/contact", async (req, res) => {
       `Buyer inquiry: ${result.listing.cropName}`,
       `${buyerName} is interested in your ${result.listing.cropName} listing. Message: "${message.slice(0, 100)}"`,
     );
+    // +3 trust for receiving a buyer inquiry (signals demand)
+    await incrementTrustScore(result.listing.farmerId, 3);
 
     return res.json({
       success: true,

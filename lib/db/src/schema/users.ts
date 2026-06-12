@@ -15,9 +15,10 @@ export const usersTable = pgTable("users", {
   location: text("location"),
   bio: text("bio"),
   trustedBuyerScore: real("trusted_buyer_score"),
+  trustScore: integer("trust_score").notNull().default(50),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(usersTable).omit({ id: true, createdAt: true, rating: true, ratingCount: true, trustedBuyerScore: true });
+export const insertUserSchema = createInsertSchema(usersTable).omit({ id: true, createdAt: true, rating: true, ratingCount: true, trustedBuyerScore: true, trustScore: true });
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof usersTable.$inferSelect;

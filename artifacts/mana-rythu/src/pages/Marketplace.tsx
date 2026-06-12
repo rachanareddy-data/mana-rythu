@@ -14,6 +14,8 @@ import {
   Sprout, SlidersHorizontal, X, TrendingUp, TrendingDown,
   Minus, Clock, Info, Plus, RefreshCw,
 } from "lucide-react";
+import TrustBadge from "@/components/TrustBadge";
+import LogisticsEstimator from "@/components/LogisticsEstimator";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -146,6 +148,9 @@ export default function Marketplace() {
             </div>
           </div>
         </div>
+
+        {/* Logistics estimator */}
+        <LogisticsEstimator />
 
         {/* Live indicator */}
         <div className="mt-auto pt-4 border-t border-border">
@@ -362,28 +367,28 @@ export default function Marketplace() {
 
                       {/* Footer */}
                       <div className="flex items-center justify-between pt-2.5 border-t border-border">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
                           <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                             <span className="text-[10px] font-bold text-primary">
                               {(l.farmerName ?? "F").slice(0, 1).toUpperCase()}
                             </span>
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <p className="text-xs font-medium text-foreground truncate max-w-20">{l.farmerName ?? "Unknown"}</p>
-                            <p className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                              <Clock className="w-2.5 h-2.5" />
-                              {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
-                            </p>
+                            <TrustBadge
+                              trustScore={(l as any).farmerTrustScore ?? 50}
+                              verified={l.farmerVerified ?? false}
+                              size="sm"
+                            />
                           </div>
-                          {l.farmerVerified && <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />}
                         </div>
                         {l.farmerRating ? (
-                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 rounded-full px-2 py-0.5">
+                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 rounded-full px-2 py-0.5 shrink-0">
                             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                             <span className="text-xs font-semibold text-amber-700">{l.farmerRating.toFixed(1)}</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-muted-foreground italic">Est. price</span>
+                          <span className="text-[10px] text-muted-foreground italic shrink-0">Est. price</span>
                         )}
                       </div>
                     </CardContent>

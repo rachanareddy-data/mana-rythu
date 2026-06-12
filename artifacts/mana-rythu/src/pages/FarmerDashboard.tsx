@@ -19,8 +19,9 @@ import {
   Sprout, Plus, Trash2, Package, MapPin, ShoppingBag,
   Calendar, CheckCircle2, TrendingUp, TrendingDown,
   Minus, ArrowRight, IndianRupee, Leaf, BarChart3,
-  Clock, Eye,
+  Clock, Eye, Bug,
 } from "lucide-react";
+import PestDetection from "@/components/PestDetection";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -277,6 +278,11 @@ export default function FarmerDashboard() {
                   <span className="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded-full font-semibold">{crops.length}</span>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="pest" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+                <Bug className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Pest</span>
+                <span className="sm:hidden">AI</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -463,6 +469,11 @@ export default function FarmerDashboard() {
                 </Button>
               </div>
             )}
+          </TabsContent>
+
+          {/* ── Pest Detection tab ── */}
+          <TabsContent value="pest" className="mt-0">
+            <PestDetection cropName={crops?.[0]?.cropName} />
           </TabsContent>
         </Tabs>
       </div>

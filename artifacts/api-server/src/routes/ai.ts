@@ -163,6 +163,72 @@ Keep "notes" under 12 words.`;
   }
 });
 
+// ── Pest & Disease Detection ──────────────────────────
+router.post("/ai/pest-detect", async (req, res) => {
+  const { imageUrl, cropName } = req.body;
+  if (!imageUrl || !cropName) {
+    return res.status(400).json({ error: "imageUrl and cropName are required" });
+  }
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(503).json({ error: "AI service not configured" });
+  }
+  try {
+    const prompt = `You are an expert agricultural plant pathologist specializing in crops grown in Telangana and Andhra Pradesh, India.
+Analyze this ${cropName} crop image carefully for pests, diseases, or health issues.
+
+Return ONLY a valid JSON object (no markdown, no explanation, no code fence) in exactly this format:
+{"disease":"Leaf Blight","severity":"Medium","confidence":78,"treatments_en":["Remove and destroy affected leaves","Apply copper-based fungicide spray","Ensure proper spacing for air circulation"],"treatments_te":["ప్రభావిత ఆకులను తొలగించి నాశనం చేయండి","రాగి ఆధారిత శిలీంద్రనాశకం పిచికారీ చేయండి","గాలి ప్రసరణ కోసం సరైన దూరం ఉంచండి"],"prevention_en":["Avoid overhead irrigation","Rotate crops each season","Use certified disease-free seeds"],"prevention_te":["పై నుండి నీటి పారుదల మానండి","ప్రతి సీజన్ పంట మార్పిడి చేయండి","సర్టిఫైడ్ వ్యాధి-రహిత విత్తనాలు వాడండి"]}
+
+Severity rules: Low (minor spots, <20% leaf area), Medium (moderate damage 20-60%, treatment needed), High (severe >60%, urgent action required)
+If the plant looks completely healthy, set disease to "Healthy Crop" and severity to "Low" and confidence to 95.
+Provide exactly 3 treatment steps and 3 prevention tips each. Keep each step under 10 words in English.`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      max_tokens: 600,
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: imageUrl, detail: "low" } },
+          ],
+        },
+      ],
+    });
+
+    const raw = (completion.choices[0]?.message?.content ?? "").trim();
+    let result: {
+      disease: string; severity: string; confidence: number;
+      treatments_en: string[]; treatments_te: string[];
+      prevention_en: string[]; prevention_te: string[];
+    };
+
+    try {
+      // Strip markdown code fence if model adds it
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      result = JSON.parse(cleaned);
+    } catch {
+      result = {
+        disease: "Analysis incomplete",
+        severity: "Low",
+        confidence: 0,
+        treatments_en: ["Upload a clearer close-up image", "Ensure good natural lighting", "Focus on affected leaf areas"],
+        treatments_te: ["స్పష్టమైన దగ్గర చిత్రం అప్‌లోడ్ చేయండి", "మంచి సహజ వెలుతురు నిర్ధారించండి", "ప్రభావిత ఆకు ప్రాంతాలపై దృష్టి పెట్టండి"],
+        prevention_en: ["Use well-lit conditions for photos", "Capture leaf front and back", "Include multiple leaves if possible"],
+        prevention_te: ["ఫోటోలకు మంచి వెలుతురు ఉపయోగించండి", "ఆకు ముందు వెనక తీయండి", "వీలైతే అనేక ఆకులు చేర్చండి"],
+      };
+    }
+
+    return res.json(result);
+  } catch (err: any) {
+    req.log.error(err);
+    if (err?.status === 401) return res.status(503).json({ error: "AI authentication failed" });
+    if (err?.status === 429) return res.status(429).json({ error: "AI rate limit reached. Please try again." });
+    return res.status(500).json({ error: "Pest detection failed. Please try again." });
+  }
+});
+
 // ── Fair Price Calculator ─────────────────────────────
 router.get("/ai/fair-price", (req, res) => {
   const { cropName, quantity, grade } = req.query;
