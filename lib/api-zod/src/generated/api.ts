@@ -655,3 +655,215 @@ export const GetAdminStatsResponse = zod.object({
 })
 
 
+export const GetAdminUsersQueryParams = zod.object({
+  "role": zod.coerce.string().optional(),
+  "verified": zod.coerce.string().optional()
+})
+
+export const GetAdminUsersResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.enum(['farmer', 'buyer', 'admin']),
+  "verified": zod.boolean(),
+  "rating": zod.number().nullish(),
+  "trustScore": zod.number(),
+  "location": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+export const GetAdminUsersResponse = zod.array(GetAdminUsersResponseItem)
+
+
+export const AdminVerifyUserParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdminVerifyUserBody = zod.object({
+  "verified": zod.boolean()
+})
+
+export const AdminVerifyUserResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.enum(['farmer', 'buyer', 'admin']),
+  "verified": zod.boolean(),
+  "rating": zod.number().nullish(),
+  "trustScore": zod.number(),
+  "location": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
+export const AdminSuspendUserParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdminSuspendUserBody = zod.object({
+  "suspended": zod.boolean()
+})
+
+export const AdminSuspendUserResponse = zod.object({
+  "success": zod.boolean(),
+  "userId": zod.number(),
+  "suspended": zod.boolean()
+})
+
+
+export const AdminDeleteListingParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const AdminDeleteListingResponse = zod.object({
+  "success": zod.boolean(),
+  "deletedId": zod.number()
+})
+
+
+export const CreateOrderBody = zod.object({
+  "listingId": zod.number(),
+  "buyerId": zod.number(),
+  "quantity": zod.number(),
+  "offeredPrice": zod.number(),
+  "note": zod.string().optional()
+})
+
+
+export const GetOrdersQueryParams = zod.object({
+  "buyerId": zod.coerce.number().optional(),
+  "farmerId": zod.coerce.number().optional(),
+  "status": zod.coerce.string().optional()
+})
+
+export const GetOrdersResponseItem = zod.object({
+  "id": zod.number(),
+  "listingId": zod.number(),
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "quantity": zod.number(),
+  "offeredPrice": zod.number(),
+  "totalAmount": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'rejected', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "note": zod.string().nullish(),
+  "buyerName": zod.string().nullish(),
+  "farmerName": zod.string().nullish(),
+  "cropName": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetOrdersResponse = zod.array(GetOrdersResponseItem)
+
+
+export const GetOrderParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetOrderResponse = zod.object({
+  "id": zod.number(),
+  "listingId": zod.number(),
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "quantity": zod.number(),
+  "offeredPrice": zod.number(),
+  "totalAmount": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'rejected', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "note": zod.string().nullish(),
+  "buyerName": zod.string().nullish(),
+  "farmerName": zod.string().nullish(),
+  "cropName": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+export const UpdateOrderStatusParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateOrderStatusBody = zod.object({
+  "status": zod.enum(['pending', 'accepted', 'rejected', 'processing', 'shipped', 'delivered', 'cancelled'])
+})
+
+export const UpdateOrderStatusResponse = zod.object({
+  "id": zod.number(),
+  "listingId": zod.number(),
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "quantity": zod.number(),
+  "offeredPrice": zod.number(),
+  "totalAmount": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'rejected', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "note": zod.string().nullish(),
+  "buyerName": zod.string().nullish(),
+  "farmerName": zod.string().nullish(),
+  "cropName": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+export const CreateOrGetConversationBody = zod.object({
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "listingId": zod.number().optional()
+})
+
+
+export const GetConversationsQueryParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetConversationsResponseItem = zod.object({
+  "id": zod.number(),
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "listingId": zod.number().nullish(),
+  "buyerName": zod.string().nullish(),
+  "farmerName": zod.string().nullish(),
+  "cropName": zod.string().nullish(),
+  "lastMessage": zod.string().nullish(),
+  "lastMessageAt": zod.string(),
+  "unreadCount": zod.number(),
+  "createdAt": zod.string()
+})
+export const GetConversationsResponse = zod.array(GetConversationsResponseItem)
+
+
+export const GetConversationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetConversationResponse = zod.object({
+  "id": zod.number(),
+  "buyerId": zod.number(),
+  "farmerId": zod.number(),
+  "listingId": zod.number().nullish(),
+  "buyerName": zod.string().nullish(),
+  "farmerName": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
+export const SendMessageBody = zod.object({
+  "conversationId": zod.number(),
+  "senderId": zod.number(),
+  "message": zod.string()
+})
+
+
+export const GetMessagesQueryParams = zod.object({
+  "conversationId": zod.coerce.number(),
+  "markReadFor": zod.coerce.number().optional()
+})
+
+export const GetMessagesResponseItem = zod.object({
+  "id": zod.number(),
+  "conversationId": zod.number(),
+  "senderId": zod.number(),
+  "message": zod.string(),
+  "read": zod.boolean(),
+  "createdAt": zod.string()
+})
+export const GetMessagesResponse = zod.array(GetMessagesResponseItem)
+
+

@@ -1,0 +1,211 @@
+NEXT PHASE: MANA RYTHU MARKETPLACE COMPLETION
+
+Implement these 3 production-ready modules completely.
+
+==================================================
+1. ORDER MANAGEMENT SYSTEM
+==================================================
+
+Database:
+
+Create orders table:
+
+id
+listingId
+buyerId
+farmerId
+quantity
+offeredPrice
+totalAmount
+status
+createdAt
+updatedAt
+
+Status values:
+
+pending
+accepted
+rejected
+processing
+shipped
+delivered
+cancelled
+
+Backend APIs:
+
+POST /api/orders
+GET /api/orders
+GET /api/orders/:id
+PATCH /api/orders/:id/status
+
+Flow:
+
+Buyer clicks "Place Order"
+
+Farmer receives notification
+
+Farmer can:
+Accept
+Reject
+
+After accept:
+
+Order appears in Farmer Dashboard
+Order appears in Buyer Dashboard
+
+Frontend:
+
+Create:
+
+OrdersPage.tsx
+
+Farmer Orders Tab
+
+Buyer Orders Tab
+
+Order cards with status badges
+
+==================================================
+2. REAL-TIME CHAT SYSTEM
+==================================================
+
+Database:
+
+conversations table
+messages table
+
+Conversation:
+
+id
+buyerId
+farmerId
+listingId
+createdAt
+
+Message:
+
+id
+conversationId
+senderId
+message
+createdAt
+
+Backend APIs:
+
+POST /api/chat/conversation
+
+GET /api/chat/conversation/:id
+
+POST /api/chat/message
+
+GET /api/chat/messages/:conversationId
+
+Frontend:
+
+Create:
+
+ChatPage.tsx
+
+ChatSidebar.tsx
+
+ChatWindow.tsx
+
+Features:
+
+Buyer clicks:
+"Chat Farmer"
+
+Conversation created automatically
+
+Messages saved in DB
+
+Unread count
+
+Notification badge
+
+Auto-scroll
+
+Mobile responsive
+
+==================================================
+3. ADMIN DASHBOARD
+==================================================
+
+Create Admin role.
+
+Admin Dashboard:
+
+Stats Cards:
+
+Total Farmers
+Total Buyers
+Total Listings
+Total Orders
+
+Management Tables:
+
+Users
+Listings
+Orders
+
+Admin Actions:
+
+Verify Farmer
+Verify Buyer
+
+Delete Listing
+
+Suspend User
+
+Approve Trust Badge
+
+Notifications Panel
+
+Admin APIs:
+
+GET /api/admin/stats
+
+GET /api/admin/users
+
+PATCH /api/admin/users/:id/verify
+
+PATCH /api/admin/users/:id/suspend
+
+DELETE /api/admin/listings/:id
+
+==================================================
+REQUIREMENTS
+==================================================
+
+1. Use existing design system.
+
+2. Use existing auth system.
+
+3. Use Drizzle ORM.
+
+4. Use PostgreSQL.
+
+5. Use TypeScript.
+
+6. Update OpenAPI specs.
+
+7. Generate API types.
+
+8. Register all routes.
+
+9. Add navigation links.
+
+10. Test complete flow:
+
+Buyer → Order
+
+Farmer → Accept
+
+Buyer ↔ Farmer Chat
+
+Admin → Verify Farmer
+
+Provide screenshots and route list after implementation.
+
+Do not stop after backend.
+Complete frontend + backend + database.

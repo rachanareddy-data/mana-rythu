@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
 import {
   useGetListingById, getGetListingByIdQueryKey,
   useContactFarmer, useRateUser,
+  useCreateOrder,
+  useCreateOrGetConversation,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import {
   MapPin, Star, CheckCircle2, Package, Phone, ArrowLeft,
   MessageCircle, Sprout, TrendingUp, TrendingDown, Minus,
-  Clock, Info, Shield,
+  Clock, Info, Shield, ShoppingCart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -53,6 +56,8 @@ export default function ListingDetail() {
   const numId = parseInt(id ?? "0");
   const { toast } = useToast();
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
 
   const { data: listing, isLoading } = useGetListingById(numId, {
     query: { enabled: !isNaN(numId), queryKey: getGetListingByIdQueryKey(numId) },
@@ -60,12 +65,16 @@ export default function ListingDetail() {
 
   const [contactOpen, setContactOpen] = useState(false);
   const [rateOpen, setRateOpen] = useState(false);
+  const [orderOpen, setOrderOpen] = useState(false);
   const [contactForm, setContactForm] = useState({ buyerName: "", buyerPhone: "", message: "" });
+  const [orderForm, setOrderForm] = useState({ quantity: "", offeredPrice: "", note: "" });
   const [rating, setRating] = useState(0);
   const [farmerPhone, setFarmerPhone] = useState<string | null>(null);
 
   const contactMutation = useContactFarmer();
   const rateMutation = useRateUser();
+  const orderMutation = useCreateOrder();
+  const chatMutation = useCreateOrGetConversation();
 
   const handleContact = () => {
     if (!contactForm.buyerName || !contactForm.message) return;
@@ -79,6 +88,36 @@ export default function ListingDetail() {
           setContactForm({ buyerName: "", buyerPhone: "", message: "" });
         },
         onError: () => toast({ title: "Failed to send", variant: "destructive" }),
+      }
+    );
+  };
+
+  const handleOrder = () => {
+    if (!user || !listing) return;
+    const qty = parseFloat(orderForm.quantity);
+    const price = parseFloat(orderForm.offeredPrice);
+    if (!qty || !price) { toast({ title: "Fill quantity and price", variant: "destructive" }); return; }
+    orderMutation.mutate(
+      { data: { listingId: numId, buyerId: user.id, quantity: qty, offeredPrice: price, note: orderForm.note || undefined } },
+      {
+        onSuccess: () => {
+          toast({ title: "Order placed!", description: "The farmer will be notified." });
+          setOrderOpen(false);
+          setOrderForm({ quantity: "", offeredPrice: "", note: "" });
+          navigate("/orders");
+        },
+        onError: () => toast({ title: "Order failed", variant: "destructive" }),
+      }
+    );
+  };
+
+  const handleStartChat = () => {
+    if (!user || !listing) return;
+    chatMutation.mutate(
+      { data: { buyerId: user.id, farmerId: listing.farmerId, listingId: numId } },
+      {
+        onSuccess: () => navigate("/chat"),
+        onError: () => toast({ title: "Could not open chat", variant: "destructive" }),
       }
     );
   };
@@ -256,8 +295,23 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              <Button className="w-full gap-2" onClick={() => setContactOpen(true)} disabled={!listing.available}>
-                <MessageCircle className="w-4 h-4" /> Contact Farmer
+              {user && user.role === "buyer" && listing.available && (
+                <>
+                  <Button className="w-full gap-2" onClick={() => setOrderOpen(true)}>
+                    <ShoppingCart className="w-4 h-4" /> Place Order
+                  </Button>
+                  <Button variant="outline" className="w-full gap-2" onClick={handleStartChat} disabled={chatMutation.isPending}>
+                    <MessageCircle className="w-4 h-4" /> {chatMutation.isPending ? "Opening..." : "Chat Farmer"}
+                  </Button>
+                </>
+              )}
+              <Button
+                className={user && user.role === "buyer" ? "w-full gap-2" : "w-full gap-2"}
+                variant={user && user.role === "buyer" ? "ghost" : "default"}
+                onClick={() => setContactOpen(true)}
+                disabled={!listing.available}
+              >
+                <Phone className="w-4 h-4" /> Contact Farmer
               </Button>
               <Button variant="outline" className="w-full gap-2" onClick={() => setRateOpen(true)}>
                 <Star className="w-4 h-4" /> Rate Farmer
@@ -304,6 +358,65 @@ export default function ListingDetail() {
             <Button variant="outline" onClick={() => setContactOpen(false)}>Cancel</Button>
             <Button onClick={handleContact} disabled={contactMutation.isPending || !contactForm.buyerName || !contactForm.message}>
               {contactMutation.isPending ? "Sending..." : "Send request"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Place Order dialog */}
+      <Dialog open={orderOpen} onOpenChange={setOrderOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Place Order — {listing.cropName}</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div className="p-3 bg-muted/60 rounded-lg text-xs text-muted-foreground">
+              Market price: ₹{listing.minPrice}–₹{listing.maxPrice} / {listing.unit}
+            </div>
+            <div>
+              <Label>Quantity ({listing.unit}) *</Label>
+              <Input
+                type="number"
+                min="1"
+                max={listing.quantity}
+                value={orderForm.quantity}
+                onChange={e => setOrderForm(f => ({ ...f, quantity: e.target.value }))}
+                placeholder={`Max ${listing.quantity} ${listing.unit}`}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label>Your offered price (₹ per {listing.unit}) *</Label>
+              <Input
+                type="number"
+                min="1"
+                value={orderForm.offeredPrice}
+                onChange={e => setOrderForm(f => ({ ...f, offeredPrice: e.target.value }))}
+                placeholder={`e.g. ${listing.minPrice}`}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label>Note (optional)</Label>
+              <Textarea
+                value={orderForm.note}
+                onChange={e => setOrderForm(f => ({ ...f, note: e.target.value }))}
+                placeholder="Delivery requirements, pickup date, etc."
+                className="mt-1.5"
+                rows={2}
+              />
+            </div>
+            {orderForm.quantity && orderForm.offeredPrice && (
+              <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-lg font-bold text-green-700">
+                  ₹{(parseFloat(orderForm.quantity) * parseFloat(orderForm.offeredPrice)).toLocaleString()}
+                </p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOrderOpen(false)}>Cancel</Button>
+            <Button onClick={handleOrder} disabled={orderMutation.isPending || !orderForm.quantity || !orderForm.offeredPrice}>
+              {orderMutation.isPending ? "Placing..." : "Place Order"}
             </Button>
           </DialogFooter>
         </DialogContent>

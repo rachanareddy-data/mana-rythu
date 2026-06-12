@@ -10,6 +10,8 @@ import dashboardRouter from "./dashboard";
 import adminRouter from "./admin";
 import aiRouter from "./ai";
 import logisticsRouter from "./logistics";
+import ordersRouter from "./orders";
+import chatRouter from "./chat";
 
 const router: IRouter = Router();
 
@@ -24,5 +26,7 @@ router.use(dashboardRouter);
 router.use(adminRouter);
 router.use(aiRouter);
 router.use(logisticsRouter);
+router.use(ordersRouter);
+router.use(chatRouter);
 
 export default router;

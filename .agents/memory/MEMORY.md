@@ -1,3 +1,2 @@
-- [Orval schema naming](orval-schema-naming.md) — never name component schemas `<OperationIdPascal>Response`; Orval emits the same name causing TS2308 collision.
-- [Query options cast](query-options-cast.md) — generated hooks require `queryKey` in UseQueryOptions (TanStack v5); cast `{ query: { enabled } } as any` to bypass.
-- [DB user IDs](db-user-ids.md) — demo user IDs are not 1/2; always query /api/users to discover real IDs before seeding test data.
+- [Orval codegen conflict fix](orval-codegen-conflicts.md) — inline request body schemas cause duplicate exports; always use named $ref components.
+- [Chat messages endpoint](chat-messages-endpoint.md) — uses query params not path params to avoid GetMessagesParams duplicate export in codegen.

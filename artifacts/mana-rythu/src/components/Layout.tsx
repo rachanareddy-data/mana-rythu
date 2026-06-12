@@ -6,6 +6,7 @@ import {
   Home, ShoppingBag, Sprout, Shield,
   Bell, Search, LogOut, Menu, X, ChevronRight,
   ShoppingCart, Plus, Calculator, Globe, Check, CheckCheck,
+  Package, MessageCircle,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
@@ -28,16 +29,20 @@ function getNavItems(role: string | undefined, t: (k: TranslationKey) => string)
 
   const FARMER_NAV = [
     { href: "/", label: t("home"), icon: Home },
-    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
     { href: "/farmer-dashboard", label: t("myFarm"), icon: Sprout },
+    { href: "/orders", label: t("orders"), icon: Package },
+    { href: "/chat", label: t("chat"), icon: MessageCircle },
     { href: "/add-crop", label: t("postCrop"), icon: Plus },
+    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
     { href: "/fair-price", label: t("fairPrice"), icon: Calculator },
   ];
 
   const BUYER_NAV = [
     { href: "/", label: t("home"), icon: Home },
+    { href: "/marketplace", label: t("marketplace"), icon: ShoppingBag },
+    { href: "/orders", label: t("orders"), icon: Package },
+    { href: "/chat", label: t("chat"), icon: MessageCircle },
     { href: "/buyer-dashboard", label: t("browse"), icon: ShoppingCart },
-    { href: "/marketplace", label: t("allCrops"), icon: ShoppingBag },
     { href: "/fair-price", label: t("fairPrice"), icon: Calculator },
   ];
 

@@ -496,6 +496,155 @@ export interface AdminStats {
   topCrops: AdminStatsTopCropsItem[];
 }
 
+export interface AdminVerifyInput {
+  verified: boolean;
+}
+
+export interface AdminSuspendInput {
+  suspended: boolean;
+}
+
+export interface AdminSuspendResult {
+  success: boolean;
+  userId: number;
+  suspended: boolean;
+}
+
+export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];
+
+
+export const AdminUserRole = {
+  farmer: 'farmer',
+  buyer: 'buyer',
+  admin: 'admin',
+} as const;
+
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: AdminUserRole;
+  verified: boolean;
+  /** @nullable */
+  rating?: number | null;
+  trustScore: number;
+  /** @nullable */
+  location?: string | null;
+  createdAt: string;
+}
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+export const OrderStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+} as const;
+
+export interface Order {
+  id: number;
+  listingId: number;
+  buyerId: number;
+  farmerId: number;
+  quantity: number;
+  offeredPrice: number;
+  totalAmount: number;
+  status: OrderStatus;
+  /** @nullable */
+  note?: string | null;
+  /** @nullable */
+  buyerName?: string | null;
+  /** @nullable */
+  farmerName?: string | null;
+  /** @nullable */
+  cropName?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateOrderInput {
+  listingId: number;
+  buyerId: number;
+  quantity: number;
+  offeredPrice: number;
+  note?: string;
+}
+
+export type UpdateOrderStatusInputStatus = typeof UpdateOrderStatusInputStatus[keyof typeof UpdateOrderStatusInputStatus];
+
+
+export const UpdateOrderStatusInputStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  rejected: 'rejected',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+} as const;
+
+export interface UpdateOrderStatusInput {
+  status: UpdateOrderStatusInputStatus;
+}
+
+export interface Conversation {
+  id: number;
+  buyerId: number;
+  farmerId: number;
+  /** @nullable */
+  listingId?: number | null;
+  /** @nullable */
+  buyerName?: string | null;
+  /** @nullable */
+  farmerName?: string | null;
+  createdAt: string;
+}
+
+export interface ConversationSummary {
+  id: number;
+  buyerId: number;
+  farmerId: number;
+  /** @nullable */
+  listingId?: number | null;
+  /** @nullable */
+  buyerName?: string | null;
+  /** @nullable */
+  farmerName?: string | null;
+  /** @nullable */
+  cropName?: string | null;
+  /** @nullable */
+  lastMessage?: string | null;
+  lastMessageAt: string;
+  unreadCount: number;
+  createdAt: string;
+}
+
+export interface CreateConversationInput {
+  buyerId: number;
+  farmerId: number;
+  listingId?: number;
+}
+
+export interface Message {
+  id: number;
+  conversationId: number;
+  senderId: number;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface CreateMessageInput {
+  conversationId: number;
+  senderId: number;
+  message: string;
+}
+
 export type GetUsersParams = {
 role?: string;
 verified?: boolean;
@@ -546,5 +695,30 @@ quantity?: number;
 unit?: string;
 location?: string;
 grade?: string;
+};
+
+export type GetAdminUsersParams = {
+role?: string;
+verified?: string;
+};
+
+export type AdminDeleteListing200 = {
+  success: boolean;
+  deletedId: number;
+};
+
+export type GetOrdersParams = {
+buyerId?: number;
+farmerId?: number;
+status?: string;
+};
+
+export type GetConversationsParams = {
+userId: number;
+};
+
+export type GetMessagesParams = {
+conversationId: number;
+markReadFor?: number;
 };
 

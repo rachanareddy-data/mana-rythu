@@ -18,6 +18,8 @@ tags:
   - name: admin
   - name: dashboard
   - name: ai
+  - name: orders
+  - name: chat
 
 paths:
   /healthz:
@@ -715,6 +717,284 @@ paths:
               schema:
                 $ref: "#/components/schemas/AdminStats"
 
+  /admin/users:
+    get:
+      operationId: getAdminUsers
+      tags: [admin]
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+        - name: verified
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+
+  /admin/users/{id}/verify:
+    patch:
+      operationId: adminVerifyUser
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminVerifyInput"
+      responses:
+        "200":
+          description: User verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+
+  /admin/users/{id}/suspend:
+    patch:
+      operationId: adminSuspendUser
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSuspendInput"
+      responses:
+        "200":
+          description: User suspended
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSuspendResult"
+
+  /admin/listings/{id}:
+    delete:
+      operationId: adminDeleteListing
+      tags: [admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Listing deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  deletedId:
+                    type: integer
+                required: [success, deletedId]
+
+  /orders:
+    post:
+      operationId: createOrder
+      tags: [orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderInput"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    get:
+      operationId: getOrders
+      tags: [orders]
+      parameters:
+        - name: buyerId
+          in: query
+          schema:
+            type: integer
+        - name: farmerId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusInput"
+      responses:
+        "200":
+          description: Order status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /chat/conversation:
+    post:
+      operationId: createOrGetConversation
+      tags: [chat]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConversationInput"
+      responses:
+        "201":
+          description: Conversation created or found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+
+  /chat/conversations:
+    get:
+      operationId: getConversations
+      tags: [chat]
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ConversationSummary"
+
+  /chat/conversation/{id}:
+    get:
+      operationId: getConversation
+      tags: [chat]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+
+  /chat/message:
+    post:
+      operationId: sendMessage
+      tags: [chat]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageInput"
+      responses:
+        "201":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /chat/messages:
+    get:
+      operationId: getMessages
+      tags: [chat]
+      parameters:
+        - name: conversationId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: markReadFor
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Messages in conversation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+
 components:
   schemas:
     HealthStatus:
@@ -1334,3 +1614,194 @@ components:
                 type: integer
             required: [cropName, count]
       required: [totalUsers, pendingVerifications, totalRevenue, activeListings, newUsersThisWeek, topCrops]
+
+    AdminVerifyInput:
+      type: object
+      properties:
+        verified:
+          type: boolean
+      required: [verified]
+
+    AdminSuspendInput:
+      type: object
+      properties:
+        suspended:
+          type: boolean
+      required: [suspended]
+
+    AdminSuspendResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        userId:
+          type: integer
+        suspended:
+          type: boolean
+      required: [success, userId, suspended]
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [farmer, buyer, admin]
+        verified:
+          type: boolean
+        rating:
+          type: ["number", "null"]
+        trustScore:
+          type: integer
+        location:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, name, email, role, verified, trustScore, createdAt]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        listingId:
+          type: integer
+        buyerId:
+          type: integer
+        farmerId:
+          type: integer
+        quantity:
+          type: number
+        offeredPrice:
+          type: number
+        totalAmount:
+          type: number
+        status:
+          type: string
+          enum: [pending, accepted, rejected, processing, shipped, delivered, cancelled]
+        note:
+          type: ["string", "null"]
+        buyerName:
+          type: ["string", "null"]
+        farmerName:
+          type: ["string", "null"]
+        cropName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, listingId, buyerId, farmerId, quantity, offeredPrice, totalAmount, status, createdAt, updatedAt]
+
+    CreateOrderInput:
+      type: object
+      properties:
+        listingId:
+          type: integer
+        buyerId:
+          type: integer
+        quantity:
+          type: number
+        offeredPrice:
+          type: number
+        note:
+          type: string
+      required: [listingId, buyerId, quantity, offeredPrice]
+
+    UpdateOrderStatusInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, accepted, rejected, processing, shipped, delivered, cancelled]
+      required: [status]
+
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+        buyerId:
+          type: integer
+        farmerId:
+          type: integer
+        listingId:
+          type: ["integer", "null"]
+        buyerName:
+          type: ["string", "null"]
+        farmerName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, buyerId, farmerId, createdAt]
+
+    ConversationSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        buyerId:
+          type: integer
+        farmerId:
+          type: integer
+        listingId:
+          type: ["integer", "null"]
+        buyerName:
+          type: ["string", "null"]
+        farmerName:
+          type: ["string", "null"]
+        cropName:
+          type: ["string", "null"]
+        lastMessage:
+          type: ["string", "null"]
+        lastMessageAt:
+          type: string
+        unreadCount:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, buyerId, farmerId, createdAt, lastMessageAt, unreadCount]
+
+    CreateConversationInput:
+      type: object
+      properties:
+        buyerId:
+          type: integer
+        farmerId:
+          type: integer
+        listingId:
+          type: integer
+      required: [buyerId, farmerId]
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversationId:
+          type: integer
+        senderId:
+          type: integer
+        message:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, conversationId, senderId, message, read, createdAt]
+
+    CreateMessageInput:
+      type: object
+      properties:
+        conversationId:
+          type: integer
+        senderId:
+          type: integer
+        message:
+          type: string
+      required: [conversationId, senderId, message]

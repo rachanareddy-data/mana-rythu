@@ -11,6 +11,8 @@ import ListingDetail from "@/pages/ListingDetail";
 import FarmerDashboard from "@/pages/FarmerDashboard";
 import BuyerDashboard from "@/pages/BuyerDashboard";
 import Admin from "@/pages/Admin";
+import Orders from "@/pages/Orders";
+import Chat from "@/pages/Chat";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import AddCrop from "@/pages/AddCrop";
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/buyer" component={BuyerDashboard} />
       <Route path="/buyer-dashboard" component={BuyerDashboard} />
       <Route path="/admin" component={Admin} />
+      <Route path="/orders" component={Orders} />
+      <Route path="/chat" component={Chat} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/profile/:id" component={UserProfile} />
