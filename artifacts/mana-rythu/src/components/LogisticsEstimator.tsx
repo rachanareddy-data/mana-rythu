@@ -32,7 +32,7 @@ export default function LogisticsEstimator() {
   const [result, setResult] = useState<LogisticsResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const estimate = async () => {
     if (!from.trim() || !to.trim() || !weight) {
