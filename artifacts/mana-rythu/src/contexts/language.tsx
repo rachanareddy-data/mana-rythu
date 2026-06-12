@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { translations, type Lang, type TranslationKey } from "@/lib/translations";
+import { safeGetItem, safeSetItem } from "@/lib/storage";
 
 export type { Lang };
 
@@ -13,20 +14,25 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 const STORAGE_KEY = "mana_rythu_lang";
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Lang | null;
-    if (stored && (stored === "en" || stored === "te" || stored === "hi")) return stored;
-    // Auto-detect browser language
+function detectInitialLang(): Lang {
+  const stored = safeGetItem(STORAGE_KEY) as Lang | null;
+  if (stored === "en" || stored === "te" || stored === "hi") return stored;
+  try {
     const browser = navigator.language.toLowerCase();
     if (browser.startsWith("te")) return "te";
     if (browser.startsWith("hi")) return "hi";
-    return "en";
-  });
+  } catch {
+    // navigator.language unavailable (rare edge case)
+  }
+  return "en";
+}
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>(detectInitialLang);
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    localStorage.setItem(STORAGE_KEY, l);
+    safeSetItem(STORAGE_KEY, l);
   };
 
   const t = (key: TranslationKey): string => {

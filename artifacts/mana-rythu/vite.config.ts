@@ -26,14 +26,15 @@ if (!basePath) {
   );
 }
 
+const isReplit = !!process.env.REPL_ID;
+
 export default defineConfig({
   base: basePath,
   plugins: [
     react(),
     tailwindcss(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
+    ...(process.env.NODE_ENV !== "production" && isReplit
       ? [
           await import("@replit/vite-plugin-cartographer").then((m) =>
             m.cartographer({
@@ -66,6 +67,7 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    hmr: true,
   },
   preview: {
     port,
