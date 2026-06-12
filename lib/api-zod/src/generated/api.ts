@@ -851,6 +851,11 @@ export const SendMessageBody = zod.object({
 })
 
 
+export const DeleteMessageParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
 export const GetMessagesQueryParams = zod.object({
   "conversationId": zod.coerce.number(),
   "markReadFor": zod.coerce.number().optional()

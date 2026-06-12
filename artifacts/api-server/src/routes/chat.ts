@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, conversationsTable, messagesTable, usersTable, listingsTable } from "@workspace/db";
-import { eq, and, or } from "drizzle-orm";
+import { eq, and, or, desc } from "drizzle-orm";
 
 const router = Router();
 
@@ -111,6 +111,23 @@ router.post("/chat/message", async (req, res) => {
 
     const [msg] = await db.insert(messagesTable).values({ conversationId, senderId, message: message.trim() }).returning();
     return res.status(201).json(serializeMessage(msg));
+  } catch (err) {
+    req.log.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// DELETE /api/chat/message/:id — sender only
+router.delete("/chat/message/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (!id) return res.status(400).json({ error: "Invalid message id" });
+
+    const [msg] = await db.select().from(messagesTable).where(eq(messagesTable.id, id)).limit(1);
+    if (!msg) return res.status(404).json({ error: "Message not found" });
+
+    await db.delete(messagesTable).where(eq(messagesTable.id, id));
+    return res.status(204).end();
   } catch (err) {
     req.log.error(err);
     return res.status(500).json({ error: "Internal server error" });

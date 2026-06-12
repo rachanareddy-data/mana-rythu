@@ -5,6 +5,7 @@ import {
   useGetConversations, getGetConversationsQueryKey,
   useGetMessages, getGetMessagesQueryKey,
   useSendMessage,
+  useDeleteMessage,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, ArrowLeft, Sprout } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Send, MessageCircle, ArrowLeft, Sprout, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +81,9 @@ function ConversationItem({
 
 function ChatWindow({ conversationId, userId, otherName }: { conversationId: number; userId: number; otherName: string }) {
   const qc = useQueryClient();
+  const { toast } = useToast();
   const [text, setText] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const msgParams = { conversationId, markReadFor: userId };
 
@@ -81,6 +95,7 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
   });
 
   const sendMutation = useSendMessage();
+  const deleteMutation = useDeleteMessage();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,68 +116,126 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
     );
   };
 
-  return (
-    <div className="flex flex-col h-full">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className={cn("h-10 w-48 rounded-2xl", i % 2 === 0 ? "ml-auto" : "")} />
-            ))}
-          </div>
-        ) : messages && messages.length > 0 ? (
-          messages.map((msg) => {
-            const isMine = msg.senderId === userId;
-            return (
-              <div key={msg.id} className={cn("flex", isMine ? "justify-end" : "justify-start")}>
-                <div
-                  className={cn(
-                    "max-w-[75%] px-4 py-2.5 rounded-2xl text-sm shadow-sm",
-                    isMine
-                      ? "bg-primary text-primary-foreground rounded-br-sm"
-                      : "bg-card border border-border text-foreground rounded-bl-sm"
-                  )}
-                >
-                  <p className="leading-relaxed">{msg.message}</p>
-                  <p className={cn("text-[10px] mt-1 text-right", isMine ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                    {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
-                  </p>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center py-12">
-            <MessageCircle className="w-10 h-10 text-muted-foreground mb-3" />
-            <p className="text-sm text-muted-foreground">No messages yet</p>
-            <p className="text-xs text-muted-foreground mt-1">Start the conversation with {otherName}</p>
-          </div>
-        )}
-        <div ref={bottomRef} />
-      </div>
+  const handleDeleteConfirm = () => {
+    if (!pendingDeleteId) return;
+    const idToDelete = pendingDeleteId;
+    setPendingDeleteId(null);
 
-      {/* Input */}
-      <div className="border-t border-border p-3 bg-card">
-        <div className="flex gap-2">
-          <Input
-            value={text}
-            onChange={e => setText(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleSend()}
-            placeholder="Type a message..."
-            className="flex-1 h-10 rounded-xl"
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!text.trim() || sendMutation.isPending}
-            size="icon"
-            className="h-10 w-10 rounded-xl shrink-0"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+    // Optimistic: remove from cache immediately
+    const key = getGetMessagesQueryKey(msgParams);
+    qc.setQueryData(key, (old: any[]) => old?.filter(m => m.id !== idToDelete) ?? []);
+
+    deleteMutation.mutate(
+      { id: idToDelete },
+      {
+        onSuccess: () => {
+          qc.invalidateQueries({ queryKey: key });
+          qc.invalidateQueries({ queryKey: getGetConversationsQueryKey({ userId }) });
+        },
+        onError: () => {
+          // Roll back optimistic update on failure
+          qc.invalidateQueries({ queryKey: key });
+          toast({ title: "Failed to delete message", variant: "destructive" });
+        },
+      }
+    );
+  };
+
+  return (
+    <>
+      {/* Confirm delete dialog */}
+      <AlertDialog open={pendingDeleteId !== null} onOpenChange={open => { if (!open) setPendingDeleteId(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete message?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="flex flex-col h-full">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {isLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className={cn("h-10 w-48 rounded-2xl", i % 2 === 0 ? "ml-auto" : "")} />
+              ))}
+            </div>
+          ) : messages && messages.length > 0 ? (
+            messages.map((msg) => {
+              const isMine = msg.senderId === userId;
+              return (
+                <div key={msg.id} className={cn("flex items-end gap-1.5 group", isMine ? "justify-end" : "justify-start")}>
+                  {/* Delete button — only for own messages, visible on hover */}
+                  {isMine && (
+                    <button
+                      onClick={() => setPendingDeleteId(msg.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0 mb-1"
+                      title="Delete message"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  <div
+                    className={cn(
+                      "max-w-[75%] px-4 py-2.5 rounded-2xl text-sm shadow-sm",
+                      isMine
+                        ? "bg-primary text-primary-foreground rounded-br-sm"
+                        : "bg-card border border-border text-foreground rounded-bl-sm"
+                    )}
+                  >
+                    <p className="leading-relaxed">{msg.message}</p>
+                    <p className={cn("text-[10px] mt-1 text-right", isMine ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                      {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center py-12">
+              <MessageCircle className="w-10 h-10 text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">No messages yet</p>
+              <p className="text-xs text-muted-foreground mt-1">Start the conversation with {otherName}</p>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Input */}
+        <div className="border-t border-border p-3 bg-card">
+          <div className="flex gap-2">
+            <Input
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleSend()}
+              placeholder="Type a message..."
+              className="flex-1 h-10 rounded-xl"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!text.trim() || sendMutation.isPending}
+              size="icon"
+              className="h-10 w-10 rounded-xl shrink-0"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

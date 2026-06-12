@@ -971,6 +971,22 @@ paths:
               schema:
                 $ref: "#/components/schemas/Message"
 
+  /chat/message/{id}:
+    delete:
+      operationId: deleteMessage
+      tags: [chat]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Message deleted
+        "404":
+          description: Message not found
+
   /chat/messages:
     get:
       operationId: getMessages
