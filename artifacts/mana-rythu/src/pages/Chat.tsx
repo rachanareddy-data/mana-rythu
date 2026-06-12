@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "wouter";
 import {
   useGetConversations, getGetConversationsQueryKey,
   useGetMessages, getGetMessagesQueryKey,
@@ -167,7 +168,9 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
 
 export default function Chat() {
   const { user } = useAuth();
-  const [activeConvId, setActiveConvId] = useState<number | null>(null);
+  const params = useParams<{ id?: string }>();
+  const urlConvId = params.id ? parseInt(params.id) : null;
+  const [activeConvId, setActiveConvId] = useState<number | null>(urlConvId);
 
   const convParams = { userId: user?.id ?? 0 };
   const { data: conversations, isLoading } = useGetConversations(convParams, {
@@ -177,6 +180,11 @@ export default function Chat() {
       refetchInterval: 15_000,
     },
   });
+
+  // When conversations load, if we have a URL conv ID but it's not in the list yet, set it
+  useEffect(() => {
+    if (urlConvId && !activeConvId) setActiveConvId(urlConvId);
+  }, [urlConvId]);
 
   const activeConv = conversations?.find(c => c.id === activeConvId);
   const otherName = activeConv && user

@@ -116,7 +116,7 @@ export default function ListingDetail() {
     chatMutation.mutate(
       { data: { buyerId: user.id, farmerId: listing.farmerId, listingId: numId } },
       {
-        onSuccess: () => navigate("/chat"),
+        onSuccess: (conv: any) => navigate(`/chat/${conv.id}`),
         onError: () => toast({ title: "Could not open chat", variant: "destructive" }),
       }
     );

@@ -39,6 +39,7 @@ function Router() {
       <Route path="/buyer-dashboard" component={BuyerDashboard} />
       <Route path="/admin" component={Admin} />
       <Route path="/orders" component={Orders} />
+      <Route path="/chat/:id" component={Chat} />
       <Route path="/chat" component={Chat} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
