@@ -152,9 +152,6 @@ export default function Marketplace() {
           </div>
         </div>
 
-        {/* Logistics estimator */}
-        <LogisticsEstimator />
-
         {/* Live indicator */}
         <div className="mt-auto pt-4 border-t border-border">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -413,6 +410,11 @@ export default function Marketplace() {
               )}
             </div>
           )}
+        </div>
+
+        {/* ── Book Transport — always visible at every screen size ── */}
+        <div className="px-4 sm:px-6 pb-6">
+          <LogisticsEstimator />
         </div>
       </div>
     </div>

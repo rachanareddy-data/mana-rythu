@@ -20,9 +20,10 @@ import {
   Sprout, Plus, Trash2, Package, MapPin, ShoppingBag,
   Calendar, CheckCircle2, TrendingUp, TrendingDown,
   Minus, ArrowRight, IndianRupee, Leaf, BarChart3,
-  Clock, Eye, Bug,
+  Clock, Eye, Bug, Truck,
 } from "lucide-react";
 import PestDetection from "@/components/PestDetection";
+import LogisticsEstimator from "@/components/LogisticsEstimator";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -284,6 +285,10 @@ export default function FarmerDashboard() {
                 <Bug className="w-3.5 h-3.5" />
                 <span>{t("pest")}</span>
               </TabsTrigger>
+              <TabsTrigger value="transport" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+                <Truck className="w-3.5 h-3.5" />
+                <span>Transport</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -476,6 +481,11 @@ export default function FarmerDashboard() {
           {/* ── Pest tab ── */}
           <TabsContent value="pest" className="mt-0">
             <PestDetection />
+          </TabsContent>
+
+          {/* ── Transport tab ── */}
+          <TabsContent value="transport" className="mt-0">
+            <LogisticsEstimator />
           </TabsContent>
         </Tabs>
       </div>
