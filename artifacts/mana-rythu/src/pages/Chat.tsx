@@ -174,15 +174,22 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
               ))}
             </div>
           ) : messages && messages.length > 0 ? (
-            messages.map((msg) => {
+            messages.map((msg, idx) => {
               const isMine = msg.senderId === userId;
+              // Debug: log first message structure once
+              if (idx === 0) {
+                console.log("[Chat] message object:", { id: msg.id, senderId: msg.senderId, message: msg.message, createdAt: msg.createdAt });
+              }
               return (
-                <div key={msg.id} className={cn("flex items-end gap-1.5 group", isMine ? "justify-end" : "justify-start")}>
-                  {/* Delete button — only for own messages, visible on hover */}
+                <div key={msg.id} className={cn("flex items-end gap-1.5", isMine ? "justify-end" : "justify-start")}>
+                  {/* Delete button — left of bubble, always visible for own messages */}
                   {isMine && (
                     <button
-                      onClick={() => setPendingDeleteId(msg.id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0 mb-1"
+                      onClick={() => {
+                        console.log("[Chat] delete clicked for message id:", msg.id);
+                        setPendingDeleteId(msg.id);
+                      }}
+                      className="p-1.5 rounded-lg text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 active:bg-destructive/20 transition-colors shrink-0 mb-0.5"
                       title="Delete message"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
