@@ -26,6 +26,7 @@ import PestDetection from "@/components/PestDetection";
 import LogisticsEstimator from "@/components/LogisticsEstimator";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { motion } from "framer-motion";
 
 const STATUS_CONFIG: Record<string, { labelKey: string; dot: string; badge: string }> = {
   growing:   { labelKey: "growing",     dot: "bg-blue-500",    badge: "bg-blue-50 text-blue-700 border-blue-200" },
@@ -63,7 +64,11 @@ interface StatCardProps {
 
 function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, loading }: StatCardProps) {
   return (
-    <Card className="border-0 shadow-sm overflow-hidden">
+    <motion.div
+      whileHover={{ scale: 1.035, y: -4, transition: { duration: 0.18, ease: "easeOut" } }}
+      whileTap={{ scale: 0.97 }}
+    >
+    <Card className="border-0 shadow-md overflow-hidden">
       <CardContent className="p-0">
         <div className={cn("p-5", gradient)}>
           <div className="flex items-start justify-between">
@@ -85,6 +90,7 @@ function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, load
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 }
 
@@ -201,7 +207,12 @@ export default function FarmerDashboard() {
 
       {/* ── Stats (overlap hero) ── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
           <StatCard
             label={t("growing")}
             value={growing}
@@ -238,7 +249,7 @@ export default function FarmerDashboard() {
             iconColor="text-white"
             loading={listingsLoading}
           />
-        </div>
+        </motion.div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5 pb-24 lg:pb-8">

@@ -19,6 +19,7 @@ import TrustBadge from "@/components/TrustBadge";
 import LogisticsEstimator from "@/components/LogisticsEstimator";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { motion } from "framer-motion";
 
 const POLL_INTERVAL = 15_000;
 
@@ -309,10 +310,22 @@ export default function Marketplace() {
               {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-72 rounded-2xl" />)}
             </div>
           ) : listings && listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5"
+              initial="hidden"
+              animate="visible"
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+            >
               {listings.map((l) => (
-                <Link key={l.id} href={`/listing/${l.id}`} className="block group">
-                  <Card className="border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer h-full overflow-hidden">
+                <motion.div
+                  key={l.id}
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.28 } } }}
+                  whileHover={{ scale: 1.025, y: -4, transition: { duration: 0.18 } }}
+                  whileTap={{ scale: 0.975 }}
+                  className="group"
+                >
+                  <Link href={`/listing/${l.id}`} className="block h-full">
+                  <Card className="border border-border shadow-sm hover:shadow-xl transition-shadow cursor-pointer h-full overflow-hidden">
                     {/* Image */}
                     <div className="h-44 relative overflow-hidden bg-gradient-to-br from-green-100 via-emerald-50 to-teal-50 flex items-center justify-center">
                       {l.imageUrl ? (
@@ -391,9 +404,10 @@ export default function Marketplace() {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 sm:py-24 text-center">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">

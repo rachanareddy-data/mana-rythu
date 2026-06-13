@@ -15,22 +15,29 @@ import {
   CheckCircle2, Leaf, Star, ShoppingCart, Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 function StatCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: any; color: string }) {
   return (
-    <Card className="border border-border shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground font-medium">{label}</p>
-            <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
+    <motion.div
+      whileHover={{ scale: 1.035, y: -4, transition: { duration: 0.18, ease: "easeOut" } }}
+      whileTap={{ scale: 0.97 }}
+      className="h-full"
+    >
+      <Card className="border border-border shadow-sm hover:shadow-lg transition-shadow h-full">
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground font-medium">{label}</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
+            </div>
+            <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", color)}>
+              <Icon className="w-6 h-6" />
+            </div>
           </div>
-          <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", color)}>
-            <Icon className="w-6 h-6" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -147,7 +154,12 @@ export default function Home() {
 
       <div className="p-6 space-y-8">
         {/* Platform stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           {sumLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <Card key={i} className="border border-border">
@@ -172,7 +184,7 @@ export default function Home() {
               />
             ))
           )}
-        </div>
+        </motion.div>
 
         {/* Weather + Mandi Prices */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -274,9 +286,20 @@ export default function Home() {
               {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-52 rounded-xl" />)}
             </div>
           ) : crops ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <motion.div
+              className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
+              initial="hidden"
+              animate="visible"
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+            >
               {crops.map((c) => (
-                <Card key={c.cropName} className="border border-border shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group">
+                <motion.div
+                  key={c.cropName}
+                  variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.28 } } }}
+                  whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.18 } }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                <Card className="border border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer group h-full">
                   <CardContent className="p-4">
                     <div className="w-full h-14 bg-gradient-to-br from-green-100 to-emerald-50 rounded-lg mb-3 flex items-center justify-center">
                       <Sprout className="w-7 h-7 text-green-600" />
@@ -293,8 +316,9 @@ export default function Home() {
                     <p className="text-[10px] text-muted-foreground mt-2 leading-relaxed line-clamp-2">{c.reason}</p>
                   </CardContent>
                 </Card>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : null}
         </div>
 

@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Send, MessageCircle, ArrowLeft, Sprout, Trash2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -174,14 +175,21 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
               ))}
             </div>
           ) : messages && messages.length > 0 ? (
-            messages.map((msg, idx) => {
+            <AnimatePresence initial={false}>
+            {messages.map((msg, idx) => {
               const isMine = msg.senderId === userId;
-              // Debug: log first message structure once
               if (idx === 0) {
                 console.log("[Chat] message object:", { id: msg.id, senderId: msg.senderId, message: msg.message, createdAt: msg.createdAt });
               }
               return (
-                <div key={msg.id} className={cn("flex items-end gap-1.5", isMine ? "justify-end" : "justify-start")}>
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className={cn("flex items-end gap-1.5", isMine ? "justify-end" : "justify-start")}
+                >
                   {/* Delete button — left of bubble, always visible for own messages */}
                   {isMine && (
                     <button
@@ -208,9 +216,10 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
                       {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               );
-            })
+            })}
+            </AnimatePresence>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center py-12">
               <MessageCircle className="w-10 h-10 text-muted-foreground mb-3" />

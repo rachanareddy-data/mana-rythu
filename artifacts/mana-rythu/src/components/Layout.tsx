@@ -1,4 +1,5 @@
 import { useLocation, Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/auth";
 import { useLanguage, type Lang } from "@/contexts/language";
 import { type TranslationKey } from "@/lib/translations";
@@ -475,9 +476,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.main
+            key={location}
+            className="flex-1 overflow-y-auto"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
       </div>
 
       {/* ── Mobile bottom nav ── */}
