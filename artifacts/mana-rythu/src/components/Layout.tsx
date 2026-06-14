@@ -9,12 +9,13 @@ import {
   ShoppingCart, Plus, Calculator, Globe, Check, CheckCheck,
   Package, MessageCircle,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import AgriAIChat from "@/components/AgriAIChat";
+import { DropdownPortal } from "@/components/ui/dropdown-portal";
 
 const LANG_FLAGS: Record<Lang, { label: string; flag: string }> = {
   en: { label: "English", flag: "🇬🇧" },
@@ -96,6 +97,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
+  const langBtnRef = useRef<HTMLButtonElement>(null);
+  const notifBtnRef = useRef<HTMLButtonElement>(null);
 
   const navItems = getNavItems(user?.role, t);
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -324,8 +327,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-1.5 ml-auto">
             {/* Language switcher */}
-            <div className="relative">
+            <div>
               <button
+                ref={langBtnRef}
                 onClick={() => { setLangOpen(v => !v); setNotifOpen(false); }}
                 className={cn(
                   "relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-sm font-medium select-none cursor-pointer",
@@ -338,38 +342,36 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Globe className="w-4 h-4 shrink-0" />
                 <span className="text-xs font-semibold tracking-wide">{lang.toUpperCase()}</span>
               </button>
-              {langOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-10 z-50 w-44 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
-                  >
-                    {(["en", "te", "hi"] as Lang[]).map(l => (
-                      <button
-                        key={l}
-                        onClick={() => { setLang(l); setLangOpen(false); }}
-                        className={cn(
-                          "w-full text-left px-3 py-2.5 text-sm hover:bg-muted flex items-center gap-2.5 transition-colors cursor-pointer",
-                          lang === l && "bg-primary/5 font-semibold text-primary"
-                        )}
-                      >
-                        <span className="text-base leading-none">{LANG_FLAGS[l].flag}</span>
-                        <span>{LANG_FLAGS[l].label}</span>
-                        <span className="ml-auto text-[10px] font-mono text-muted-foreground">{l.toUpperCase()}</span>
-                        {lang === l && <Check className="w-3.5 h-3.5 text-primary shrink-0" />}
-                      </button>
-                    ))}
-                  </motion.div>
-                </>
-              )}
+              <DropdownPortal anchorRef={langBtnRef} open={langOpen} onClose={() => setLangOpen(false)}>
+                <motion.div
+                  initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.15 }}
+                  className="w-44 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
+                >
+                  {(["en", "te", "hi"] as Lang[]).map(l => (
+                    <button
+                      key={l}
+                      onClick={() => { setLang(l); setLangOpen(false); }}
+                      className={cn(
+                        "w-full text-left px-3 py-2.5 text-sm hover:bg-muted flex items-center gap-2.5 transition-colors cursor-pointer",
+                        lang === l && "bg-primary/5 font-semibold text-primary"
+                      )}
+                    >
+                      <span className="text-base leading-none">{LANG_FLAGS[l].flag}</span>
+                      <span>{LANG_FLAGS[l].label}</span>
+                      <span className="ml-auto text-[10px] font-mono text-muted-foreground">{l.toUpperCase()}</span>
+                      {lang === l && <Check className="w-3.5 h-3.5 text-primary shrink-0" />}
+                    </button>
+                  ))}
+                </motion.div>
+              </DropdownPortal>
             </div>
 
             {/* Notification bell */}
-            <div className="relative">
+            <div>
               <button
+                ref={notifBtnRef}
                 onClick={openNotifs}
                 className={cn(
                   "relative p-2 rounded-xl transition-all",
@@ -389,94 +391,90 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 )}
               </button>
 
-              {/* Notifications dropdown */}
-              {notifOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.18 }}
-                    className="absolute right-0 top-11 z-50 w-80 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
-                  >
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Bell className="w-3.5 h-3.5 text-primary" />
-                        </div>
-                        <span className="font-semibold text-sm">{t("notifications")}</span>
-                        {unreadCount > 0 && (
-                          <span className="bg-red-500 text-white text-[10px] px-1.5 py-0 h-4 min-w-0 rounded-full flex items-center font-bold">
-                            {unreadCount}
-                          </span>
-                        )}
+              <DropdownPortal anchorRef={notifBtnRef} open={notifOpen} onClose={() => setNotifOpen(false)}>
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.18 }}
+                  className="w-80 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
+                >
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Bell className="w-3.5 h-3.5 text-primary" />
                       </div>
+                      <span className="font-semibold text-sm">{t("notifications")}</span>
                       {unreadCount > 0 && (
-                        <button
-                          onClick={markAllRead}
-                          className="flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 font-medium transition-colors"
-                        >
-                          <CheckCheck className="w-3 h-3" />
-                          {t("markAllRead")}
-                        </button>
+                        <span className="bg-red-500 text-white text-[10px] px-1.5 py-0 h-4 min-w-0 rounded-full flex items-center font-bold">
+                          {unreadCount}
+                        </span>
                       )}
                     </div>
-
-                    <div className="max-h-80 overflow-y-auto divide-y divide-border/50">
-                      {notifLoading ? (
-                        <div className="flex items-center justify-center py-10 text-muted-foreground text-sm gap-2">
-                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                          {t("loading")}
-                        </div>
-                      ) : notifications.length === 0 ? (
-                        <div className="py-12 flex flex-col items-center gap-3 text-muted-foreground">
-                          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
-                            <Bell className="w-7 h-7 opacity-30" />
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm font-medium">{t("noNotifications")}</p>
-                            <p className="text-xs mt-0.5 px-4 opacity-70">{t("noNotifDesc")}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        notifications.map(n => (
-                          <div
-                            key={n.id}
-                            onClick={() => !n.read && markRead(n.id)}
-                            className={cn(
-                              "flex gap-3 px-4 py-3 transition-colors cursor-pointer group",
-                              n.read ? "bg-card hover:bg-muted/40" : "bg-primary/[0.03] hover:bg-primary/[0.06]"
-                            )}
-                          >
-                            <div className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold mt-0.5",
-                              notifTypeColor(n.type)
-                            )}>
-                              {n.type === "price" ? "₹" : n.type === "order" ? "📦" : n.type === "alert" ? "!" : "✓"}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-1">
-                                <p className={cn("text-xs font-semibold leading-tight", !n.read && "text-foreground")}>{n.title}</p>
-                                {!n.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
-                              </div>
-                              <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
-                              <p className="text-[10px] text-muted-foreground/60 mt-1">{timeAgo(n.createdAt)}</p>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    {!user && (
-                      <div className="px-4 py-3 border-t border-border bg-muted/30 text-center">
-                        <p className="text-xs text-muted-foreground">
-                          <Link href="/login" className="text-primary font-medium hover:underline" onClick={() => setNotifOpen(false)}>{t("signIn")}</Link> to see your notifications
-                        </p>
-                      </div>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllRead}
+                        className="flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        <CheckCheck className="w-3 h-3" />
+                        {t("markAllRead")}
+                      </button>
                     )}
-                  </motion.div>
-                </>
-              )}
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-border/50">
+                    {notifLoading ? (
+                      <div className="flex items-center justify-center py-10 text-muted-foreground text-sm gap-2">
+                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        {t("loading")}
+                      </div>
+                    ) : notifications.length === 0 ? (
+                      <div className="py-12 flex flex-col items-center gap-3 text-muted-foreground">
+                        <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+                          <Bell className="w-7 h-7 opacity-30" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-medium">{t("noNotifications")}</p>
+                          <p className="text-xs mt-0.5 px-4 opacity-70">{t("noNotifDesc")}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      notifications.map(n => (
+                        <div
+                          key={n.id}
+                          onClick={() => !n.read && markRead(n.id)}
+                          className={cn(
+                            "flex gap-3 px-4 py-3 transition-colors cursor-pointer group",
+                            n.read ? "bg-card hover:bg-muted/40" : "bg-primary/[0.03] hover:bg-primary/[0.06]"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold mt-0.5",
+                            notifTypeColor(n.type)
+                          )}>
+                            {n.type === "price" ? "₹" : n.type === "order" ? "📦" : n.type === "alert" ? "!" : "✓"}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-1">
+                              <p className={cn("text-xs font-semibold leading-tight", !n.read && "text-foreground")}>{n.title}</p>
+                              {!n.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
+                            </div>
+                            <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
+                            <p className="text-[10px] text-muted-foreground/60 mt-1">{timeAgo(n.createdAt)}</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {!user && (
+                    <div className="px-4 py-3 border-t border-border bg-muted/30 text-center">
+                      <p className="text-xs text-muted-foreground">
+                        <Link href="/login" className="text-primary font-medium hover:underline" onClick={() => setNotifOpen(false)}>{t("signIn")}</Link> to see your notifications
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              </DropdownPortal>
             </div>
 
             {/* User avatar */}
