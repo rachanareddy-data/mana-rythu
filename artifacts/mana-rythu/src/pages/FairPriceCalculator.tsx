@@ -49,7 +49,7 @@ export default function FairPriceCalculator() {
     trend === "up" ? "Rising" : trend === "down" ? "Falling" : "Stable";
 
   return (
-    <div className="max-w-2xl mx-auto p-4 sm:p-6 space-y-6">
+    <div className="max-w-2xl mx-auto p-4 sm:p-6 pb-24 lg:pb-8 space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-700 to-emerald-600 rounded-2xl p-5 text-white">
         <div className="flex items-center gap-3 mb-1">

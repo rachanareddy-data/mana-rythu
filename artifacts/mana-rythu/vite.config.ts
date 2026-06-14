@@ -4,8 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-const isDev = process.env.NODE_ENV === "development";
-const port = isDev ? 5173 : Number(process.env.PORT) || 4173;
+const port = Number(process.env.PORT) || 24396;
 const basePath = process.env.BASE_PATH || "/";
 const isReplit = !!process.env.REPL_ID;
 

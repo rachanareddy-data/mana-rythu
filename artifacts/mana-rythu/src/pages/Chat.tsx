@@ -327,7 +327,7 @@ export default function Chat() {
   const totalUnread = conversations?.reduce((s, c) => s + (c.unreadCount ?? 0), 0) ?? 0;
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex h-full bg-background pb-16 lg:pb-0">
       {/* ── Conversation sidebar ── */}
       <div
         className={cn(

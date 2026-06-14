@@ -207,8 +207,8 @@ export default function Marketplace() {
 
             {/* Farmer: post crop */}
             {user?.role === "farmer" && (
-              <Button size="sm" className="gap-1.5 shrink-0 hidden sm:flex" onClick={() => navigate("/add-crop")}>
-                <Plus className="w-4 h-4" /> {t("postCrop")}
+              <Button size="sm" className="gap-1.5 shrink-0" onClick={() => navigate("/add-crop")}>
+                <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t("postCrop")}</span>
               </Button>
             )}
 

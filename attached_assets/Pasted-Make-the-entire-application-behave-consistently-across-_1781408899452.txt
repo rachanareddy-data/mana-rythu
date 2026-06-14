@@ -1,0 +1,70 @@
+Make the entire application behave consistently across Desktop and Mobile without losing any feature, layout, or functionality.
+
+GOAL:
+The app must look like a real mobile application on phones and a clean web app on desktop — with no missing UI, no hidden features, and no broken interactions.
+
+────────────────────────────
+
+1. RESPONSIVE LAYOUT (CRITICAL)
+- Ensure ALL pages are fully responsive:
+  - FarmerDashboard
+  - Marketplace
+  - Chat
+  - Logistics
+- Mobile must not hide any functionality
+- No feature should disappear on small screens
+- Use proper flex/grid stacking for mobile
+
+────────────────────────────
+
+2. FEATURE PARITY (IMPORTANT)
+- EVERYTHING available on desktop must also be available on mobile
+- No button, icon, or action should be hidden or disabled on mobile
+- Example:
+  - Chat must open properly
+  - Place Order must work
+  - Add Crop must work
+  - Language switch must work
+
+────────────────────────────
+
+3. MOBILE APP-LIKE EXPERIENCE
+- Convert UI into native app feel:
+  - Full-width cards on mobile
+  - Bottom spacing safe for touch
+  - Large touch-friendly buttons
+  - Smooth scrolling without layout shift
+
+────────────────────────────
+
+4. NO OVERLAYS / NO HIDDEN UI
+- Fix all z-index issues:
+  - dropdowns
+  - notifications
+  - modals
+- Nothing should go behind cards or disappear
+- Everything must be clickable and visible
+
+────────────────────────────
+
+5. CONSISTENT FUNCTIONALITY
+- All API calls must work same on mobile + desktop
+- Use only /api relative paths
+- No UI logic differences between screen sizes
+
+────────────────────────────
+
+6. SAFARI + CHROME MOBILE FIX
+- Ensure iOS Safari compatibility
+- Fix any layout breaking or “insecure UI” issues
+- No CSS causing overlap or clipping
+
+────────────────────────────
+
+FINAL GOAL:
+A fully responsive production-ready farming marketplace app that works EXACTLY the same on:
+- Desktop Web
+- Mobile Chrome
+- Mobile Safari
+
+No missing features. No broken UI. No hidden actions.
