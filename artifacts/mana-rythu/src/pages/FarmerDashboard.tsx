@@ -65,15 +65,20 @@ interface StatCardProps {
 function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, loading }: StatCardProps) {
   return (
     <motion.div
+      className="h-full"
       whileHover={{ y: -4, transition: { duration: 0.18, ease: "easeOut" } }}
       whileTap={{ y: 1 }}
     >
-    <Card className="border-0 shadow-md overflow-hidden">
-      <CardContent className="p-0">
-        <div className={cn("p-5", gradient)}>
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium text-white/70 uppercase tracking-wide mb-1">{label}</p>
+      <Card className="border-0 shadow-md overflow-hidden h-full flex flex-col">
+        <CardContent className="p-0 flex-1">
+          <div className={cn("p-5 h-full flex flex-col justify-between", gradient)}>
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-medium text-white/70 uppercase tracking-wide">{label}</p>
+              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                <Icon className={cn("w-5 h-5", iconColor)} />
+              </div>
+            </div>
+            <div className="mt-3">
               {loading ? (
                 <Skeleton className="h-8 w-16 bg-white/20" />
               ) : (
@@ -83,13 +88,9 @@ function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, load
                 <p className="text-xs text-white/60 mt-1">{subtext}</p>
               )}
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-              <Icon className={cn("w-5 h-5", iconColor)} />
-            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }
@@ -164,10 +165,10 @@ export default function FarmerDashboard() {
   const initials = user?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() ?? "F";
 
   return (
-    <div className="isolate min-h-full bg-background">
+    <div className="isolate relative z-0 min-h-full bg-background">
 
       {/* ── Hero header ── */}
-      <div className="gradient-primary px-4 sm:px-6 py-6 pb-10 relative overflow-hidden">
+      <div className="gradient-primary px-4 sm:px-6 py-6 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -206,10 +207,10 @@ export default function FarmerDashboard() {
         </div>
       </div>
 
-      {/* ── Stats (overlap hero) ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6">
+      {/* ── Stats ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
