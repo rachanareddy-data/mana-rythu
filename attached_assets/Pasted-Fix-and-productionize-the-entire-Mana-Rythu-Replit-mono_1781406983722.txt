@@ -1,0 +1,74 @@
+Fix and productionize the entire Mana Rythu Replit monorepo.
+
+GOAL:
+Make the app fully production-ready with stable deployment, working APIs, correct environment handling, and proper frontend-backend connection.
+
+────────────────────────────
+
+1. ENV VARIABLES (CRITICAL)
+- Add support for:
+  DATABASE_URL
+  JWT_SECRET
+  OPENAI_API_KEY (if used)
+- NEVER crash app if env is missing
+- Use safe fallbacks or warnings only (no throw errors)
+
+────────────────────────────
+
+2. SERVER SETUP (REQUIRED FIX)
+- Backend must listen on:
+  app.listen(process.env.PORT || 3000, "0.0.0.0")
+- Must be compatible with Replit hosting
+- No hardcoded ports
+
+────────────────────────────
+
+3. VITE FRONTEND CONFIG FIX
+- Remove all hard throws related to process.env.PORT or BASE_PATH
+- Use safe fallback values:
+  port = dev 5173, prod = process.env.PORT || 4173
+  basePath = "/"
+- strictPort must be false
+- Build must never require env variables
+
+────────────────────────────
+
+4. API CONNECTION FIX
+- Ensure frontend correctly connects to backend using:
+  API_BASE_URL = "/api" (preferred for Replit)
+- Remove any broken REPLIT_URL dependency issues
+- Ensure all API calls (listings, logistics, chat, notifications) use correct base path
+
+────────────────────────────
+
+5. CORE FEATURES VALIDATION
+Verify these endpoints work with real DB:
+
+- POST /listings → saves to database
+- GET /listings → returns real data
+- POST /logistics/estimate → returns calculated response
+- notifications insert → works correctly and does not crash app
+
+────────────────────────────
+
+6. ERROR HANDLING (IMPORTANT)
+- No crashes on missing env variables
+- Add proper try/catch for all API routes
+- Frontend must show loading, error, empty states properly
+
+────────────────────────────
+
+7. DEPLOYMENT READINESS
+- Ensure Replit Deploy works without manual fixes
+- No build-time errors
+- No missing scripts
+- No PORT or env dependency failures
+
+────────────────────────────
+
+FINAL GOAL:
+App must run end-to-end as a production-ready farming marketplace:
+
+User → Frontend → API → Database → Response → UI update
+
+No broken routes, no build errors, no environment crashes.
