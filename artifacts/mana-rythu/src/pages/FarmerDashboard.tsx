@@ -65,8 +65,8 @@ interface StatCardProps {
 function StatCard({ label, value, subtext, icon: Icon, gradient, iconColor, loading }: StatCardProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.035, y: -4, transition: { duration: 0.18, ease: "easeOut" } }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ y: -4, transition: { duration: 0.18, ease: "easeOut" } }}
+      whileTap={{ y: 1 }}
     >
     <Card className="border-0 shadow-md overflow-hidden">
       <CardContent className="p-0">
@@ -164,7 +164,7 @@ export default function FarmerDashboard() {
   const initials = user?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() ?? "F";
 
   return (
-    <div className="min-h-full bg-background">
+    <div className="isolate min-h-full bg-background">
 
       {/* ── Hero header ── */}
       <div className="gradient-primary px-4 sm:px-6 py-6 pb-10 relative overflow-hidden">
