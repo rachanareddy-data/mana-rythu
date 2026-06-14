@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { useGetListings, getGetListingsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth";
@@ -45,8 +45,12 @@ export default function Marketplace() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [, navigate] = useLocation();
+  const searchString = useSearch();
   const qc = useQueryClient();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(() => {
+    const p = new URLSearchParams(searchString);
+    return p.get("q") ?? "";
+  });
   const [locationFilter, setLocationFilter] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
