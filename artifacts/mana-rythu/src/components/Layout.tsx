@@ -307,16 +307,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          {/* Mobile logo */}
+          {/* Mobile logo — icon only on xs, icon + text on sm+ */}
           <Link href="/" className="lg:hidden flex items-center gap-2 shrink-0">
-            <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center shrink-0">
               <Sprout className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-sm text-foreground">Mana Rythu</span>
+            <span className="hidden sm:block font-bold text-sm text-foreground whitespace-nowrap">Mana Rythu</span>
           </Link>
 
           {/* Search */}
-          <div className="flex-1 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 max-w-xs sm:max-w-md">
+          <div className="flex-1 min-w-0 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 max-w-xs sm:max-w-md">
             <Search className="w-4 h-4 text-muted-foreground shrink-0" />
             <input
               type="search"
@@ -340,7 +340,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 aria-label="Change language"
               >
                 <Globe className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-semibold tracking-wide">{lang.toUpperCase()}</span>
+                <span className="hidden sm:inline text-xs font-semibold tracking-wide">{lang.toUpperCase()}</span>
               </button>
               <DropdownPortal anchorRef={langBtnRef} open={langOpen} onClose={() => setLangOpen(false)}>
                 <motion.div
