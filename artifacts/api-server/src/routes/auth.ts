@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, usersTable } from "@workspace/db";
+import { db, usersTable, sessionsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import { notify } from "../lib/notify";
@@ -13,8 +13,6 @@ function hashPassword(password: string): string {
 function generateToken(userId: number): string {
   return crypto.createHash("sha256").update(`${userId}_${Date.now()}_mana_rythu`).digest("hex");
 }
-
-const activeSessions = new Map<string, number>();
 
 router.post("/auth/register", async (req, res) => {
   const { name, email, password, role, phone, location } = req.body;
@@ -39,7 +37,7 @@ router.post("/auth/register", async (req, res) => {
       verified: false,
     }).returning();
     const token = generateToken(user.id);
-    activeSessions.set(token, user.id);
+    await db.insert(sessionsTable).values({ token, userId: user.id });
 
     await notify(
       user.id,
@@ -70,7 +68,7 @@ router.post("/auth/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
     const token = generateToken(user.id);
-    activeSessions.set(token, user.id);
+    await db.insert(sessionsTable).values({ token, userId: user.id });
     const { passwordHash: _, ...safeUser } = user;
     return res.json({
       user: { ...safeUser, rating: safeUser.rating ?? null, createdAt: safeUser.createdAt.toISOString() },
@@ -86,11 +84,11 @@ router.get("/auth/me", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
   if (!token) return res.status(401).json({ error: "Unauthorized" });
-  const userId = activeSessions.get(token);
-  if (!userId) return res.status(401).json({ error: "Invalid token" });
   try {
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    const [session] = await db.select().from(sessionsTable).where(eq(sessionsTable.token, token)).limit(1);
+    if (!session) return res.status(401).json({ error: "Invalid token" });
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    if (!user) return res.status(401).json({ error: "User not found" });
     const { passwordHash: _, ...safeUser } = user;
     return res.json({ ...safeUser, rating: safeUser.rating ?? null, createdAt: safeUser.createdAt.toISOString() });
   } catch (err) {
@@ -99,12 +97,17 @@ router.get("/auth/me", async (req, res) => {
   }
 });
 
-router.post("/auth/logout", (req, res) => {
+router.post("/auth/logout", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
-  if (token) activeSessions.delete(token);
+  if (token) {
+    try {
+      await db.delete(sessionsTable).where(eq(sessionsTable.token, token));
+    } catch {
+      // ignore — token already gone
+    }
+  }
   return res.json({ success: true });
 });
 
-export { activeSessions };
 export default router;

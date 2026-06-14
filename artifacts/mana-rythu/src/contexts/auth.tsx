@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { getAuthToken, clearAuthToken, setAuthToken } from "@/lib/auth";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
@@ -29,9 +29,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const qc = useQueryClient();
   const [, navigate] = useLocation();
 
-  const { data: user, isLoading } = useGetMe({
+  const { data: user, isLoading, error } = useGetMe({
     query: { queryKey: getGetMeQueryKey(), enabled: !!token, retry: false },
   });
+
+  useEffect(() => {
+    if (!token) return;
+    if (error && (error as { status?: number }).status === 401) {
+      clearAuthToken();
+      setToken(null);
+      qc.clear();
+      navigate("/login");
+    }
+  }, [error, token, qc, navigate]);
 
   const login = (t: string, userData?: AuthUser) => {
     setAuthToken(t);
@@ -42,11 +52,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    console.log("Logout clicked");
     clearAuthToken();
     setToken(null);
     qc.clear();
-    console.log("Auth cleared — redirecting to /login");
     navigate("/login");
   };
 
