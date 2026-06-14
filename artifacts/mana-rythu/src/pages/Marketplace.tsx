@@ -103,7 +103,7 @@ export default function Marketplace() {
   ];
 
   return (
-    <div className="flex h-full pb-20 lg:pb-0">
+    <div className="isolate flex h-full pb-20 lg:pb-0">
 
       {/* ── Filter sidebar — desktop ── */}
       <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-border bg-card p-5 space-y-5 overflow-y-auto">
@@ -174,7 +174,7 @@ export default function Marketplace() {
       <div className="flex-1 overflow-y-auto">
 
         {/* ── Sticky header ── */}
-        <div className="sticky top-0 z-10 bg-card/95 backdrop-blur border-b border-border px-4 sm:px-6 py-3">
+        <div className="sticky top-0 bg-card/95 backdrop-blur border-b border-border px-4 sm:px-6 py-3">
           <div className="flex items-center gap-2">
             {/* Search bar */}
             <div className="flex-1 flex items-center gap-2 bg-muted rounded-xl px-3 py-2.5 min-w-0">
@@ -320,8 +320,8 @@ export default function Marketplace() {
                 <motion.div
                   key={l.id}
                   variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.28 } } }}
-                  whileHover={{ scale: 1.025, y: -4, transition: { duration: 0.18 } }}
-                  whileTap={{ scale: 0.975 }}
+                  whileHover={{ y: -4, transition: { duration: 0.18 } }}
+                  whileTap={{ y: 1 }}
                   className="group"
                 >
                   <Link href={`/listing/${l.id}`} className="block h-full">
@@ -332,10 +332,10 @@ export default function Marketplace() {
                         <img
                           src={l.imageUrl}
                           alt={l.cropName}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:brightness-105 transition-all duration-300"
                         />
                       ) : (
-                        <Sprout className="w-16 h-16 text-green-300 group-hover:scale-110 transition-transform" />
+                        <Sprout className="w-16 h-16 text-green-300" />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                       <div className="absolute top-2.5 left-2.5 flex gap-1.5">
