@@ -89,22 +89,21 @@ export default function BuyerDashboard() {
   ];
 
   return (
-    <div className="flex flex-col h-full pb-20 lg:pb-0 bg-gray-50/50">
+    <div className="flex flex-col h-full pb-20 lg:pb-0 bg-background">
 
       {/* ── Hero header ── */}
-      <div className="bg-white border-b border-gray-100 px-5 py-5 shrink-0">
+      <div className="bg-card border-b border-border px-5 py-5 shrink-0 shadow-sm">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold text-foreground">
                 {user ? `Hello, ${firstName} 👋` : t("browseCrops")}
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5">{t("browseFreshProduce")}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{t("browseFreshProduce")}</p>
             </div>
-            {/* Stats pills */}
             <div className="hidden sm:flex items-center gap-3">
               {!isLoading && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
+                <span className="text-xs text-muted-foreground bg-muted px-3 py-1.5 rounded-full font-medium border border-border">
                   {listings?.length ?? 0} {t("available")}
                 </span>
               )}
@@ -112,17 +111,17 @@ export default function BuyerDashboard() {
           </div>
 
           {/* Search bar — prominent */}
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus-within:border-green-400 focus-within:ring-2 focus-within:ring-green-100 transition-all">
-            <Search className="w-4 h-4 text-gray-400 shrink-0" />
+          <div className="flex items-center gap-2 bg-muted border border-border rounded-xl px-4 py-2.5 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+            <Search className="w-4 h-4 text-muted-foreground shrink-0" />
             <input
               type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search for tomato, rice, cotton, groundnut..."
-              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-800 placeholder:text-gray-400 min-w-0"
+              className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground min-w-0"
             />
             {search ? (
-              <button onClick={() => setSearch("")} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button onClick={() => setSearch("")} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-4 h-4" />
               </button>
             ) : null}
@@ -137,8 +136,8 @@ export default function BuyerDashboard() {
                 className={cn(
                   "px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border",
                   category === cat.label
-                    ? "bg-green-600 text-white border-green-600 shadow-sm"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-card text-foreground border-border hover:border-primary/40 hover:text-primary"
                 )}
               >
                 {cat.label}
@@ -151,37 +150,37 @@ export default function BuyerDashboard() {
       <div className="flex flex-1 overflow-hidden max-w-5xl w-full mx-auto">
 
         {/* ── Filter sidebar — desktop ── */}
-        <aside className="hidden lg:flex flex-col w-52 shrink-0 px-4 py-5 space-y-5 overflow-y-auto">
+        <aside className="hidden lg:flex flex-col w-52 shrink-0 px-4 py-5 space-y-5 overflow-y-auto border-r border-border/40">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-sm text-gray-700 flex items-center gap-1.5">
+            <h2 className="font-semibold text-sm text-foreground flex items-center gap-1.5">
               <SlidersHorizontal className="w-3.5 h-3.5" /> {t("filter")}
             </h2>
             {hasFilters && (
-              <button onClick={clearAll} className="text-xs text-red-500 hover:text-red-700 font-medium">{t("clearAll")}</button>
+              <button onClick={clearAll} className="text-xs text-destructive hover:text-destructive/80 font-medium">{t("clearAll")}</button>
             )}
           </div>
 
           <div className="space-y-4">
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("location")}</p>
-              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Warangal" className="h-9 text-sm border-gray-200" />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("location")}</p>
+              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Warangal" className="h-9 text-sm" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("maxPriceLabel")}</p>
-              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-9 text-sm border-gray-200" type="number" />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("maxPriceLabel")}</p>
+              <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 100" className="h-9 text-sm" type="number" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("marketTrend")}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("marketTrend")}</p>
               <div className="space-y-1">
                 {trendOptions.map(opt => (
                   <button
                     key={opt.value}
                     onClick={() => setTrendFilter(opt.value)}
                     className={cn(
-                      "flex items-center w-full text-left text-xs px-2.5 py-2 rounded-lg transition-colors",
+                      "flex items-center w-full text-left text-xs px-2.5 py-2 rounded-xl transition-colors",
                       trendFilter === opt.value
-                        ? "bg-green-50 text-green-700 font-semibold"
-                        : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                        ? "bg-primary/10 text-primary font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
                   >
                     {opt.label}
@@ -205,10 +204,10 @@ export default function BuyerDashboard() {
 
           {/* Results header */}
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {isLoading
                 ? t("loading")
-                : <><span className="font-semibold text-gray-800">{listings?.length ?? 0}</span> {t("cropsFound")}</>}
+                : <><span className="font-semibold text-foreground">{listings?.length ?? 0}</span> {t("cropsFound")}</>}
             </p>
             <div className="flex items-center gap-2">
               {hasFilters && (
@@ -219,18 +218,18 @@ export default function BuyerDashboard() {
               <Button
                 variant="outline"
                 size="sm"
-                className="lg:hidden gap-1.5 h-8 text-xs border-gray-200"
+                className="lg:hidden gap-1.5 h-8 text-xs border-border"
                 onClick={() => setShowMobileFilters(v => !v)}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" /> {t("filter")}
-                {hasFilters && <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />}
+                {hasFilters && <span className="w-1.5 h-1.5 bg-primary rounded-full" />}
               </Button>
             </div>
           </div>
 
           {/* Mobile filter drawer */}
           {showMobileFilters && (
-            <div className="lg:hidden bg-white border border-gray-100 rounded-2xl p-4 mb-4 shadow-sm grid grid-cols-2 gap-3">
+            <div className="lg:hidden bg-card border border-border rounded-2xl p-4 mb-4 shadow-sm grid grid-cols-2 gap-3">
               <Input value={location} onChange={e => setLocation(e.target.value)} placeholder={t("location")} className="h-9 text-sm" />
               <Input value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder={t("maxPriceLabel")} className="h-9 text-sm" type="number" />
               <select
@@ -266,7 +265,7 @@ export default function BuyerDashboard() {
                   className="group"
                 >
                   <Link href={`/listing/${l.id}`} className="block h-full">
-                  <Card className="border border-gray-100 shadow-sm hover:shadow-xl transition-shadow bg-white overflow-hidden h-full cursor-pointer">
+                  <Card className="border border-border shadow-sm hover:shadow-xl transition-shadow bg-card overflow-hidden h-full cursor-pointer">
                     {/* Image */}
                     <div className="h-44 bg-gradient-to-br from-green-100 via-emerald-50 to-teal-100 relative overflow-hidden">
                       {l.imageUrl ? (
@@ -300,38 +299,37 @@ export default function BuyerDashboard() {
                     </div>
 
                     <CardContent className="p-4">
-                      {/* Name + location */}
-                      <h3 className="font-bold text-gray-900 text-base mb-0.5 leading-tight">{l.cropName}</h3>
-                      <div className="flex items-center gap-1 text-xs text-gray-400 mb-3">
+                      <h3 className="font-bold text-foreground text-base mb-0.5 leading-tight">{l.cropName}</h3>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
                         <MapPin className="w-3 h-3 shrink-0" />
                         <span className="truncate">{l.location}</span>
                       </div>
 
                       {/* Price — prominent */}
-                      <div className="bg-green-50 rounded-lg px-3 py-2 mb-3">
-                        <p className="text-[10px] text-green-600 font-medium mb-0.5">{t("priceRange").toUpperCase()}</p>
+                      <div className="bg-primary/5 border border-primary/10 rounded-xl px-3 py-2 mb-3">
+                        <p className="text-[10px] text-primary/70 font-semibold mb-0.5">{t("priceRange").toUpperCase()}</p>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-lg font-bold text-green-700">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
-                          <span className="text-xs text-green-500">/{l.unit}</span>
+                          <span className="text-base font-bold text-primary">₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}</span>
+                          <span className="text-xs text-primary/60">/{l.unit}</span>
                         </div>
                       </div>
 
                       {/* Meta row */}
-                      <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                         <span className="flex items-center gap-1"><Package className="w-3 h-3" />{l.quantity.toLocaleString()} {l.unit}</span>
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}</span>
                       </div>
 
                       {/* Farmer row */}
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+                      <div className="flex items-center justify-between pt-3 border-t border-border/60">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-[10px] font-bold text-green-700">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
                             {(l.farmerName ?? "F").slice(0, 1).toUpperCase()}
                           </div>
                           <div>
-                            <span className="text-xs font-medium text-gray-700 truncate max-w-20 block">{l.farmerName ?? "Farmer"}</span>
+                            <span className="text-xs font-semibold text-foreground truncate max-w-20 block">{l.farmerName ?? "Farmer"}</span>
                             {l.farmerVerified && (
-                              <span className="text-[9px] text-green-600 font-medium flex items-center gap-0.5">
+                              <span className="text-[9px] text-primary font-medium flex items-center gap-0.5">
                                 <CheckCircle2 className="w-2.5 h-2.5" /> {t("verified")}
                               </span>
                             )}
@@ -343,7 +341,7 @@ export default function BuyerDashboard() {
                             <span className="text-xs font-bold text-amber-700">{l.farmerRating.toFixed(1)}</span>
                           </div>
                         ) : (
-                          <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-lg">{t("view")} →</span>
+                          <span className="text-xs text-primary font-semibold bg-primary/5 px-2 py-1 rounded-lg">{t("view")} →</span>
                         )}
                       </div>
                     </CardContent>
@@ -353,18 +351,18 @@ export default function BuyerDashboard() {
               ))}
             </motion.div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-gray-100">
-              <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
-                <ShoppingCart className="w-8 h-8 text-gray-300" />
+            <div className="flex flex-col items-center justify-center py-20 text-center bg-card rounded-2xl border border-border shadow-sm">
+              <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+                <ShoppingCart className="w-8 h-8 text-muted-foreground opacity-40" />
               </div>
-              <h3 className="font-semibold text-gray-800 mb-1">
+              <h3 className="font-semibold text-foreground mb-1">
                 {hasFilters ? t("noCropsMatchFilter") : t("nocropsFound")}
               </h3>
-              <p className="text-sm text-gray-500 mb-5 max-w-xs">
+              <p className="text-sm text-muted-foreground mb-5 max-w-xs">
                 {hasFilters ? t("adjustFiltersOrBrowse") : t("noListedYet")}
               </p>
               {hasFilters && (
-                <Button variant="outline" size="sm" onClick={clearAll} className="border-gray-200">
+                <Button variant="outline" size="sm" onClick={clearAll}>
                   {t("clearAll")} {t("filter").toLowerCase()}
                 </Button>
               )}

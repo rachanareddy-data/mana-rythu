@@ -9,7 +9,6 @@ import {
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -24,16 +23,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Send, MessageCircle, ArrowLeft, Sprout, Trash2 } from "lucide-react";
+import { Send, MessageCircle, ArrowLeft, Sprout, Trash2, Phone, MoreVertical } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
 function ConversationItem({
-  conv,
-  userId,
-  active,
-  onClick,
+  conv, userId, active, onClick,
 }: {
   conv: any;
   userId: number;
@@ -47,35 +43,44 @@ function ConversationItem({
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/60 border-b border-border/60",
-        active && "bg-primary/5 border-l-2 border-l-primary"
+        "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all hover:bg-muted/60 border-b border-border/40 relative",
+        active && "bg-primary/5"
       )}
     >
-      <Avatar className="w-10 h-10 shrink-0">
-        <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">{initial}</AvatarFallback>
-      </Avatar>
+      {active && <div className="absolute left-0 top-2 bottom-2 w-0.5 bg-primary rounded-full" />}
+      <div className="relative shrink-0">
+        <Avatar className="w-10 h-10">
+          <AvatarFallback className={cn(
+            "font-bold text-sm",
+            active ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+          )}>
+            {initial}
+          </AvatarFallback>
+        </Avatar>
+        {conv.unreadCount > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary rounded-full border-2 border-card text-[8px] font-bold text-white flex items-center justify-center">
+            {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
+          </span>
+        )}
+      </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-1">
-          <p className="font-semibold text-sm text-foreground truncate">{otherName}</p>
+        <div className="flex items-center justify-between gap-1 mb-0.5">
+          <p className={cn("font-semibold text-sm truncate", active ? "text-primary" : "text-foreground")}>{otherName}</p>
           <span className="text-[10px] text-muted-foreground shrink-0">
             {formatDistanceToNow(new Date(conv.lastMessageAt), { addSuffix: true })}
           </span>
         </div>
         {conv.cropName && (
-          <div className="flex items-center gap-1 mt-0.5">
-            <Sprout className="w-3 h-3 text-primary shrink-0" />
-            <p className="text-xs text-muted-foreground truncate">{conv.cropName}</p>
-          </div>
+          <p className="text-[10px] text-primary/70 font-medium flex items-center gap-1 mb-0.5">
+            <Sprout className="w-2.5 h-2.5 shrink-0" /> {conv.cropName}
+          </p>
         )}
         {conv.lastMessage && (
-          <p className="text-xs text-muted-foreground truncate mt-0.5">{conv.lastMessage}</p>
+          <p className={cn("text-xs truncate", conv.unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground")}>
+            {conv.lastMessage}
+          </p>
         )}
       </div>
-      {conv.unreadCount > 0 && (
-        <Badge className="bg-primary text-primary-foreground text-[10px] h-5 min-w-5 px-1.5 shrink-0">
-          {conv.unreadCount}
-        </Badge>
-      )}
     </button>
   );
 }
@@ -86,6 +91,7 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
   const [text, setText] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const msgParams = { conversationId, markReadFor: userId };
 
   const { data: messages, isLoading } = useGetMessages(msgParams, {
@@ -122,7 +128,6 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
     const idToDelete = pendingDeleteId;
     setPendingDeleteId(null);
 
-    // Optimistic: remove from cache immediately
     const key = getGetMessagesQueryKey(msgParams);
     qc.setQueryData(key, (old: any[]) => old?.filter(m => m.id !== idToDelete) ?? []);
 
@@ -134,7 +139,6 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
           qc.invalidateQueries({ queryKey: getGetConversationsQueryKey({ userId }) });
         },
         onError: () => {
-          // Roll back optimistic update on failure
           qc.invalidateQueries({ queryKey: key });
           toast({ title: "Failed to delete message", variant: "destructive" });
         },
@@ -142,15 +146,22 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
     );
   };
 
+  // Group messages by date
+  const groupedMessages = messages?.reduce<{ date: string; msgs: typeof messages }[]>((acc, msg) => {
+    const date = new Date(msg.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" });
+    const last = acc[acc.length - 1];
+    if (last?.date === date) { last.msgs.push(msg); } else { acc.push({ date, msgs: [msg] }); }
+    return acc;
+  }, []) ?? [];
+
   return (
     <>
-      {/* Confirm delete dialog */}
       <AlertDialog open={pendingDeleteId !== null} onOpenChange={open => { if (!open) setPendingDeleteId(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete message?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this message? This action cannot be undone.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -166,88 +177,110 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
       </AlertDialog>
 
       <div className="flex flex-col h-full">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {/* Chat background */}
+        <div
+          className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
+          style={{ backgroundImage: "radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0)", backgroundSize: "24px 24px" }}
+        >
           {isLoading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className={cn("h-10 w-48 rounded-2xl", i % 2 === 0 ? "ml-auto" : "")} />
+            <div className="space-y-4 pt-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className={cn("flex", i % 2 === 0 ? "justify-start" : "justify-end")}>
+                  <Skeleton className={cn("h-10 rounded-2xl", i % 2 === 0 ? "w-44" : "w-36")} />
+                </div>
               ))}
             </div>
           ) : messages && messages.length > 0 ? (
             <AnimatePresence initial={false}>
-            {messages.map((msg, idx) => {
-              const isMine = msg.senderId === userId;
-              if (idx === 0) {
-                console.log("[Chat] message object:", { id: msg.id, senderId: msg.senderId, message: msg.message, createdAt: msg.createdAt });
-              }
-              return (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className={cn("flex items-end gap-1.5", isMine ? "justify-end" : "justify-start")}
-                >
-                  {/* Delete button — left of bubble, always visible for own messages */}
-                  {isMine && (
-                    <button
-                      onClick={() => {
-                        console.log("[Chat] delete clicked for message id:", msg.id);
-                        setPendingDeleteId(msg.id);
-                      }}
-                      className="p-1.5 rounded-lg text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 active:bg-destructive/20 transition-colors shrink-0 mb-0.5"
-                      title="Delete message"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                  <div
-                    className={cn(
-                      "max-w-[75%] px-4 py-2.5 rounded-2xl text-sm shadow-sm",
-                      isMine
-                        ? "bg-primary text-primary-foreground rounded-br-sm"
-                        : "bg-card border border-border text-foreground rounded-bl-sm"
-                    )}
-                  >
-                    <p className="leading-relaxed">{msg.message}</p>
-                    <p className={cn("text-[10px] mt-1 text-right", isMine ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                      {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
-                    </p>
+              {groupedMessages.map(({ date, msgs }) => (
+                <div key={date}>
+                  {/* Date separator */}
+                  <div className="flex items-center justify-center my-3">
+                    <span className="text-[10px] font-medium text-muted-foreground bg-card/90 px-3 py-1 rounded-full border border-border/60 shadow-sm">
+                      {date}
+                    </span>
                   </div>
-                </motion.div>
-              );
-            })}
+                  {msgs.map((msg) => {
+                    const isMine = msg.senderId === userId;
+                    return (
+                      <motion.div
+                        key={msg.id}
+                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className={cn("flex items-end gap-1.5 mb-1.5", isMine ? "justify-end" : "justify-start")}
+                      >
+                        {isMine && (
+                          <button
+                            onClick={() => setPendingDeleteId(msg.id)}
+                            className="p-1.5 rounded-lg text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0 mb-1 opacity-0 group-hover:opacity-100"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                        <div
+                          className={cn(
+                            "max-w-[72%] sm:max-w-[60%] px-4 py-2.5 shadow-sm",
+                            isMine
+                              ? "bg-primary text-primary-foreground rounded-[18px] rounded-br-[4px]"
+                              : "bg-card border border-border text-foreground rounded-[18px] rounded-bl-[4px]"
+                          )}
+                        >
+                          <p className="text-sm leading-relaxed">{msg.message}</p>
+                          <p className={cn("text-[10px] mt-1 text-right leading-none", isMine ? "text-primary-foreground/60" : "text-muted-foreground/70")}>
+                            {new Date(msg.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              ))}
             </AnimatePresence>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center py-12">
-              <MessageCircle className="w-10 h-10 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground">No messages yet</p>
-              <p className="text-xs text-muted-foreground mt-1">Start the conversation with {otherName}</p>
+            <div className="flex flex-col items-center justify-center h-full text-center py-16">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                <MessageCircle className="w-8 h-8 text-primary" />
+              </div>
+              <p className="font-semibold text-foreground mb-1">No messages yet</p>
+              <p className="text-sm text-muted-foreground">Start the conversation with {otherName}</p>
             </div>
           )}
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
-        <div className="border-t border-border p-3 bg-card">
-          <div className="flex gap-2">
-            <Input
-              value={text}
-              onChange={e => setText(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleSend()}
-              placeholder="Type a message..."
-              className="flex-1 h-10 rounded-xl"
-            />
-            <Button
+        {/* Premium WhatsApp-style input */}
+        <div className="border-t border-border bg-card/95 backdrop-blur px-3 py-3">
+          <div className="flex items-end gap-2">
+            <div className="flex-1 flex items-center bg-muted rounded-[24px] px-4 min-h-[44px] py-2 border border-border/60 focus-within:border-primary/40 focus-within:bg-background transition-all">
+              <input
+                ref={inputRef}
+                value={text}
+                onChange={e => setText(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
+                placeholder="Type a message..."
+                className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground resize-none leading-relaxed"
+              />
+            </div>
+            <motion.button
               onClick={handleSend}
               disabled={!text.trim() || sendMutation.isPending}
-              size="icon"
-              className="h-10 w-10 rounded-xl shrink-0"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={cn(
+                "w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all shadow-sm",
+                text.trim() && !sendMutation.isPending
+                  ? "gradient-primary shadow-green"
+                  : "bg-muted text-muted-foreground cursor-not-allowed"
+              )}
             >
-              <Send className="w-4 h-4" />
-            </Button>
+              {sendMutation.isPending
+                ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                : <Send className={cn("w-4 h-4", text.trim() ? "text-white" : "")} />
+              }
+            </motion.button>
           </div>
         </div>
       </div>
@@ -270,10 +303,9 @@ export default function Chat() {
     },
   });
 
-  // When conversations load, if we have a URL conv ID but it's not in the list yet, set it
   useEffect(() => {
     if (urlConvId && !activeConvId) setActiveConvId(urlConvId);
-  }, [urlConvId]);
+  }, [urlConvId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const activeConv = conversations?.find(c => c.id === activeConvId);
   const otherName = activeConv && user
@@ -282,9 +314,12 @@ export default function Chat() {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-        <MessageCircle className="w-12 h-12 text-muted-foreground mb-3" />
-        <h3 className="font-semibold text-foreground mb-1">Sign in to access chat</h3>
+      <div className="flex flex-col items-center justify-center py-24 text-center px-6">
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+          <MessageCircle className="w-8 h-8 text-primary" />
+        </div>
+        <h3 className="font-bold text-foreground mb-1">Sign in to access chat</h3>
+        <p className="text-sm text-muted-foreground">Chat directly with farmers and buyers</p>
       </div>
     );
   }
@@ -292,30 +327,39 @@ export default function Chat() {
   const totalUnread = conversations?.reduce((s, c) => s + (c.unreadCount ?? 0), 0) ?? 0;
 
   return (
-    <div className="flex h-full">
-      {/* Sidebar — conversation list */}
+    <div className="flex h-full bg-background">
+      {/* ── Conversation sidebar ── */}
       <div
         className={cn(
-          "flex flex-col border-r border-border bg-card transition-all",
+          "flex flex-col border-r border-border bg-card transition-all shrink-0",
           activeConvId ? "hidden md:flex md:w-72 lg:w-80" : "flex w-full md:w-72 lg:w-80"
         )}
       >
-        {/* Header */}
-        <div className="px-4 py-4 border-b border-border shrink-0">
-          <div className="flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-primary" />
-            <h2 className="font-bold text-foreground">Messages</h2>
-            {totalUnread > 0 && (
-              <Badge className="bg-red-500 text-white text-[10px] h-5 px-1.5">{totalUnread}</Badge>
-            )}
+        {/* Sidebar header */}
+        <div className="px-5 py-4 border-b border-border shrink-0 bg-card">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
+                <MessageCircle className="w-3.5 h-3.5 text-white" />
+              </div>
+              <h2 className="font-bold text-foreground">Messages</h2>
+              {totalUnread > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-0 h-4 flex items-center">
+                  {totalUnread}
+                </span>
+              )}
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {conversations?.length ?? 0} conversation{conversations?.length !== 1 ? "s" : ""}
+          </p>
         </div>
 
-        {/* List */}
+        {/* Conversation list */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="p-4 space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
+            <div className="p-4 space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="flex gap-3">
                   <Skeleton className="w-10 h-10 rounded-full shrink-0" />
                   <div className="flex-1 space-y-1.5">
@@ -337,39 +381,46 @@ export default function Chat() {
             ))
           ) : (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <MessageCircle className="w-10 h-10 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground font-medium">No conversations yet</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Click "Chat Farmer" on any listing to start a conversation.
+              <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-3">
+                <MessageCircle className="w-7 h-7 text-muted-foreground opacity-40" />
+              </div>
+              <p className="text-sm font-semibold text-foreground mb-1">No conversations yet</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Click "Chat with Farmer" on any listing to start a conversation.
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Chat window */}
+      {/* ── Chat window area ── */}
       {activeConvId ? (
         <div className="flex-1 flex flex-col min-w-0">
           {/* Chat header */}
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card/95 backdrop-blur shrink-0 shadow-sm">
             <button
               onClick={() => setActiveConvId(null)}
-              className="md:hidden p-1.5 rounded-lg hover:bg-muted transition-colors"
+              className="md:hidden p-1.5 rounded-xl hover:bg-muted transition-colors"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 text-foreground" />
             </button>
             <Avatar className="w-9 h-9 shrink-0">
-              <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
+              <AvatarFallback className="gradient-primary text-white font-bold text-sm">
                 {otherName.slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <p className="font-semibold text-sm text-foreground">{otherName}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm text-foreground leading-none">{otherName}</p>
               {activeConv?.cropName && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="text-xs text-primary/80 flex items-center gap-1 mt-0.5">
                   <Sprout className="w-3 h-3" /> {activeConv.cropName}
                 </p>
               )}
+            </div>
+            <div className="flex items-center gap-1">
+              <button className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors">
+                <MoreVertical className="w-4 h-4" />
+              </button>
             </div>
           </div>
           <ChatWindow conversationId={activeConvId} userId={user.id} otherName={otherName} />
@@ -377,8 +428,11 @@ export default function Chat() {
       ) : (
         <div className="hidden md:flex flex-1 items-center justify-center bg-muted/20">
           <div className="text-center">
-            <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm font-medium text-muted-foreground">Select a conversation</p>
+            <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-10 h-10 text-primary" />
+            </div>
+            <p className="font-bold text-foreground mb-1">Select a conversation</p>
+            <p className="text-sm text-muted-foreground">Choose from your conversations on the left</p>
           </div>
         </div>
       )}

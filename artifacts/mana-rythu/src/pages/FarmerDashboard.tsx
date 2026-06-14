@@ -164,10 +164,11 @@ export default function FarmerDashboard() {
   const initials = user?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() ?? "F";
 
   return (
-    <div className="min-h-full bg-gray-50/50">
+    <div className="min-h-full bg-background">
 
       {/* ── Hero header ── */}
-      <div className="bg-gradient-to-r from-green-700 via-green-600 to-emerald-500 px-4 sm:px-6 py-6 pb-10">
+      <div className="gradient-primary px-4 sm:px-6 py-6 pb-10 relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -218,7 +219,7 @@ export default function FarmerDashboard() {
             value={growing}
             subtext={t("cropsInProgress")}
             icon={Sprout}
-            gradient="bg-gradient-to-br from-blue-500 to-blue-600"
+            gradient="bg-gradient-to-br from-green-600 to-green-700"
             iconColor="text-white"
             loading={cropsLoading}
           />
@@ -227,7 +228,7 @@ export default function FarmerDashboard() {
             value={ready}
             subtext={ready > 0 ? t("readyToSell") : t("noneReadyYet")}
             icon={CheckCircle2}
-            gradient="bg-gradient-to-br from-emerald-500 to-green-600"
+            gradient="bg-gradient-to-br from-emerald-500 to-emerald-700"
             iconColor="text-white"
             loading={cropsLoading}
           />
@@ -236,7 +237,7 @@ export default function FarmerDashboard() {
             value={activeListings}
             subtext={t("liveOnMarket")}
             icon={BarChart3}
-            gradient="bg-gradient-to-br from-violet-500 to-purple-600"
+            gradient="bg-gradient-to-br from-teal-600 to-green-700"
             iconColor="text-white"
             loading={listingsLoading}
           />
@@ -245,7 +246,7 @@ export default function FarmerDashboard() {
             value={`₹${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(1)}K` : totalValue}`}
             subtext={t("acrossAllListings")}
             icon={IndianRupee}
-            gradient="bg-gradient-to-br from-amber-500 to-orange-500"
+            gradient="bg-gradient-to-br from-green-700 to-green-900"
             iconColor="text-white"
             loading={listingsLoading}
           />
@@ -276,27 +277,27 @@ export default function FarmerDashboard() {
 
         {/* ── Tabs ── */}
         <Tabs defaultValue="listings">
-          <div className="flex items-center justify-between mb-2">
-            <TabsList className="bg-gray-100 h-9 p-1">
-              <TabsTrigger value="listings" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+          <div className="flex items-center justify-between mb-3">
+            <TabsList className="bg-muted h-10 p-1 rounded-xl">
+              <TabsTrigger value="listings" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>{t("listings")}</span>
                 {listings && (
-                  <span className="text-[10px] bg-gray-200 data-[state=active]:bg-green-100 px-1.5 py-0.5 rounded-full font-semibold">{listings.length}</span>
+                  <span className="text-[10px] bg-muted-foreground/15 data-[state=active]:bg-primary/10 data-[state=active]:text-primary px-1.5 py-0.5 rounded-full font-semibold">{listings.length}</span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="crops" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+              <TabsTrigger value="crops" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
                 <Sprout className="w-3.5 h-3.5" />
                 <span>{t("myCrops")}</span>
                 {crops && (
-                  <span className="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded-full font-semibold">{crops.length}</span>
+                  <span className="text-[10px] bg-muted-foreground/15 px-1.5 py-0.5 rounded-full font-semibold">{crops.length}</span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="pest" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+              <TabsTrigger value="pest" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
                 <Bug className="w-3.5 h-3.5" />
                 <span>{t("pest")}</span>
               </TabsTrigger>
-              <TabsTrigger value="transport" className="text-xs sm:text-sm h-7 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm gap-1.5">
+              <TabsTrigger value="transport" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
                 <Truck className="w-3.5 h-3.5" />
                 <span>Transport</span>
               </TabsTrigger>
@@ -312,7 +313,7 @@ export default function FarmerDashboard() {
             ) : listings && listings.length > 0 ? (
               <div className="space-y-3">
                 {listings.map(l => (
-                  <Card key={l.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white group">
+                  <Card key={l.id} className="border border-border shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-card group">
                     <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center shrink-0 border border-green-100">
@@ -326,28 +327,28 @@ export default function FarmerDashboard() {
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                          <span className="font-semibold text-gray-900 text-sm">{l.cropName}</span>
+                          <span className="font-bold text-foreground text-sm">{l.cropName}</span>
                           <TrendBadge trend={l.trend} rising={t("rising")} stable={t("stable")} falling={t("falling")} />
                           {l.available
                             ? <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> {t("live")}
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 live-dot" /> {t("live")}
                               </span>
-                            : <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded-full">Inactive</span>
+                            : <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted-foreground bg-muted border border-border px-1.5 py-0.5 rounded-full">Inactive</span>
                           }
                         </div>
                         <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-                          <span className="font-bold text-green-700 text-sm">
+                          <span className="font-bold text-primary text-sm">
                             ₹{l.minPrice.toLocaleString()} – ₹{l.maxPrice.toLocaleString()}
-                            <span className="font-normal text-gray-400 text-xs">/{l.unit}</span>
+                            <span className="font-normal text-muted-foreground text-xs">/{l.unit}</span>
                           </span>
-                          <span className="flex items-center gap-1 text-gray-400 text-xs">
+                          <span className="flex items-center gap-1 text-muted-foreground text-xs">
                             <Package className="w-3 h-3" />{l.quantity} {l.unit}
                           </span>
-                          <span className="flex items-center gap-1 text-gray-400 text-xs">
+                          <span className="flex items-center gap-1 text-muted-foreground text-xs">
                             <MapPin className="w-3 h-3" />{l.location}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {t("updated")} {formatDistanceToNow(new Date(l.updatedAt), { addSuffix: true })}
                         </p>
@@ -357,14 +358,14 @@ export default function FarmerDashboard() {
                       <div className="flex flex-col gap-1.5 shrink-0">
                         <button
                           onClick={() => navigate(`/listing/${l.id}`)}
-                          className="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                          className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                           title={t("view")}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteListing(l.id, l.cropName)}
-                          className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                           title={t("delete")}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -376,7 +377,7 @@ export default function FarmerDashboard() {
 
                 {/* Summary footer */}
                 <div className="flex items-center justify-between px-1 pt-1">
-                  <p className="text-xs text-gray-400">{listings.length} {t("listings").toLowerCase()} total</p>
+                  <p className="text-xs text-muted-foreground">{listings.length} {t("listings").toLowerCase()} total</p>
                   <button
                     onClick={() => navigate("/add-crop")}
                     className="text-xs text-green-600 font-medium hover:underline flex items-center gap-1"
@@ -386,13 +387,13 @@ export default function FarmerDashboard() {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-14 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">
-                  <ShoppingBag className="w-8 h-8 text-green-400" />
+              <div className="flex flex-col items-center justify-center py-14 text-center bg-card rounded-2xl border border-border shadow-sm">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <ShoppingBag className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">{t("noListings")}</h3>
-                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">{t("noListingsDesc")}</p>
-                <Button className="gap-2 bg-green-600 hover:bg-green-700 shadow-sm" onClick={() => navigate("/add-crop")}>
+                <h3 className="font-semibold text-foreground mb-1">{t("noListings")}</h3>
+                <p className="text-sm text-muted-foreground mb-5 max-w-xs leading-relaxed">{t("noListingsDesc")}</p>
+                <Button className="gap-2 gradient-primary shadow-green border-0" onClick={() => navigate("/add-crop")}>
                   <Plus className="w-4 h-4" /> {t("postFirstCrop")}
                 </Button>
               </div>
@@ -411,22 +412,22 @@ export default function FarmerDashboard() {
                   const cfg = STATUS_CONFIG[crop.status] ?? STATUS_CONFIG.growing;
                   const statusLabel = crop.status === "harvested" ? "Harvested" : t(cfg.labelKey as any);
                   return (
-                    <Card key={crop.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-white overflow-hidden group">
+                    <Card key={crop.id} className="border border-border shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 bg-card overflow-hidden group">
                       {/* Top color stripe */}
                       <div className={cn(
                         "h-1.5 w-full",
-                        crop.status === "growing" ? "bg-gradient-to-r from-blue-400 to-blue-500"
+                        crop.status === "growing" ? "bg-gradient-to-r from-green-400 to-green-500"
                           : crop.status === "ready" ? "bg-gradient-to-r from-emerald-400 to-green-500"
-                          : "bg-gradient-to-r from-gray-300 to-gray-400"
+                          : "bg-gradient-to-r from-border to-muted-foreground/30"
                       )} />
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
-                              <Sprout className="w-5 h-5 text-green-600" />
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                              <Sprout className="w-5 h-5 text-primary" />
                             </div>
                             <div className="min-w-0">
-                              <p className="font-semibold text-gray-900 text-sm leading-tight truncate">{crop.cropName}</p>
+                              <p className="font-bold text-foreground text-sm leading-tight truncate">{crop.cropName}</p>
                               <span className={cn("inline-flex items-center gap-1 text-[10px] font-semibold mt-0.5 px-1.5 py-0.5 rounded-full border", cfg.badge)}>
                                 <span className={cn("w-1.5 h-1.5 rounded-full", cfg.dot, crop.status === "growing" && "animate-pulse")} />
                                 {statusLabel}
@@ -435,31 +436,31 @@ export default function FarmerDashboard() {
                           </div>
                           <button
                             onClick={() => handleDeleteCrop(crop.id, crop.cropName)}
-                            className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-1.5 rounded-lg text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
 
                         {(crop.sowDate || crop.harvestDate) && (
-                          <div className="space-y-1.5 border-t border-gray-50 pt-3 mb-3">
+                          <div className="space-y-1.5 border-t border-border/50 pt-3 mb-3">
                             {crop.sowDate && (
-                              <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                <Calendar className="w-3 h-3 text-gray-400" />
-                                <span>{t("sowDate")}: <span className="font-medium text-gray-700">{crop.sowDate}</span></span>
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Calendar className="w-3 h-3" />
+                                <span>{t("sowDate")}: <span className="font-semibold text-foreground">{crop.sowDate}</span></span>
                               </div>
                             )}
                             {crop.harvestDate && (
-                              <div className="flex items-center gap-1.5 text-xs text-green-600">
+                              <div className="flex items-center gap-1.5 text-xs text-primary">
                                 <Calendar className="w-3 h-3" />
-                                <span>{t("expectedHarvest")}: <span className="font-semibold">{crop.harvestDate}</span></span>
+                                <span>{t("expectedHarvest")}: <span className="font-bold">{crop.harvestDate}</span></span>
                               </div>
                             )}
                           </div>
                         )}
 
                         {crop.notes && (
-                          <p className="text-xs text-gray-500 italic mb-3 line-clamp-1">"{crop.notes}"</p>
+                          <p className="text-xs text-muted-foreground italic mb-3 line-clamp-1">"{crop.notes}"</p>
                         )}
 
                         {crop.status === "ready" && (
@@ -476,12 +477,12 @@ export default function FarmerDashboard() {
                 })}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-14 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center mb-4">
-                  <Sprout className="w-8 h-8 text-green-400" />
+              <div className="flex flex-col items-center justify-center py-14 text-center bg-card rounded-2xl border border-border shadow-sm">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Sprout className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-800 mb-1">{t("noCrops")}</h3>
-                <p className="text-sm text-gray-500 mb-5 max-w-xs leading-relaxed">{t("noCropsDesc")}</p>
+                <h3 className="font-semibold text-foreground mb-1">{t("noCrops")}</h3>
+                <p className="text-sm text-muted-foreground mb-5 max-w-xs leading-relaxed">{t("noCropsDesc")}</p>
                 <Button variant="outline" className="gap-2" onClick={() => setCropModal(true)}>
                   <Plus className="w-4 h-4" /> {t("trackFirstCrop")}
                 </Button>

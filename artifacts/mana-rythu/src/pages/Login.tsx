@@ -6,7 +6,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sprout, Eye, EyeOff } from "lucide-react";
+import { Sprout, Eye, EyeOff, ArrowRight, Leaf, Shield, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
+
+const FEATURES = [
+  { icon: Leaf, title: "Direct from Farm", desc: "Fresh produce straight from verified farmers" },
+  { icon: Shield, title: "Verified Farmers", desc: "Every farmer on our platform is verified" },
+  { icon: TrendingUp, title: "Real-time Prices", desc: "Live mandi prices and market intelligence" },
+];
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -23,7 +30,6 @@ export default function Login() {
       { data: { email, password } },
       {
         onSuccess: (data: any) => {
-          // Pass user data so auth context seeds the cache instantly — no race condition
           login(data.token, data.user);
           toast({ title: "Welcome back!", description: `Signed in as ${data.user.name}` });
           const role = data.user?.role;
@@ -39,55 +45,118 @@ export default function Login() {
     );
   };
 
+  const fillDemo = (role: "farmer" | "buyer") => {
+    setEmail(role === "farmer" ? "farmer@demo.com" : "buyer@demo.com");
+    setPassword("demo123");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex">
+    <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-700 to-emerald-600 flex-col justify-between p-12">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-            <Sprout className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white font-bold text-2xl">Mana Rythu</span>
+      <div className="hidden lg:flex lg:w-[52%] xl:w-[55%] gradient-primary relative overflow-hidden flex-col justify-between p-14">
+        {/* Decorative blobs */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-0 w-48 h-48 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.06]" style={{
+          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+          backgroundSize: "32px 32px"
+        }} />
+
+        {/* Floating decorative elements */}
+        <motion.div
+          animate={{ y: [0, -12, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-24 right-16 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20"
+        >
+          <Sprout className="w-7 h-7 text-white" />
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-48 right-24 w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/15"
+        >
+          <Leaf className="w-5 h-5 text-white/80" />
+        </motion.div>
+
+        <div className="relative z-10">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+              <Sprout className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-white font-bold text-xl">Mana Rythu</span>
+          </Link>
         </div>
-        <div>
-          <h2 className="text-4xl font-bold text-white leading-tight mb-4">
-            Connecting Farmers<br />with Buyers
-          </h2>
-          <p className="text-green-100 text-lg leading-relaxed">
-            A premium platform trusted by thousands of farmers and buyers across Telangana and Andhra Pradesh.
-          </p>
-          <div className="mt-8 grid grid-cols-3 gap-4">
+
+        <div className="relative z-10 space-y-10">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-white/15 text-white/90 text-xs font-medium px-3 py-1.5 rounded-full mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-300 live-dot" />
+              Trusted by 12,000+ farmers
+            </div>
+            <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-4">
+              Grow more,<br />earn more.
+            </h2>
+            <p className="text-green-100/90 text-lg leading-relaxed max-w-sm">
+              Telangana & AP's premium direct-to-buyer agriculture marketplace.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {FEATURES.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-sm">{title}</p>
+                  <p className="text-green-100/70 text-xs mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
             {[
               { label: "Farmers", value: "2,400+" },
               { label: "Buyers", value: "8,900+" },
               { label: "Listings", value: "15K+" },
             ].map(s => (
-              <div key={s.label} className="bg-white/10 rounded-xl p-4">
+              <div key={s.label} className="bg-white/10 rounded-2xl p-4 border border-white/10">
                 <p className="text-white font-bold text-2xl">{s.value}</p>
-                <p className="text-green-100 text-sm">{s.label}</p>
+                <p className="text-green-100/70 text-xs mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
-        <p className="text-green-200 text-sm">Powered by Mana Rythu Agriculture Platform</p>
+
+        <p className="relative z-10 text-green-200/60 text-xs">© 2024 Mana Rythu. All rights reserved.</p>
       </div>
 
       {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center p-6 bg-background">
+        <motion.div
+          className="w-full max-w-md"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+        >
+          {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Sprout className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow-green">
+              <Sprout className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl">Mana Rythu</span>
           </div>
 
           <h1 className="text-3xl font-bold text-foreground mb-1">Welcome back</h1>
-          <p className="text-muted-foreground mb-8">Sign in to your account to continue</p>
+          <p className="text-muted-foreground mb-8 text-sm">Sign in to your account to continue</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <Label htmlFor="email" className="text-sm font-medium">Email address</Label>
+              <Label htmlFor="email" className="text-sm font-semibold text-foreground">Email address</Label>
               <Input
                 id="email"
                 type="email"
@@ -96,12 +165,12 @@ export default function Login() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="mt-1.5 h-11"
+                className="mt-2 h-12 rounded-xl border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-sm"
               />
             </div>
             <div>
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-              <div className="relative mt-1.5">
+              <Label htmlFor="password" className="text-sm font-semibold text-foreground">Password</Label>
+              <div className="relative mt-2">
                 <Input
                   id="password"
                   type={showPw ? "text" : "password"}
@@ -110,42 +179,63 @@ export default function Login() {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="h-11 pr-11"
+                  className="h-12 rounded-xl border-border focus:border-primary focus:ring-2 focus:ring-primary/20 pr-12 text-sm"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg"
                   onClick={() => setShowPw(v => !v)}
                 >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPw ? <EyeOff className="w-4.5 h-4.5 w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                 </button>
               </div>
             </div>
 
             <Button
               type="submit"
-              className="w-full h-11 text-sm font-semibold"
+              className="w-full h-12 text-sm font-semibold rounded-xl gradient-primary shadow-green border-0 gap-2 mt-1"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Signing in..." : "Sign in"}
+              {mutation.isPending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>Sign in <ArrowRight className="w-4 h-4" /></>
+              )}
             </Button>
           </form>
 
-          <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100">
-            <p className="text-xs text-muted-foreground font-medium mb-2">Try demo accounts:</p>
-            <div className="space-y-1 text-xs text-muted-foreground">
-              <p><span className="font-medium text-foreground">Farmer:</span> farmer@demo.com / demo123</p>
-              <p><span className="font-medium text-foreground">Buyer:</span> buyer@demo.com / demo123</p>
+          {/* Demo credentials */}
+          <div className="mt-5 p-4 bg-muted/60 rounded-2xl border border-border/60">
+            <p className="text-xs font-semibold text-foreground mb-2.5">Try demo accounts</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => fillDemo("farmer")}
+                className="flex-1 text-xs py-2 px-3 rounded-xl border border-border bg-card hover:bg-primary/5 hover:border-primary/30 text-foreground font-medium transition-all"
+              >
+                🌾 Farmer demo
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemo("buyer")}
+                className="flex-1 text-xs py-2 px-3 rounded-xl border border-border bg-card hover:bg-primary/5 hover:border-primary/30 text-foreground font-medium transition-all"
+              >
+                🛒 Buyer demo
+              </button>
             </div>
+            <p className="text-[10px] text-muted-foreground mt-2">Password: <span className="font-mono font-medium">demo123</span></p>
           </div>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             New to Mana Rythu?{" "}
-            <Link href="/register" className="text-primary font-medium hover:underline">
+            <Link href="/register" className="text-primary font-semibold hover:underline">
               Create an account
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
