@@ -327,32 +327,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="relative">
               <button
                 onClick={() => { setLangOpen(v => !v); setNotifOpen(false); }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-border hover:bg-muted transition-colors text-sm font-medium"
-                title="Change language"
+                className={cn(
+                  "relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border transition-all text-sm font-medium select-none cursor-pointer",
+                  langOpen
+                    ? "bg-primary/10 border-primary/30 text-primary"
+                    : "border-border bg-muted/50 hover:bg-muted hover:border-border/80 text-foreground"
+                )}
+                aria-label="Change language"
               >
-                <Globe className="w-4 h-4 text-muted-foreground" />
-                <span className="hidden sm:inline text-xs">{LANG_FLAGS[lang].flag} {lang.toUpperCase()}</span>
+                <Globe className="w-4 h-4 shrink-0" />
+                <span className="text-xs font-semibold tracking-wide">{lang.toUpperCase()}</span>
               </button>
               {langOpen && (
                 <>
-                  <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
+                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
                   <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="absolute right-0 top-10 z-20 w-40 bg-card border border-border rounded-2xl shadow-lg overflow-hidden"
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-10 z-50 w-44 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
                   >
                     {(["en", "te", "hi"] as Lang[]).map(l => (
                       <button
                         key={l}
                         onClick={() => { setLang(l); setLangOpen(false); }}
                         className={cn(
-                          "w-full text-left px-3 py-2.5 text-sm hover:bg-muted flex items-center gap-2 transition-colors",
+                          "w-full text-left px-3 py-2.5 text-sm hover:bg-muted flex items-center gap-2.5 transition-colors cursor-pointer",
                           lang === l && "bg-primary/5 font-semibold text-primary"
                         )}
                       >
-                        <span>{LANG_FLAGS[l].flag}</span>
+                        <span className="text-base leading-none">{LANG_FLAGS[l].flag}</span>
                         <span>{LANG_FLAGS[l].label}</span>
-                        {lang === l && <Check className="ml-auto w-3.5 h-3.5 text-primary" />}
+                        <span className="ml-auto text-[10px] font-mono text-muted-foreground">{l.toUpperCase()}</span>
+                        {lang === l && <Check className="w-3.5 h-3.5 text-primary shrink-0" />}
                       </button>
                     ))}
                   </motion.div>
@@ -385,12 +392,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {/* Notifications dropdown */}
               {notifOpen && (
                 <>
-                  <div className="fixed inset-0 z-10" onClick={() => setNotifOpen(false)} />
+                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
                   <motion.div
                     initial={{ opacity: 0, y: -8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute right-0 top-11 z-20 w-80 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
+                    className="absolute right-0 top-11 z-50 w-80 bg-card border border-border rounded-2xl shadow-xl overflow-hidden"
                   >
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                       <div className="flex items-center gap-2">
