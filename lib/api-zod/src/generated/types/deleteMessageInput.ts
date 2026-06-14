@@ -6,12 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface Message {
-  id: number;
-  conversationId: number;
+export interface DeleteMessageInput {
   senderId: number;
-  message: string;
-  read: boolean;
-  edited: boolean;
-  createdAt: string;
 }

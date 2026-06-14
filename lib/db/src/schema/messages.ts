@@ -10,6 +10,7 @@ export const messagesTable = pgTable("messages", {
   senderId: integer("sender_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
   message: text("message").notNull(),
   read: boolean("read").notNull().default(false),
+  edited: boolean("edited").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

@@ -664,6 +664,7 @@ export interface Message {
   senderId: number;
   message: string;
   read: boolean;
+  edited: boolean;
   createdAt: string;
 }
 
@@ -671,6 +672,15 @@ export interface CreateMessageInput {
   conversationId: number;
   senderId: number;
   message: string;
+}
+
+export interface UpdateMessageInput {
+  senderId: number;
+  message: string;
+}
+
+export interface DeleteMessageInput {
+  senderId: number;
 }
 
 export type GetUsersParams = {

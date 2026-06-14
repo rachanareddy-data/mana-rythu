@@ -117,14 +117,41 @@ router.post("/chat/message", async (req, res) => {
   }
 });
 
+// PATCH /api/chat/message/:id — sender only
+router.patch("/chat/message/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { senderId, message } = req.body;
+    if (!id || !senderId || !message?.trim()) {
+      return res.status(400).json({ error: "id, senderId and message are required" });
+    }
+
+    const [msg] = await db.select().from(messagesTable).where(eq(messagesTable.id, id)).limit(1);
+    if (!msg) return res.status(404).json({ error: "Message not found" });
+    if (msg.senderId !== parseInt(senderId)) return res.status(403).json({ error: "Not authorized" });
+
+    const [updated] = await db.update(messagesTable)
+      .set({ message: message.trim(), edited: true })
+      .where(eq(messagesTable.id, id))
+      .returning();
+
+    return res.json(serializeMessage(updated));
+  } catch (err) {
+    req.log.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // DELETE /api/chat/message/:id — sender only
 router.delete("/chat/message/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id);
+    const { senderId } = req.body ?? {};
     if (!id) return res.status(400).json({ error: "Invalid message id" });
 
     const [msg] = await db.select().from(messagesTable).where(eq(messagesTable.id, id)).limit(1);
     if (!msg) return res.status(404).json({ error: "Message not found" });
+    if (senderId && msg.senderId !== parseInt(senderId)) return res.status(403).json({ error: "Not authorized" });
 
     await db.delete(messagesTable).where(eq(messagesTable.id, id));
     return res.status(204).end();
@@ -167,7 +194,7 @@ function serializeConversation(c: typeof conversationsTable.$inferSelect) {
 }
 
 function serializeMessage(m: typeof messagesTable.$inferSelect) {
-  return { ...m, createdAt: m.createdAt.toISOString() };
+  return { ...m, createdAt: m.createdAt.toISOString(), edited: m.edited ?? false };
 }
 
 export default router;

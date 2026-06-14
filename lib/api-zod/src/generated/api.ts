@@ -873,8 +873,32 @@ export const SendMessageBody = zod.object({
 })
 
 
+export const UpdateMessageParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateMessageBody = zod.object({
+  "senderId": zod.number(),
+  "message": zod.string()
+})
+
+export const UpdateMessageResponse = zod.object({
+  "id": zod.number(),
+  "conversationId": zod.number(),
+  "senderId": zod.number(),
+  "message": zod.string(),
+  "read": zod.boolean(),
+  "edited": zod.boolean(),
+  "createdAt": zod.string()
+})
+
+
 export const DeleteMessageParams = zod.object({
   "id": zod.coerce.number()
+})
+
+export const DeleteMessageBody = zod.object({
+  "senderId": zod.number()
 })
 
 
@@ -889,6 +913,7 @@ export const GetMessagesResponseItem = zod.object({
   "senderId": zod.number(),
   "message": zod.string(),
   "read": zod.boolean(),
+  "edited": zod.boolean(),
   "createdAt": zod.string()
 })
 export const GetMessagesResponse = zod.array(GetMessagesResponseItem)

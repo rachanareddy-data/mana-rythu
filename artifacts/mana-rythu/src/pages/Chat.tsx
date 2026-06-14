@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import {
@@ -6,12 +6,12 @@ import {
   useGetMessages, getGetMessagesQueryKey,
   useSendMessage,
   useDeleteMessage,
+  useUpdateMessage,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Send, MessageCircle, ArrowLeft, Sprout, Trash2, Phone, MoreVertical } from "lucide-react";
+import { Send, MessageCircle, ArrowLeft, Sprout, Phone, MoreVertical, Pencil, Trash2, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -88,10 +88,18 @@ function ConversationItem({
 function ChatWindow({ conversationId, userId, otherName }: { conversationId: number; userId: number; otherName: string }) {
   const qc = useQueryClient();
   const { toast } = useToast();
+
   const [text, setText] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const msgParams = { conversationId, markReadFor: userId };
 
   const { data: messages, isLoading } = useGetMessages(msgParams, {
@@ -103,10 +111,31 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
 
   const sendMutation = useSendMessage();
   const deleteMutation = useDeleteMessage();
+  const updateMutation = useUpdateMessage();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (editingId !== null) {
+      editInputRef.current?.focus();
+      editInputRef.current?.select();
+    }
+  }, [editingId]);
+
+  const closeMenu = useCallback(() => setOpenMenuId(null), []);
+
+  useEffect(() => {
+    if (openMenuId === null) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [openMenuId, closeMenu]);
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -132,7 +161,7 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
     qc.setQueryData(key, (old: any[]) => old?.filter(m => m.id !== idToDelete) ?? []);
 
     deleteMutation.mutate(
-      { id: idToDelete },
+      { id: idToDelete, data: { senderId: userId } },
       {
         onSuccess: () => {
           qc.invalidateQueries({ queryKey: key });
@@ -146,7 +175,44 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
     );
   };
 
-  // Group messages by date
+  const startEdit = (msg: { id: number; message: string }) => {
+    setOpenMenuId(null);
+    setEditingId(msg.id);
+    setEditText(msg.message);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditText("");
+  };
+
+  const commitEdit = (id: number) => {
+    const trimmed = editText.trim();
+    if (!trimmed) return;
+    setEditingId(null);
+
+    const key = getGetMessagesQueryKey(msgParams);
+    qc.setQueryData(key, (old: any[]) =>
+      old?.map(m => m.id === id ? { ...m, message: trimmed, edited: true } : m) ?? []
+    );
+
+    updateMutation.mutate(
+      { id, data: { senderId: userId, message: trimmed } },
+      {
+        onSuccess: (updated) => {
+          qc.setQueryData(key, (old: any[]) =>
+            old?.map(m => m.id === id ? updated : m) ?? []
+          );
+          qc.invalidateQueries({ queryKey: getGetConversationsQueryKey({ userId }) });
+        },
+        onError: () => {
+          qc.invalidateQueries({ queryKey: key });
+          toast({ title: "Failed to edit message", variant: "destructive" });
+        },
+      }
+    );
+  };
+
   const groupedMessages = messages?.reduce<{ date: string; msgs: typeof messages }[]>((acc, msg) => {
     const date = new Date(msg.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" });
     const last = acc[acc.length - 1];
@@ -177,7 +243,6 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
       </AlertDialog>
 
       <div className="flex flex-col h-full">
-        {/* Chat background */}
         <div
           className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
           style={{ backgroundImage: "radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0)", backgroundSize: "24px 24px" }}
@@ -194,7 +259,6 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
             <AnimatePresence initial={false}>
               {groupedMessages.map(({ date, msgs }) => (
                 <div key={date}>
-                  {/* Date separator */}
                   <div className="flex items-center justify-center my-3">
                     <span className="text-[10px] font-medium text-muted-foreground bg-card/90 px-3 py-1 rounded-full border border-border/60 shadow-sm">
                       {date}
@@ -202,6 +266,9 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
                   </div>
                   {msgs.map((msg) => {
                     const isMine = msg.senderId === userId;
+                    const isEditing = editingId === msg.id;
+                    const menuOpen = openMenuId === msg.id;
+
                     return (
                       <motion.div
                         key={msg.id}
@@ -209,29 +276,111 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.18, ease: "easeOut" }}
-                        className={cn("flex items-end gap-1.5 mb-1.5", isMine ? "justify-end" : "justify-start")}
+                        className={cn("group flex items-end gap-1.5 mb-1.5 relative", isMine ? "justify-end" : "justify-start")}
                       >
-                        {isMine && (
-                          <button
-                            onClick={() => setPendingDeleteId(msg.id)}
-                            className="p-1.5 rounded-lg text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0 mb-1 opacity-0 group-hover:opacity-100"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
+                        {/* 3-dots menu button — own messages only, shown on hover */}
+                        {isMine && !isEditing && (
+                          <div className="relative shrink-0 mb-1 self-end" ref={menuOpen ? menuRef : undefined}>
+                            <button
+                              onClick={() => setOpenMenuId(menuOpen ? null : msg.id)}
+                              className={cn(
+                                "p-1.5 rounded-lg transition-all",
+                                menuOpen
+                                  ? "text-foreground bg-muted"
+                                  : "text-muted-foreground/40 opacity-0 group-hover:opacity-100 hover:text-foreground hover:bg-muted"
+                              )}
+                              title="Message options"
+                            >
+                              <MoreVertical className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Dropdown */}
+                            <AnimatePresence>
+                              {menuOpen && (
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0.9, y: -4 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.9, y: -4 }}
+                                  transition={{ duration: 0.1 }}
+                                  className="absolute bottom-full right-0 mb-1 z-50 min-w-[130px] bg-card border border-border rounded-xl shadow-lg overflow-hidden"
+                                >
+                                  <button
+                                    onMouseDown={(e) => { e.preventDefault(); startEdit(msg); }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm hover:bg-muted transition-colors text-foreground"
+                                  >
+                                    <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                                    Edit
+                                  </button>
+                                  <div className="h-px bg-border mx-2" />
+                                  <button
+                                    onMouseDown={(e) => { e.preventDefault(); setOpenMenuId(null); setPendingDeleteId(msg.id); }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm hover:bg-destructive/10 transition-colors text-destructive"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                    Delete
+                                  </button>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         )}
+
+                        {/* Message bubble */}
                         <div
                           className={cn(
-                            "max-w-[72%] sm:max-w-[60%] px-4 py-2.5 shadow-sm",
-                            isMine
-                              ? "bg-primary text-primary-foreground rounded-[18px] rounded-br-[4px]"
-                              : "bg-card border border-border text-foreground rounded-[18px] rounded-bl-[4px]"
+                            "max-w-[72%] sm:max-w-[60%] shadow-sm",
+                            isEditing
+                              ? "w-full max-w-[72%] sm:max-w-[60%]"
+                              : cn(
+                                "px-4 py-2.5",
+                                isMine
+                                  ? "bg-primary text-primary-foreground rounded-[18px] rounded-br-[4px]"
+                                  : "bg-card border border-border text-foreground rounded-[18px] rounded-bl-[4px]"
+                              )
                           )}
                         >
-                          <p className="text-sm leading-relaxed">{msg.message}</p>
-                          <p className={cn("text-[10px] mt-1 text-right leading-none", isMine ? "text-primary-foreground/60" : "text-muted-foreground/70")}>
-                            {new Date(msg.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
-                          </p>
+                          {isEditing ? (
+                            <div className="flex items-center gap-2 bg-card border-2 border-primary/60 rounded-[18px] px-3 py-2 shadow-md">
+                              <input
+                                ref={editInputRef}
+                                value={editText}
+                                onChange={e => setEditText(e.target.value)}
+                                onKeyDown={e => {
+                                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitEdit(msg.id); }
+                                  if (e.key === "Escape") cancelEdit();
+                                }}
+                                className="flex-1 bg-transparent border-none outline-none text-sm text-foreground"
+                                maxLength={2000}
+                              />
+                              <button
+                                onClick={() => commitEdit(msg.id)}
+                                disabled={!editText.trim()}
+                                className="p-1 rounded-lg text-primary hover:bg-primary/10 transition-colors disabled:opacity-40"
+                                title="Save"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={cancelEdit}
+                                className="p-1 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+                                title="Cancel"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                              <div className={cn("flex items-center justify-end gap-1 mt-1", isMine ? "text-primary-foreground/60" : "text-muted-foreground/70")}>
+                                {msg.edited && (
+                                  <span className="text-[9px] italic">edited</span>
+                                )}
+                                <span className="text-[10px] leading-none">
+                                  {new Date(msg.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </motion.div>
                     );
@@ -251,7 +400,7 @@ function ChatWindow({ conversationId, userId, otherName }: { conversationId: num
           <div ref={bottomRef} />
         </div>
 
-        {/* Premium WhatsApp-style input */}
+        {/* Input bar */}
         <div className="border-t border-border bg-card/95 backdrop-blur px-3 py-3">
           <div className="flex items-end gap-2">
             <div className="flex-1 flex items-center bg-muted rounded-[24px] px-4 min-h-[44px] py-2 border border-border/60 focus-within:border-primary/40 focus-within:bg-background transition-all">
@@ -328,14 +477,13 @@ export default function Chat() {
 
   return (
     <div className="flex h-full bg-background">
-      {/* ── Conversation sidebar ── */}
+      {/* Conversation sidebar */}
       <div
         className={cn(
           "flex flex-col border-r border-border bg-card transition-all shrink-0",
           activeConvId ? "hidden md:flex md:w-72 lg:w-80" : "flex w-full md:w-72 lg:w-80"
         )}
       >
-        {/* Sidebar header */}
         <div className="px-5 py-4 border-b border-border shrink-0 bg-card">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -355,7 +503,6 @@ export default function Chat() {
           </p>
         </div>
 
-        {/* Conversation list */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="p-4 space-y-4">
@@ -393,10 +540,9 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* ── Chat window area ── */}
+      {/* Chat window area */}
       {activeConvId ? (
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Chat header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card/95 backdrop-blur shrink-0 shadow-sm">
             <button
               onClick={() => setActiveConvId(null)}
@@ -419,7 +565,7 @@ export default function Chat() {
             </div>
             <div className="flex items-center gap-1">
               <button className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors">
-                <MoreVertical className="w-4 h-4" />
+                <Phone className="w-4 h-4" />
               </button>
             </div>
           </div>

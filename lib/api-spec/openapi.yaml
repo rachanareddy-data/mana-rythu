@@ -997,6 +997,32 @@ paths:
                 $ref: "#/components/schemas/Message"
 
   /chat/message/{id}:
+    patch:
+      operationId: updateMessage
+      tags: [chat]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMessageInput"
+      responses:
+        "200":
+          description: Message updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "403":
+          description: Not authorized
+        "404":
+          description: Message not found
     delete:
       operationId: deleteMessage
       tags: [chat]
@@ -1006,9 +1032,17 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteMessageInput"
       responses:
         "204":
           description: Message deleted
+        "403":
+          description: Not authorized
         "404":
           description: Message not found
 
@@ -1856,9 +1890,11 @@ components:
           type: string
         read:
           type: boolean
+        edited:
+          type: boolean
         createdAt:
           type: string
-      required: [id, conversationId, senderId, message, read, createdAt]
+      required: [id, conversationId, senderId, message, read, edited, createdAt]
 
     CreateMessageInput:
       type: object
@@ -1870,3 +1906,19 @@ components:
         message:
           type: string
       required: [conversationId, senderId, message]
+
+    UpdateMessageInput:
+      type: object
+      properties:
+        senderId:
+          type: integer
+        message:
+          type: string
+      required: [senderId, message]
+
+    DeleteMessageInput:
+      type: object
+      properties:
+        senderId:
+          type: integer
+      required: [senderId]
