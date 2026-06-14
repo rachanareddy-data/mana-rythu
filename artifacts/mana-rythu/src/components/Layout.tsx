@@ -1,4 +1,4 @@
-import { useLocation, Link, useSearch } from "wouter";
+import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/auth";
 import { useLanguage, type Lang } from "@/contexts/language";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import AgriAIChat from "@/components/AgriAIChat";
+import SmartSearch from "@/components/SmartSearch";
 import { DropdownPortal } from "@/components/ui/dropdown-portal";
 
 const LANG_FLAGS: Record<Lang, { label: string; flag: string }> = {
@@ -89,17 +90,7 @@ function notifTypeColor(type: string) {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [location, navigate] = useLocation();
-  const currentSearch = useSearch();
-  const [headerQuery, setHeaderQuery] = useState(() => {
-    const p = new URLSearchParams(currentSearch);
-    return p.get("q") ?? "";
-  });
-
-  const submitHeaderSearch = (value: string) => {
-    const q = value.trim();
-    navigate(q ? `/marketplace?q=${encodeURIComponent(q)}` : "/marketplace");
-  };
+  const [location] = useLocation();
   const { user, logout } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -325,33 +316,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="hidden sm:block font-bold text-sm text-foreground whitespace-nowrap">Mana Rythu</span>
           </Link>
 
-          {/* Search */}
-          <form
-            className="flex-1 min-w-0 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 max-w-xs sm:max-w-md"
-            onSubmit={e => { e.preventDefault(); submitHeaderSearch(headerQuery); }}
-          >
-            <button type="submit" className="shrink-0 flex items-center" aria-label="Search">
-              <Search className="w-4 h-4 text-muted-foreground" />
-            </button>
-            <input
-              type="search"
-              value={headerQuery}
-              onChange={e => setHeaderQuery(e.target.value)}
-              onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); submitHeaderSearch(headerQuery); } }}
-              placeholder={t("searchCrops")}
-              className="bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground flex-1 min-w-0"
-            />
-            {headerQuery && (
-              <button
-                type="button"
-                onClick={() => { setHeaderQuery(""); navigate("/marketplace"); }}
-                className="shrink-0 text-muted-foreground hover:text-foreground"
-                aria-label="Clear search"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </form>
+          {/* Smart search */}
+          <SmartSearch placeholder={t("searchCrops")} />
 
           <div className="flex items-center gap-1.5 ml-auto">
             {/* Language switcher */}

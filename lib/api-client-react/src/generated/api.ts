@@ -73,6 +73,8 @@ import type {
   RegisterInput,
   Review,
   ReviewInput,
+  SearchResult,
+  SearchSuggestionsParams,
   SuggestCropParams,
   SuggestPriceParams,
   UpdateOrderStatusInput,
@@ -1541,6 +1543,90 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getContactFarmerMutationOptions(options));
     }
+
+export const getSearchSuggestionsUrl = (params: SearchSuggestionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/search?${stringifiedParams}` : `/api/search`
+}
+
+/**
+ * @summary Smart search suggestions across listings
+ */
+export const searchSuggestions = async (params: SearchSuggestionsParams, options?: RequestInit): Promise<SearchResult[]> => {
+
+  return customFetch<SearchResult[]>(getSearchSuggestionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchSuggestionsQueryKey = (params?: SearchSuggestionsParams,) => {
+    return [
+    `/api/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = ErrorType<unknown>>(params: SearchSuggestionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchSuggestionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchSuggestions>>> = ({ signal }) => searchSuggestions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SearchSuggestionsQueryResult = NonNullable<Awaited<ReturnType<typeof searchSuggestions>>>
+export type SearchSuggestionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Smart search suggestions across listings
+ */
+
+export function useSearchSuggestions<TData = Awaited<ReturnType<typeof searchSuggestions>>, TError = ErrorType<unknown>>(
+ params: SearchSuggestionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchSuggestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSearchSuggestionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetReviewsUrl = (params?: GetReviewsParams,) => {
   const normalizedParams = new URLSearchParams();

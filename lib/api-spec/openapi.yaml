@@ -420,6 +420,31 @@ paths:
               schema:
                 $ref: "#/components/schemas/ContactResponse"
 
+  /search:
+    get:
+      operationId: searchSuggestions
+      tags: [listings]
+      summary: Smart search suggestions across listings
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Search suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResult"
+
   /reviews:
     get:
       operationId: getReviews
@@ -1019,6 +1044,30 @@ components:
         status:
           type: string
       required: [status]
+
+    SearchResult:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [listing, crop, location]
+        id:
+          type: ["integer", "null"]
+        title:
+          type: string
+        subtitle:
+          type: ["string", "null"]
+        trend:
+          type: ["string", "null"]
+        minPrice:
+          type: ["number", "null"]
+        maxPrice:
+          type: ["number", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        available:
+          type: ["boolean", "null"]
+      required: [type, title]
 
     User:
       type: object

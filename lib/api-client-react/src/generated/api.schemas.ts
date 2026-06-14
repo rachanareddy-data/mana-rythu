@@ -9,6 +9,34 @@ export interface HealthStatus {
   status: string;
 }
 
+export type SearchResultType = typeof SearchResultType[keyof typeof SearchResultType];
+
+
+export const SearchResultType = {
+  listing: 'listing',
+  crop: 'crop',
+  location: 'location',
+} as const;
+
+export interface SearchResult {
+  type: SearchResultType;
+  /** @nullable */
+  id?: number | null;
+  title: string;
+  /** @nullable */
+  subtitle?: string | null;
+  /** @nullable */
+  trend?: string | null;
+  /** @nullable */
+  minPrice?: number | null;
+  /** @nullable */
+  maxPrice?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
+  /** @nullable */
+  available?: boolean | null;
+}
+
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
 
@@ -662,6 +690,11 @@ location?: string;
 minPrice?: number;
 maxPrice?: number;
 trend?: string;
+};
+
+export type SearchSuggestionsParams = {
+q: string;
+limit?: number;
 };
 
 export type GetReviewsParams = {

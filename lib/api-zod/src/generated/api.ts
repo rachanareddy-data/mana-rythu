@@ -431,6 +431,28 @@ export const ContactFarmerResponse = zod.object({
 })
 
 
+/**
+ * @summary Smart search suggestions across listings
+ */
+export const SearchSuggestionsQueryParams = zod.object({
+  "q": zod.coerce.string(),
+  "limit": zod.coerce.number().optional()
+})
+
+export const SearchSuggestionsResponseItem = zod.object({
+  "type": zod.enum(['listing', 'crop', 'location']),
+  "id": zod.number().nullish(),
+  "title": zod.string(),
+  "subtitle": zod.string().nullish(),
+  "trend": zod.string().nullish(),
+  "minPrice": zod.number().nullish(),
+  "maxPrice": zod.number().nullish(),
+  "imageUrl": zod.string().nullish(),
+  "available": zod.boolean().nullish()
+})
+export const SearchSuggestionsResponse = zod.array(SearchSuggestionsResponseItem)
+
+
 export const GetReviewsQueryParams = zod.object({
   "toUserId": zod.coerce.number().optional(),
   "fromUserId": zod.coerce.number().optional()
