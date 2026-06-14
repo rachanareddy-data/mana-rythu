@@ -207,7 +207,7 @@ export default function AddCrop() {
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-green-50/60 to-white p-4 pb-24 lg:pb-8">
+    <div className="min-h-full bg-gradient-to-b from-green-50/60 to-white p-4">
       {/* Page header */}
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-6">

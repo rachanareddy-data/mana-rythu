@@ -89,7 +89,7 @@ export default function BuyerDashboard() {
   ];
 
   return (
-    <div className="flex flex-col h-full pb-20 lg:pb-0 bg-background">
+    <div className="flex flex-col h-full bg-background">
 
       {/* ── Hero header ── */}
       <div className="bg-card border-b border-border px-5 py-5 shrink-0 shadow-sm">

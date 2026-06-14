@@ -188,7 +188,7 @@ export default function Orders() {
   }
 
   return (
-    <div className="p-4 sm:p-6 pb-24 lg:pb-8">
+    <div className="p-4 sm:p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <ShoppingBag className="w-6 h-6 text-primary" /> My Orders

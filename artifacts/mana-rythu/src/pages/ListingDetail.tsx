@@ -162,7 +162,7 @@ export default function ListingDetail() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 pb-24 lg:pb-8 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
       <Link href="/marketplace" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Marketplace
       </Link>

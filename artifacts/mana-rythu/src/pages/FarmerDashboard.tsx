@@ -254,7 +254,7 @@ export default function FarmerDashboard() {
         </motion.div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5 pb-24 lg:pb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5">
 
         {/* ── Quick CTA when no listings ── */}
         {!listingsLoading && activeListings === 0 && (
