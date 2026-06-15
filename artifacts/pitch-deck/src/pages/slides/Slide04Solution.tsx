@@ -1,15 +1,12 @@
 export default function Slide04Solution() {
   return (
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#052e16" }}>
-
       {/* Subtle radial glow */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 38%, rgba(34,197,94,0.13) 0%, transparent 65%)" }} />
-
       {/* Top label */}
       <div className="absolute top-[5vh] left-0 right-0 flex flex-col items-center">
         <p className="font-display font-semibold" style={{ fontSize: "1.3vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.22em" }}>Solution</p>
       </div>
-
       {/* Headline */}
       <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: "11vh" }}>
         <h2 className="font-display font-extrabold text-white text-center" style={{ fontSize: "5.2vw", lineHeight: 1, letterSpacing: "-0.02em" }}>
@@ -19,7 +16,6 @@ export default function Slide04Solution() {
           Connect directly.
         </h2>
       </div>
-
       {/* Flow: Farmer → Mana Rythu → Buyer */}
       <div
         className="absolute left-0 right-0 flex items-center justify-center"
@@ -102,7 +98,6 @@ export default function Slide04Solution() {
         </div>
 
       </div>
-
       {/* Three feature cards */}
       <div
         className="absolute left-0 right-0 flex justify-center"
@@ -137,7 +132,7 @@ export default function Slide04Solution() {
           </div>
           <div>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.6vw", lineHeight: 1 }}>AI Assistant</p>
-            <p className="font-display font-normal" style={{ fontSize: "1.2vw", color: "#4ade80", marginTop: "0.3vh" }}>GPT-4o · EN / TE / HI</p>
+            <p className="font-display font-normal" style={{ fontSize: "1.2vw", color: "#4ade80", marginTop: "0.3vh" }}>24/7 Farming Guidance</p>
           </div>
         </div>
 
@@ -158,7 +153,6 @@ export default function Slide04Solution() {
         </div>
 
       </div>
-
       <div className="absolute bottom-[3vh] right-[3vw]">
         <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>04</span>
       </div>
