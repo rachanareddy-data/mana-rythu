@@ -1,11 +1,10 @@
 export default function Slide10Demo() {
   return (
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#f8fafc" }}>
-
       <div className="absolute inset-0 flex">
 
         {/* Left: QR + links */}
-        <div className="flex flex-col justify-center pl-[7vw] pr-[4vw]" style={{ width: "35vw" }}>
+        <div className="flex flex-col pl-[7vw] pr-[4vw] justify-center items-center text-left" style={{ width: "35vw" }}>
           <p className="font-display font-semibold mb-[1.5vh]" style={{ fontSize: "1.3vw", color: "#15803d", textTransform: "uppercase", letterSpacing: "0.15em" }}>Live Demo</p>
           <div className="w-[3vw] h-[0.3vh] mb-[3vh]" style={{ background: "#22c55e" }} />
 
@@ -125,7 +124,6 @@ export default function Slide10Demo() {
 
         </div>
       </div>
-
       <div className="absolute bottom-[3vh] right-[3vw]">
         <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>10</span>
       </div>
