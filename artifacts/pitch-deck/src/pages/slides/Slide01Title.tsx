@@ -1,7 +1,6 @@
 export default function Slide01Title() {
   return (
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#ffffff" }}>
-
       {/* Full-height green left panel */}
       <div className="absolute left-0 top-0 bottom-0" style={{ width: "48vw", background: "linear-gradient(160deg, #052e16 0%, #15803d 100%)" }}>
         <div className="absolute rounded-full opacity-10" style={{ width: "28vw", height: "28vw", background: "#4ade80", top: "-6vw", left: "-8vw" }} />
@@ -12,7 +11,6 @@ export default function Slide01Title() {
           <p className="font-display font-extrabold" style={{ fontSize: "7.5vw", lineHeight: 0.9, color: "#4ade80" }}>Rythu</p>
         </div>
       </div>
-
       {/* Right panel */}
       <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pl-[5vw] pr-[5vw]" style={{ width: "52vw" }}>
         <p className="font-display font-extrabold leading-tight" style={{ fontSize: "3.5vw", color: "#052e16", lineHeight: 1.15 }}>
@@ -22,11 +20,10 @@ export default function Slide01Title() {
           Telangana &amp; Andhra Pradesh
         </p>
         <div className="mt-[6vh] pt-[3vh]" style={{ borderTop: "1px solid #e5e7eb" }}>
-          <p className="font-display font-semibold" style={{ fontSize: "1.8vw", color: "#15803d" }}>Rachana Reddy</p>
+          <p className="font-display font-semibold" style={{ fontSize: "1.8vw", color: "#15803d" }}>Rachana Baddam</p>
           <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.5vw", color: "#9ca3af" }}>M.S. Data Science · Saint Peter's University</p>
         </div>
       </div>
-
       <div className="absolute bottom-[3vh] right-[3vw]">
         <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>01</span>
       </div>
