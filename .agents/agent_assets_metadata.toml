@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "OJDlvk0QqMLL9w0Qq5TWp"
+uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
+type = "slides"
+title = "Mana Rythu Pitch Deck (PPTX)"
