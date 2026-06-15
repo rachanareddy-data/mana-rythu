@@ -1,7 +1,6 @@
 export default function Slide12Close() {
   return (
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#ffffff" }}>
-
       {/* Full green left block */}
       <div className="absolute left-0 top-0 bottom-0" style={{ width: "48vw", background: "linear-gradient(160deg, #052e16 0%, #15803d 100%)" }}>
         <div className="absolute rounded-full opacity-10" style={{ width: "28vw", height: "28vw", background: "#4ade80", top: "-5vw", left: "-5vw" }} />
@@ -21,7 +20,6 @@ export default function Slide12Close() {
           <div className="mt-[2.5vh] w-[6vw] h-[0.4vh]" style={{ background: "rgba(74,222,128,0.4)" }} />
         </div>
       </div>
-
       {/* Right panel */}
       <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pl-[5vw] pr-[5vw]" style={{ width: "52vw" }}>
 
@@ -59,13 +57,12 @@ export default function Slide12Close() {
 
         {/* Author */}
         <div className="mt-[4vh] pt-[3vh]" style={{ borderTop: "1px solid #e5e7eb" }}>
-          <p className="font-display font-extrabold" style={{ fontSize: "2.2vw", color: "#052e16" }}>Rachana Reddy</p>
+          <p className="font-display font-extrabold" style={{ fontSize: "2.2vw", color: "#052e16" }}>Rachana Baddam</p>
           <p className="font-display font-semibold mt-[0.5vh]" style={{ fontSize: "1.6vw", color: "#15803d" }}>M.S. Data Science</p>
           <p className="font-display font-normal mt-[0.3vh]" style={{ fontSize: "1.5vw", color: "#9ca3af" }}>Saint Peter's University</p>
         </div>
 
       </div>
-
       <div className="absolute bottom-[3vh] right-[3vw]">
         <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>12</span>
       </div>
