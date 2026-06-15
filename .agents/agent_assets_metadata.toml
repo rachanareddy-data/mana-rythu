@@ -5,4 +5,10 @@ generated = []
 id = "BogpliYoD92gzVXWmuuiJ"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
 type = "slides"
-title = "Mana Rythu Pitch Deck (PPTX)"
+title = "Mana Rythu Pitch Deck — Code-Verified (PPTX)"
+
+[[outputs]]
+id = "xW3TXmDTA05OO99EFhNmh"
+uri = "file://.local/outputs/Asset-Manager.pdf"
+type = "pdf"
+title = "Asset Manager.pdf"
