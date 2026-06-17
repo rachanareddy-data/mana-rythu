@@ -12,12 +12,20 @@
     "position": 2,
     "filepath": "src/pages/slides/Slide02Problem.tsx",
     "title": "The Problem",
-    "description": "Farmers get 30% of what buyers pay",
+    "description": "Farmers get only half of what buyers pay",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b1c2d3e4-0003-4000-8000-000000000013",
+    "position": 3,
+    "filepath": "src/pages/slides/SlideWhyNow.tsx",
+    "title": "Why Now?",
+    "description": "Rural smartphone adoption, digital payments, AI in local languages, government push",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0003-4000-8000-000000000003",
-    "position": 3,
+    "position": 4,
     "filepath": "src/pages/slides/Slide03PainPoints.tsx",
     "title": "4 Barriers",
     "description": "No price visibility, trader layers, zero direct access, no AI guidance",
@@ -25,7 +33,7 @@
   },
   {
     "id": "a1b2c3d4-0004-4000-8000-000000000004",
-    "position": 4,
+    "position": 5,
     "filepath": "src/pages/slides/Slide04Solution.tsx",
     "title": "Solution",
     "description": "Mana Rythu — Direct. Fair. Digital.",
@@ -33,7 +41,7 @@
   },
   {
     "id": "a1b2c3d4-0005-4000-8000-000000000005",
-    "position": 5,
+    "position": 6,
     "filepath": "src/pages/slides/Slide05HowItWorks.tsx",
     "title": "How It Works",
     "description": "List → Find → Deal in 3 steps",
@@ -41,15 +49,15 @@
   },
   {
     "id": "a1b2c3d4-0006-4000-8000-000000000006",
-    "position": 6,
+    "position": 7,
     "filepath": "src/pages/slides/Slide06Features.tsx",
-    "title": "Platform",
-    "description": "Four tools: Marketplace, Live Chat, AI Assistant, Smart Search",
+    "title": "Features",
+    "description": "8 working features — all live",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0007-4000-8000-000000000007",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/Slide07Architecture.tsx",
     "title": "Architecture",
     "description": "Type-safe end-to-end: React → Express 5 → PostgreSQL → OpenAI",
@@ -57,39 +65,63 @@
   },
   {
     "id": "a1b2c3d4-0008-4000-8000-000000000008",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/Slide08TechStack.tsx",
     "title": "Tech Stack",
     "description": "Production-grade, fully typed",
     "speakerNotes": ""
   },
   {
+    "id": "b1c2d3e4-0010-4000-8000-000000000014",
+    "position": 10,
+    "filepath": "src/pages/slides/SlideBusinessModel.tsx",
+    "title": "Business Model",
+    "description": "Future revenue: commission, premium accounts, logistics, financial services",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b1c2d3e4-0011-4000-8000-000000000015",
+    "position": 11,
+    "filepath": "src/pages/slides/SlideCompetitiveAdvantage.tsx",
+    "title": "Competitive Advantage",
+    "description": "No one else combines all 5: marketplace, pest AI, price AI, multilingual, chat",
+    "speakerNotes": ""
+  },
+  {
     "id": "a1b2c3d4-0009-4000-8000-000000000009",
-    "position": 9,
+    "position": 12,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
     "title": "Impact",
-    "description": "0 middlemen, direct negotiation, 24/7 AI guidance",
+    "description": "Transparency, faster discovery, price visibility, multilingual AI guidance",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0010-4000-8000-000000000010",
-    "position": 10,
+    "position": 13,
     "filepath": "src/pages/slides/Slide10Demo.tsx",
     "title": "Live Demo",
-    "description": "Try it now — QR code and app mockup",
+    "description": "Real app screenshots — all features functional",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0011-4000-8000-000000000011",
-    "position": 11,
+    "position": 14,
     "filepath": "src/pages/slides/Slide11Roadmap.tsx",
     "title": "Roadmap",
-    "description": "Three phases to scale",
+    "description": "Five phases: Launch → Payments → Live APIs → Prediction → Mobile",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b1c2d3e4-0015-4000-8000-000000000016",
+    "position": 15,
+    "filepath": "src/pages/slides/SlideWhyWins.tsx",
+    "title": "Why Mana Rythu Wins",
+    "description": "5 reasons: real product, AI tools, multilingual, direct connection, local focus",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0012-4000-8000-000000000012",
-    "position": 12,
+    "position": 16,
     "filepath": "src/pages/slides/Slide12Close.tsx",
     "title": "Thank You",
     "description": "Built. Live. Ready.",

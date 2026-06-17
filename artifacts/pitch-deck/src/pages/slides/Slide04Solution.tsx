@@ -87,7 +87,6 @@ export default function Slide04Solution() {
             />
           </svg>
         </div>
-
         {/* Mana Rythu centre card */}
         <div
           className="flex flex-col items-center justify-center rounded-3xl transition-all duration-300"
@@ -95,16 +94,24 @@ export default function Slide04Solution() {
             width: "17.5vw",
             height: "13.5vw",
             background:
-              "linear-gradient(135deg, rgba(22,163,74,0.95) 0%, rgba(34,197,94,0.95) 100%)",
-            border: "2px solid rgba(255,255,255,0.25)",
-            boxShadow: "0 20px 60px rgba(34,197,94,0.45)",
-            backdropFilter: "blur(8px)",
+              "linear-gradient(135deg, #052e16 0%, #14532d 50%, #16a34a 100%)",
+            border: "1px solid rgba(34,197,94,0.5)",
+            boxShadow: "0 25px 70px rgba(0,0,0,0.35)",
+            backdropFilter: "blur(10px)",
           }}
         >
           <svg viewBox="0 0 64 64" fill="none" style={{ width: "5vw", height: "5vw" }}>
-            <line x1="32" y1="56" x2="32" y2="28" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
-            <path d="M32 40 C22 40 12 32 12 20 C22 16 34 26 32 40" fill="white" />
-            <path d="M32 50 C42 50 52 42 52 30 C42 26 30 36 32 50" fill="white" opacity="0.75" />
+            <line x1="32" y1="56" x2="32" y2="28" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+
+            <path
+              d="M32 40 C22 40 12 32 12 20 C22 16 34 26 32 40"
+              fill="rgba(255,255,255,0.95)"
+            />
+
+            <path
+              d="M32 50 C42 50 52 42 52 30 C42 26 30 36 32 50"
+              fill="rgba(255,255,255,0.75)"
+            />
           </svg>
           <p
             className="font-display font-extrabold text-white mt-[1vh]"
@@ -112,10 +119,16 @@ export default function Slide04Solution() {
           >
             Mana Rythu
           </p>
-          <p className="font-display font-semibold text-white mt-[0.5vh]" style={{ fontSize: "1.3vw", opacity: 0.85 }}>
+
+          <p
+            className="font-display font-semibold mt-[0.5vh]"
+            style={{ fontSize: "1.3vw", color: "#bbf7d0" }}
+          >
             The Platform
           </p>
-        </div>
+          </div>
+
+       
 
         {/* Arrow 2 */}
         <div style={{ width: "7vw", display: "flex", alignItems: "center", justifyContent: "center" }}>

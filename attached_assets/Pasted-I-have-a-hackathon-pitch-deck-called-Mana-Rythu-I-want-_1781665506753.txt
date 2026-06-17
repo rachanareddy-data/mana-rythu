@@ -1,0 +1,68 @@
+I have a hackathon pitch deck called "Mana Rythu". I want to improve it from an 8.5/10 deck to a 9.5/10 deck WITHOUT adding any fake data, fake users, fake revenue, fake traction, fake interviews, or misleading claims.
+
+Keep the clean modern design and concise style.
+
+Make the following improvements:
+
+1. Add a new slide: "Why Now?"
+- Rural smartphone adoption
+- Digital payments growth
+- AI becoming accessible in local languages
+- Government push for digital agriculture
+
+2. Add a new slide: "Business Model"
+Only future revenue plans, not actual revenue.
+Include:
+- Small transaction commission
+- Premium business accounts
+- Logistics partnerships
+- Future financial services
+
+3. Add a new slide: "Competitive Advantage"
+Compare Mana Rythu against:
+- Traditional middlemen
+- Generic marketplaces
+- Agri platforms
+
+Show how Mana Rythu combines:
+- Direct farmer-to-buyer marketplace
+- AI pest detection
+- AI fair pricing
+- Multilingual AI assistant
+- Real-time chat
+
+4. Improve the "Impact" slide.
+Replace generic statements with measurable value propositions:
+- More transparency
+- Faster buyer discovery
+- Better price visibility
+- AI guidance in Telugu, English, and Hindi
+
+Do not invent percentages.
+
+5. Improve the "Roadmap" slide.
+Create:
+Phase 1: Marketplace launch
+Phase 2: Payments + notifications
+Phase 3: Live mandi prices + weather APIs
+Phase 4: Yield prediction + government schemes
+Phase 5: Mobile application
+
+6. Improve the "Live Demo" slide.
+Add a short note:
+"All features demonstrated are currently implemented and functional."
+
+7. Add a final slide:
+"Why Mana Rythu Wins"
+Use 5 concise points:
+- Real working product
+- AI-powered agriculture tools
+- Multilingual support
+- Direct farmer-buyer connection
+- Built for Telangana & Andhra Pradesh
+
+8. Make the presentation investor-quality and hackathon-finalist quality.
+9. Keep all claims truthful and supported by existing functionality.
+10. Do not add fake statistics, fake growth numbers, fake revenue, fake customer counts, or fake testimonials.
+
+Output the revised slide structure with exact slide titles and slide content.
