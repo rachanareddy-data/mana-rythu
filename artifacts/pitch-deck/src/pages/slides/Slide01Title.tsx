@@ -19,14 +19,18 @@ export default function Slide01Title() {
 
       <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pl-[5vw] pr-[6vw]" style={{ width: "52vw" }}>
 
-        <p className="font-display font-extrabold" style={{ fontSize: "3.8vw", color: "#052e16", lineHeight: 1.1 }}>
-          Farm to buyer.
+        <div className="mb-[1.5vh]">
+          <span className="font-display font-semibold" style={{ fontSize: "1.1vw", color: "#15803d", textTransform: "uppercase", letterSpacing: "0.18em" }}>Introducing</span>
+        </div>
+
+        <p className="font-display font-extrabold" style={{ fontSize: "3.2vw", color: "#052e16", lineHeight: 1.1 }}>
+          The AI-Powered Operating System
           <br />
-          <span style={{ color: "#16a34a" }}>Direct. Fair. Now.</span>
+          <span style={{ color: "#16a34a" }}>for India's Farmers.</span>
         </p>
 
-        <p className="font-display font-normal mt-[2.5vh]" style={{ fontSize: "1.8vw", color: "#6b7280", lineHeight: 1.5 }}>
-          An AI-powered marketplace connecting Telangana &amp; AP farmers directly to buyers — no brokers, no price manipulation.
+        <p className="font-display font-normal mt-[2.5vh]" style={{ fontSize: "1.65vw", color: "#6b7280", lineHeight: 1.5 }}>
+          One platform combining marketplace, AI crop intelligence, AI price intelligence, real-time communication, and logistics — built for Telangana &amp; AP farmers.
         </p>
 
         <div className="mt-[5vh] pt-[4vh]" style={{ borderTop: "1.5px solid #e5e7eb" }}>
@@ -39,23 +43,13 @@ export default function Slide01Title() {
           </div>
         </div>
 
-        <div className="flex items-center gap-[2.5vw] mt-[3vh]">
-          <div className="flex items-center gap-[0.7vw]">
-            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
-            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>Marketplace</p>
-          </div>
-          <div className="flex items-center gap-[0.7vw]">
-            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
-            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>AI Chat</p>
-          </div>
-          <div className="flex items-center gap-[0.7vw]">
-            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
-            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>Price Intel</p>
-          </div>
-          <div className="flex items-center gap-[0.7vw]">
-            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
-            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>UPI Payments</p>
-          </div>
+        <div className="flex flex-wrap items-center gap-x-[1.8vw] gap-y-[0.8vh] mt-[3vh]">
+          {["Marketplace", "AI Crop Intel", "AI Price Intel", "Real-Time Chat", "Logistics", "Trust System"].map((cap) => (
+            <div key={cap} className="flex items-center gap-[0.6vw]">
+              <div className="rounded-full" style={{ width: "0.7vw", height: "0.7vw", background: "#22c55e", flexShrink: 0 }} />
+              <p className="font-display font-semibold" style={{ fontSize: "1.25vw", color: "#6b7280" }}>{cap}</p>
+            </div>
+          ))}
         </div>
       </div>
 

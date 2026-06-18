@@ -12,20 +12,28 @@ export default function Slide12Close() {
           <line x1="24" y1="96" x2="76" y2="96" stroke="#4ade80" strokeWidth="4" strokeLinecap="round" />
         </svg>
 
-        <h1 className="font-display font-extrabold text-white text-center" style={{ fontSize: "5.8vw", lineHeight: 1.05, maxWidth: "78vw" }}>
-          140 million farmers.<br />
-          One platform.<br />
-          <span style={{ color: "#4ade80" }}>One fair price.</span>
+        <h1 className="font-display font-extrabold text-white text-center" style={{ fontSize: "5.5vw", lineHeight: 1.1, maxWidth: "80vw" }}>
+          140 Million Farmers.
+          <br />
+          One Digital Marketplace.
+          <br />
+          One AI Copilot.
+          <br />
+          <span style={{ color: "#4ade80" }}>One Fair Price.</span>
         </h1>
 
-        <div style={{ width: "7vw", height: "2px", background: "rgba(34,197,94,0.3)", margin: "4.5vh 0" }} />
+        <div style={{ width: "7vw", height: "2px", background: "rgba(34,197,94,0.3)", margin: "4vh 0" }} />
 
-        <div className="text-center">
+        <p className="font-display font-semibold text-center" style={{ fontSize: "1.8vw", color: "rgba(255,255,255,0.6)", maxWidth: "60vw", lineHeight: 1.5 }}>
+          Mana Rythu is building the operating system for Indian agriculture.
+        </p>
+
+        <div className="text-center mt-[4vh]">
           <p className="font-display font-bold text-white" style={{ fontSize: "2.2vw" }}>Rachana Baddam</p>
           <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.6vw", color: "rgba(255,255,255,0.45)" }}>M.S. Data Science · Saint Peter's University</p>
         </div>
 
-        <div className="flex items-center gap-[4vw] mt-[4.5vh]">
+        <div className="flex items-center gap-[4vw] mt-[4vh]">
           <div className="flex items-center gap-[0.8vw]">
             <svg viewBox="0 0 24 24" fill="none" style={{ width: "1.8vw", height: "1.8vw" }}>
               <rect x="2" y="2" width="20" height="20" rx="5" stroke="#4ade80" strokeWidth="1.8" fill="none" />
@@ -54,7 +62,7 @@ export default function Slide12Close() {
           <div style={{ width: "1.5vw", height: "0.3vh", background: "rgba(34,197,94,0.3)", borderRadius: "2px" }} />
           <div style={{ width: "1.5vw", height: "0.3vh", background: "rgba(34,197,94,0.15)", borderRadius: "2px" }} />
         </div>
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.12)" }}>12</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.12)" }}>13</span>
       </div>
     </div>
   );

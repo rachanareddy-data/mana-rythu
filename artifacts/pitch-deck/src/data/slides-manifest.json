@@ -4,7 +4,7 @@
     "position": 1,
     "filepath": "src/pages/slides/Slide01Title.tsx",
     "title": "Mana Rythu",
-    "description": "Title slide — platform name, tagline, and presenter info",
+    "description": "Title slide — AI-Powered Operating System for India's Farmers",
     "speakerNotes": ""
   },
   {
@@ -20,7 +20,7 @@
     "position": 3,
     "filepath": "src/pages/slides/Slide02Problem.tsx",
     "title": "A Broken Supply Chain",
-    "description": "Problem slide — visual flow: Farmer ₹20 → Middlemen ₹20 → Buyer ₹40",
+    "description": "Problem slide — No Price Visibility, No Direct Access, No Accountability",
     "speakerNotes": ""
   },
   {
@@ -36,15 +36,15 @@
     "position": 5,
     "filepath": "src/pages/slides/Slide04Solution.tsx",
     "title": "The Solution",
-    "description": "Mana Rythu — direct farmer-to-buyer marketplace with AI chat and price intelligence",
+    "description": "Mana Rythu — AI-powered operating system with five pillars",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0006-4000-8000-000000000006",
     "position": 6,
     "filepath": "src/pages/slides/Slide06Features.tsx",
-    "title": "Core Features",
-    "description": "4 features: Direct Marketplace, Real-time Chat, Live Price Intelligence, Secure UPI Payments",
+    "title": "Six Capabilities",
+    "description": "6 features: Marketplace, AI Crop Intel, AI Price Intel, Real-Time Chat, Logistics, Trust System",
     "speakerNotes": ""
   },
   {
@@ -58,41 +58,49 @@
   {
     "id": "a1b2c3d4-0008-4000-8000-000000000008",
     "position": 8,
+    "filepath": "src/pages/slides/SlideLiveProduct.tsx",
+    "title": "Live Product — Built and Running",
+    "description": "All 6 features shown implemented and functional in the live product",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0009-4000-8000-000000000009",
+    "position": 9,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
     "title": "Impact",
     "description": "50% more farmer income, 30% cheaper for buyers, 2× price visibility",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0009-4000-8000-000000000009",
-    "position": 9,
+    "id": "a1b2c3d4-0010-4000-8000-000000000010",
+    "position": 10,
     "filepath": "src/pages/slides/SlideMarketOpportunity.tsx",
     "title": "Market Size",
     "description": "₹30T agri supply chain, 140M farm holdings, 350M rural internet users",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0010-4000-8000-000000000010",
-    "position": 10,
+    "id": "a1b2c3d4-0011-4000-8000-000000000011",
+    "position": 11,
     "filepath": "src/pages/slides/SlideWhyWins.tsx",
     "title": "Why Mana Rythu Wins",
-    "description": "Competitive moat and comparison table vs eNAM, DeHaat, Agri10x",
+    "description": "Six moats and 6-column competitive table vs eNAM, DeHaat, Agri10x",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0011-4000-8000-000000000011",
-    "position": 11,
+    "id": "a1b2c3d4-0012-4000-8000-000000000012",
+    "position": 12,
     "filepath": "src/pages/slides/Slide08TechStack.tsx",
     "title": "Tech Stack",
     "description": "React + Vite, Node/Express 5, PostgreSQL + Drizzle, GPT-4o, TypeScript, Orval, WebSocket",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0012-4000-8000-000000000012",
-    "position": 12,
+    "id": "a1b2c3d4-0013-4000-8000-000000000013",
+    "position": 13,
     "filepath": "src/pages/slides/Slide12Close.tsx",
-    "title": "140 Million Farmers. One Fair Price.",
-    "description": "Closing slide — powerful vision statement and presenter contact",
+    "title": "140M Farmers. One AI Copilot. One Fair Price.",
+    "description": "Closing slide — OS vision statement and presenter contact",
     "speakerNotes": ""
   }
 ]
