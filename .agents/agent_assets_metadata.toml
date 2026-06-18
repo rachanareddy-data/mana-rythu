@@ -6,3 +6,15 @@ id = "yGMhNjqIhVfD9rsXaVHHq"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
 type = "slides"
 title = "Mana Rythu Pitch Deck (PPTX)"
+
+[[outputs]]
+id = "9zdE9Eq-DknlQFk6fcVxF"
+uri = "file://.local/outputs/Asset-Manager.pdf"
+type = "pdf"
+title = "Asset Manager.pdf"
+
+[[outputs]]
+id = "dOYnSke1-Muezw-OVwteN"
+uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck-v2.pptx"
+type = "slides"
+title = "Mana Rythu Pitch Deck v2 (PPTX)"

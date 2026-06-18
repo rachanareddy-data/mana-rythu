@@ -1,52 +1,45 @@
 export default function Slide09Impact() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#ffffff" }}>
-      <div className="absolute top-0 left-0 right-0 h-[0.8vh]" style={{ background: "linear-gradient(90deg, #15803d 0%, #22c55e 50%, #15803d 100%)" }} />
+    <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#052e16" }}>
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(34,197,94,0.12) 0%, transparent 65%)" }} />
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[7vw]">
 
-        <div className="text-center mb-[4.5vh]">
-          <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.3vw", color: "#15803d", textTransform: "uppercase", letterSpacing: "0.15em" }}>Impact</p>
-          <h2 className="font-display font-extrabold" style={{ fontSize: "4vw", color: "#052e16", lineHeight: 1 }}>
-            Real outcomes for real farmers
-          </h2>
-        </div>
+        <p className="font-display font-semibold mb-[1.2vh]" style={{ fontSize: "1.2vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Impact</p>
+        <h2 className="font-display font-extrabold text-white mb-[6vh]" style={{ fontSize: "4vw", lineHeight: 1 }}>
+          The math is simple.
+        </h2>
 
-        <div className="grid grid-cols-3 gap-[3vw] w-full">
+        <div className="flex items-stretch gap-[3vw] w-full" style={{ maxWidth: "84vw" }}>
 
-          <div className="rounded-2xl p-[3vw] flex flex-col items-center text-center" style={{ background: "linear-gradient(140deg, #052e16 0%, #15803d 100%)" }}>
-            <div className="font-display font-extrabold" style={{ fontSize: "8.5vw", lineHeight: 1, color: "#4ade80" }}>50<span style={{ fontSize: "4vw" }}>%</span></div>
-            <p className="font-display font-bold text-white mt-[1.5vh]" style={{ fontSize: "2vw" }}>More Income</p>
-            <div className="w-[3vw] h-[0.3vh] rounded-full mt-[1.5vh] mb-[1.5vh]" style={{ background: "rgba(74,222,128,0.4)" }} />
-            <p className="font-display font-normal" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.65)", lineHeight: 1.5 }}>
-              Cutting middlemen means farmers keep more of every rupee earned — directly boosting household income.
-            </p>
+          <div className="flex flex-col items-center justify-center rounded-2xl py-[5vh] px-[3vw]" style={{ flex: 1, background: "linear-gradient(145deg, rgba(34,197,94,0.25) 0%, rgba(22,163,74,0.15) 100%)", border: "2px solid #22c55e" }}>
+            <div style={{ fontSize: "11vw", fontWeight: 800, lineHeight: 1, color: "#4ade80" }}>50<span style={{ fontSize: "6vw" }}>%</span></div>
+            <p className="font-display font-bold text-white mt-[2vh]" style={{ fontSize: "2.2vw" }}>More Income</p>
+            <p className="font-display font-normal mt-[1.2vh] text-center" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Farmers keep what was always theirs</p>
           </div>
 
-          <div className="rounded-2xl p-[3vw] flex flex-col items-center text-center" style={{ background: "#f0fdf4", border: "2px solid #bbf7d0" }}>
-            <div className="font-display font-extrabold" style={{ fontSize: "8.5vw", lineHeight: 1, color: "#15803d" }}>30<span style={{ fontSize: "4vw" }}>%</span></div>
-            <p className="font-display font-bold" style={{ fontSize: "2vw", color: "#052e16" }}>Lower Prices</p>
-            <div className="w-[3vw] h-[0.3vh] rounded-full mt-[1.5vh] mb-[1.5vh]" style={{ background: "#bbf7d0" }} />
-            <p className="font-display font-normal" style={{ fontSize: "1.3vw", color: "#6b7280", lineHeight: 1.5 }}>
-              Buyers pay closer to farm-gate prices. Fresher produce, shorter supply chains, less spoilage.
-            </p>
+          <div className="flex flex-col items-center justify-center rounded-2xl py-[5vh] px-[3vw]" style={{ flex: 1, background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
+            <div style={{ fontSize: "11vw", fontWeight: 800, lineHeight: 1, color: "white" }}>30<span style={{ fontSize: "6vw" }}>%</span></div>
+            <p className="font-display font-bold text-white mt-[2vh]" style={{ fontSize: "2.2vw" }}>Cheaper for Buyers</p>
+            <p className="font-display font-normal mt-[1.2vh] text-center" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Fresher produce, shorter chain, lower cost</p>
           </div>
 
-          <div className="rounded-2xl p-[3vw] flex flex-col items-center text-center" style={{ background: "#f0fdf4", border: "2px solid #bbf7d0" }}>
-            <div className="font-display font-extrabold" style={{ fontSize: "8.5vw", lineHeight: 1, color: "#15803d" }}>2<span style={{ fontSize: "4vw" }}>×</span></div>
-            <p className="font-display font-bold" style={{ fontSize: "2vw", color: "#052e16" }}>Price Visibility</p>
-            <div className="w-[3vw] h-[0.3vh] rounded-full mt-[1.5vh] mb-[1.5vh]" style={{ background: "#bbf7d0" }} />
-            <p className="font-display font-normal" style={{ fontSize: "1.3vw", color: "#6b7280", lineHeight: 1.5 }}>
-              Farmers negotiate with live APMC benchmarks — no more accepting whatever the broker offers.
-            </p>
+          <div className="flex flex-col items-center justify-center rounded-2xl py-[5vh] px-[3vw]" style={{ flex: 1, background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
+            <div style={{ fontSize: "11vw", fontWeight: 800, lineHeight: 1, color: "white" }}>2<span style={{ fontSize: "6vw" }}>×</span></div>
+            <p className="font-display font-bold text-white mt-[2vh]" style={{ fontSize: "2.2vw" }}>Price Visibility</p>
+            <p className="font-display font-normal mt-[1.2vh] text-center" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Live APMC data — farmers negotiate, not beg</p>
           </div>
 
         </div>
+
+        <p className="font-display font-semibold mt-[5.5vh]" style={{ fontSize: "1.6vw", color: "rgba(255,255,255,0.25)" }}>
+          No fake numbers. No projections. Just what direct trade does.
+        </p>
 
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>08</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.12)" }}>08</span>
       </div>
     </div>
   );

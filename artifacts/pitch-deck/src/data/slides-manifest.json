@@ -11,16 +11,16 @@
     "id": "a1b2c3d4-0002-4000-8000-000000000002",
     "position": 2,
     "filepath": "src/pages/slides/SlideEmotionalHook.tsx",
-    "title": "The Middleman Problem",
-    "description": "Emotional hook — farmer earns ₹20, buyer pays ₹40, middlemen take the rest",
+    "title": "The Reality",
+    "description": "Emotional hook — India's farmers grow food, middlemen take the money",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0003-4000-8000-000000000003",
     "position": 3,
     "filepath": "src/pages/slides/Slide02Problem.tsx",
-    "title": "Who Profits From Your Harvest?",
-    "description": "Problem slide — visualising the supply chain value extraction",
+    "title": "A Broken Supply Chain",
+    "description": "Problem slide — visual flow: Farmer ₹20 → Middlemen ₹20 → Buyer ₹40",
     "speakerNotes": ""
   },
   {
@@ -43,8 +43,8 @@
     "id": "a1b2c3d4-0006-4000-8000-000000000006",
     "position": 6,
     "filepath": "src/pages/slides/Slide06Features.tsx",
-    "title": "Platform Features",
-    "description": "6 core features: Farmer Portal, Buyer Marketplace, Real-time Chat, Price Intelligence, Multilingual AI, Payments",
+    "title": "Core Features",
+    "description": "4 features: Direct Marketplace, Real-time Chat, Live Price Intelligence, Secure UPI Payments",
     "speakerNotes": ""
   },
   {
@@ -60,7 +60,7 @@
     "position": 8,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
     "title": "Impact",
-    "description": "Three impact cards: 50% more income, 30% lower prices, 2× price visibility",
+    "description": "50% more farmer income, 30% cheaper for buyers, 2× price visibility",
     "speakerNotes": ""
   },
   {
@@ -76,7 +76,7 @@
     "position": 10,
     "filepath": "src/pages/slides/SlideWhyWins.tsx",
     "title": "Why Mana Rythu Wins",
-    "description": "Competitive advantages and comparison table vs eNAM, DeHaat, Agri10x",
+    "description": "Competitive moat and comparison table vs eNAM, DeHaat, Agri10x",
     "speakerNotes": ""
   },
   {
@@ -90,17 +90,9 @@
   {
     "id": "a1b2c3d4-0012-4000-8000-000000000012",
     "position": 12,
-    "filepath": "src/pages/slides/Slide10Demo.tsx",
-    "title": "Live Platform",
-    "description": "App demo with screenshots — home, marketplace, fair price tool, chat",
-    "speakerNotes": ""
-  },
-  {
-    "id": "a1b2c3d4-0013-4000-8000-000000000013",
-    "position": 13,
     "filepath": "src/pages/slides/Slide12Close.tsx",
-    "title": "Let's Give Farmers Their Due",
-    "description": "Closing slide — vision statement, presenter contact, and social",
+    "title": "140 Million Farmers. One Fair Price.",
+    "description": "Closing slide — powerful vision statement and presenter contact",
     "speakerNotes": ""
   }
 ]
