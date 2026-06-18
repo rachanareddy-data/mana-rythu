@@ -498,7 +498,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <AnimatePresence mode="wait" initial={false}>
           <motion.main
             key={location}
-            className="flex-1 overflow-y-auto pb-20 lg:pb-0"
+            className="flex-1 overflow-y-auto overflow-x-hidden pb-20 lg:pb-0"
             style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}

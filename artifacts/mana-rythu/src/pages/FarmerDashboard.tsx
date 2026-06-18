@@ -167,7 +167,7 @@ export default function FarmerDashboard() {
   const initials = user?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() ?? "F";
 
   return (
-    <div className="isolate relative z-0 min-h-full bg-background">
+    <div className="isolate relative z-0 min-h-full bg-background overflow-x-hidden">
 
       {/* ── Hero header ── */}
       <div className="gradient-primary px-4 sm:px-6 py-6 relative overflow-hidden">
@@ -280,29 +280,29 @@ export default function FarmerDashboard() {
 
         {/* ── Tabs ── */}
         <Tabs defaultValue={defaultTab}>
-          <div className="flex items-center justify-between mb-3">
-            <TabsList className="bg-muted h-10 p-1 rounded-xl">
-              <TabsTrigger value="listings" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span>{t("listings")}</span>
+          <div className="flex items-center justify-between mb-3 overflow-x-auto">
+            <TabsList className="bg-muted h-10 p-1 rounded-xl flex-shrink-0">
+              <TabsTrigger value="listings" className="text-xs sm:text-sm h-8 px-2.5 sm:px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1 sm:gap-1.5">
+                <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">{t("listings")}</span>
                 {listings && (
                   <span className="text-[10px] bg-muted-foreground/15 data-[state=active]:bg-primary/10 data-[state=active]:text-primary px-1.5 py-0.5 rounded-full font-semibold">{listings.length}</span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="crops" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
-                <Sprout className="w-3.5 h-3.5" />
-                <span>{t("myCrops")}</span>
+              <TabsTrigger value="crops" className="text-xs sm:text-sm h-8 px-2.5 sm:px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1 sm:gap-1.5">
+                <Sprout className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">{t("myCrops")}</span>
                 {crops && (
                   <span className="text-[10px] bg-muted-foreground/15 px-1.5 py-0.5 rounded-full font-semibold">{crops.length}</span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="pest" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
-                <Bug className="w-3.5 h-3.5" />
-                <span>{t("pest")}</span>
+              <TabsTrigger value="pest" className="text-xs sm:text-sm h-8 px-2.5 sm:px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1 sm:gap-1.5">
+                <Bug className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">{t("pest")}</span>
               </TabsTrigger>
-              <TabsTrigger value="transport" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
-                <Truck className="w-3.5 h-3.5" />
-                <span>Transport</span>
+              <TabsTrigger value="transport" className="text-xs sm:text-sm h-8 px-2.5 sm:px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1 sm:gap-1.5">
+                <Truck className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">Transport</span>
               </TabsTrigger>
             </TabsList>
           </div>

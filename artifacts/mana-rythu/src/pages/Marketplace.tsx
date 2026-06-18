@@ -107,7 +107,7 @@ export default function Marketplace() {
   ];
 
   return (
-    <div className="isolate flex h-full">
+    <div className="isolate flex h-full overflow-x-hidden">
 
       {/* ── Filter sidebar — desktop ── */}
       <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-border bg-card p-5 space-y-5 overflow-y-auto">

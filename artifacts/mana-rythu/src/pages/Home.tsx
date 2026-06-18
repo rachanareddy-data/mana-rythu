@@ -76,7 +76,7 @@ export default function Home() {
   const isAdmin  = user?.role === "admin";
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       {/* ── Hero ── */}
       <div className="relative px-6 py-14 overflow-hidden min-h-[300px] flex items-center">
         <div
