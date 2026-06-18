@@ -1,39 +1,47 @@
+const BASE = import.meta.env.BASE_URL;
+
 export default function SlideLiveProduct() {
   const screens = [
     {
       label: "Marketplace",
       badgeColor: "#16a34a",
       emoji: "🏪",
+      screenshot: `${BASE}screenshots/marketplace.jpg`,
       bullets: ["Verified crop listings · buyer discovery", "Direct purchase — zero broker, zero commission"],
     },
     {
       label: "Farmer Dashboard",
       badgeColor: "#16a34a",
       emoji: "🌾",
-      bullets: ["Post crop · track orders · view offers", "Full visibility from listing to payment"],
+      screenshot: `${BASE}screenshots/farmer-dashboard.jpg`,
+      bullets: ["Post crop · track orders · view offers", "Growing / Ready / Listed metrics at a glance"],
     },
     {
       label: "AI Pest Detection",
       badgeColor: "#7c3aed",
       emoji: "🤖",
+      screenshot: null,
       bullets: ["Upload leaf photo → AI diagnoses disease", "Treatment plan returned in Telugu instantly"],
     },
     {
       label: "AI Price Intelligence",
       badgeColor: "#0891b2",
       emoji: "₹",
-      bullets: ["Pulls live APMC mandi benchmarks", "AI recommends fair asking price by grade"],
+      screenshot: `${BASE}screenshots/fair-price.jpg`,
+      bullets: ["Live APMC mandi benchmarks by crop & grade", "AI recommends fair asking price (A / B / C)"],
     },
     {
       label: "Real-Time Chat",
       badgeColor: "#d97706",
       emoji: "💬",
+      screenshot: null,
       bullets: ["Farmer-to-buyer negotiation, no middleman", "GPT-4o assistant responds in Telugu or English"],
     },
     {
       label: "Logistics Estimator",
       badgeColor: "#b45309",
       emoji: "🚚",
+      screenshot: null,
       bullets: ["Enter pickup & delivery → get distance + cost", "Covers all Telangana & AP districts"],
     },
   ];
@@ -55,7 +63,7 @@ export default function SlideLiveProduct() {
         </div>
 
         <div className="grid grid-cols-3 gap-[1.6vw] w-full" style={{ maxWidth: "89vw" }}>
-          {screens.map(({ label, badgeColor, emoji, bullets }) => (
+          {screens.map(({ label, badgeColor, emoji, screenshot, bullets }) => (
             <div key={label} className="rounded-2xl overflow-hidden flex flex-col" style={{ background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
               {/* Card header */}
               <div className="flex items-center justify-between px-[1.4vw] py-[1vh]" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)" }}>
@@ -66,11 +74,21 @@ export default function SlideLiveProduct() {
                 <span className="font-display font-bold px-[0.7vw] py-[0.2vh] rounded-full" style={{ fontSize: "0.85vw", background: `${badgeColor}28`, color: badgeColor, border: `1px solid ${badgeColor}55` }}>Live</span>
               </div>
 
-              {/* Screenshot placeholder */}
-              <div className="mx-[1.2vw] mt-[1.2vh] rounded-xl flex flex-col items-center justify-center gap-[0.5vh]" style={{ height: "10vh", border: "1.5px dashed rgba(74,222,128,0.25)", background: "rgba(0,0,0,0.2)" }}>
-                <p style={{ fontSize: "1.8vw", lineHeight: 1 }}>📸</p>
-                <p className="font-display font-semibold" style={{ fontSize: "0.95vw", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label} UI</p>
-              </div>
+              {/* Real screenshot or placeholder */}
+              {screenshot ? (
+                <div className="mx-[1.2vw] mt-[1.2vh] rounded-xl overflow-hidden flex-shrink-0" style={{ height: "10vh", border: "1px solid rgba(255,255,255,0.12)" }}>
+                  <img
+                    src={screenshot}
+                    alt={`${label} screenshot`}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
+                  />
+                </div>
+              ) : (
+                <div className="mx-[1.2vw] mt-[1.2vh] rounded-xl flex flex-col items-center justify-center gap-[0.5vh]" style={{ height: "10vh", border: "1.5px dashed rgba(74,222,128,0.25)", background: "rgba(0,0,0,0.2)" }}>
+                  <p style={{ fontSize: "1.8vw", lineHeight: 1 }}>📸</p>
+                  <p className="font-display font-semibold" style={{ fontSize: "0.9vw", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label} Screenshot</p>
+                </div>
+              )}
 
               {/* Bullets */}
               <div className="flex flex-col gap-[0.7vh] px-[1.4vw] py-[1.2vh]">
