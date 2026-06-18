@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetCrops, useCreateCrop, useDeleteCrop, getGetCropsQueryKey,
@@ -101,6 +101,8 @@ export default function FarmerDashboard() {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [, navigate] = useLocation();
+  const search = useSearch();
+  const defaultTab = new URLSearchParams(search).get("tab") ?? "listings";
   const farmerId = user?.id;
 
   const { data: crops, isLoading: cropsLoading } = useGetCrops(
@@ -277,7 +279,7 @@ export default function FarmerDashboard() {
         )}
 
         {/* ── Tabs ── */}
-        <Tabs defaultValue="listings">
+        <Tabs defaultValue={defaultTab}>
           <div className="flex items-center justify-between mb-3">
             <TabsList className="bg-muted h-10 p-1 rounded-xl">
               <TabsTrigger value="listings" className="text-xs sm:text-sm h-8 px-3 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground gap-1.5">
