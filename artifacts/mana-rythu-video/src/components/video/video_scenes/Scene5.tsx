@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
+// Desktop scene = buyer + platform features (no overlap with mobile scene)
 const routes = [
-  { path: '/marketplace',    label: '🌾 Marketplace',         cap: 'Direct farmer-to-buyer crop listings, live prices' },
-  { path: '/farmer',         label: '📊 Farmer Dashboard',    cap: 'Zero commission. Full earnings transparency.' },
-  { path: '/fair-price',     label: '💰 AI Price Intelligence', cap: 'Live APMC mandi rates. Grade A / B / C pricing.' },
-  { path: '/chat',           label: '💬 Real-Time Chat',       cap: 'Farmer-buyer direct negotiation — no middlemen' },
+  { path: '/marketplace', label: '🌾 Live Marketplace',        cap: 'Crops listed by real farmers — buy directly' },
+  { path: '/fair-price',  label: '💰 AI Price Intelligence',   cap: 'Live APMC mandi rates. Grade A / B / C pricing.' },
+  { path: '/chat',        label: '💬 Real-Time Chat',           cap: 'Farmer ↔ Buyer direct negotiation, no agents' },
+  { path: '/farmer',      label: '📊 Full Dashboard View',     cap: 'Complete earnings & crop management overview' },
 ];
 
 export function Scene5() {
@@ -41,14 +42,14 @@ export function Scene5() {
 
       <div className="relative z-10 flex flex-col items-center w-full h-full py-5 px-8">
 
-        {/* Top badge + label */}
+        {/* Top: badge + label — NO mention of website */}
         <div className="flex flex-col items-center mb-3 flex-shrink-0">
           <div className="flex items-center gap-2 mb-2">
             <span
-              className="text-[0.7rem] font-bold tracking-[0.4em] uppercase"
+              className="text-[0.65rem] font-bold tracking-[0.4em] uppercase"
               style={{ color: '#4ade80' }}
             >
-              LIVE APP · DESKTOP
+              LIVE PLATFORM
             </span>
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse"
@@ -70,7 +71,7 @@ export function Scene5() {
           </AnimatePresence>
         </div>
 
-        {/* Browser mockup with live iframe */}
+        {/* Browser mockup */}
         <div className="flex-1 flex items-center justify-center min-h-0 w-full">
           <motion.div
             className="w-full flex flex-col overflow-hidden"
@@ -78,7 +79,7 @@ export function Scene5() {
               maxWidth: 'min(900px, 92vw)',
               borderRadius: '10px 10px 8px 8px',
               border: '2px solid rgba(255,255,255,0.13)',
-              boxShadow: '0 40px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04)',
+              boxShadow: '0 40px 90px rgba(0,0,0,0.8)',
               height: 'min(56vh, 520px)',
             }}
             initial={{ scale: 0.94, opacity: 0 }}
@@ -107,7 +108,7 @@ export function Scene5() {
                 <AnimatePresence mode="popLayout">
                   <motion.span
                     key={routeIdx}
-                    className="text-[11px] font-mono"
+                    className="text-[11px] font-mono truncate"
                     style={{ color: 'rgba(255,255,255,0.5)' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -120,9 +121,8 @@ export function Scene5() {
               </div>
             </div>
 
-            {/* Live app area */}
+            {/* Live iframe area */}
             <div className="relative flex-1 bg-[#052e16] overflow-hidden">
-              {/* Loading state */}
               <AnimatePresence>
                 {!loaded && (
                   <motion.div
@@ -146,13 +146,13 @@ export function Scene5() {
                 className="w-full h-full border-0"
                 style={{ pointerEvents: 'none' }}
                 onLoad={() => setLoaded(true)}
-                title="Mana Rythu Desktop"
+                title="Mana Rythu Platform"
               />
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom caption + dots */}
+        {/* Caption + dots */}
         <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
           <AnimatePresence mode="popLayout">
             <motion.p

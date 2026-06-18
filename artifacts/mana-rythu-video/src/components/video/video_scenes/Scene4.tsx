@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
+// Mobile scene = farmer journey. Start with pest FIRST so it's visible early.
 const routes = [
-  { path: '/marketplace',           label: '🌾 Marketplace',      cap: 'Live crop listings from farmers across TS & AP' },
-  { path: '/farmer',                label: '📊 Farmer Dashboard',  cap: 'Manage crops, track earnings — zero commission' },
-  { path: '/farmer?tab=pest',       label: '🤖 AI Pest Detection', cap: 'Upload crop photo → AI diagnosis in Telugu' },
-  { path: '/farmer?tab=transport',  label: '🚛 Logistics',         cap: 'Estimate transport costs across TS & AP' },
+  { path: '/farmer?tab=pest',      label: '🤖 AI Pest Detection',  cap: 'Upload crop photo → AI diagnosis in Telugu' },
+  { path: '/farmer',               label: '📊 Farmer Dashboard',   cap: 'Track crops, earnings — zero commission' },
+  { path: '/farmer?tab=transport', label: '🚛 Logistics Estimator', cap: 'Estimate transport cost across TS & AP' },
+  { path: '/marketplace',          label: '🌾 Marketplace',         cap: 'Buy & sell crops directly — no middlemen' },
 ];
 
 export function Scene4() {
@@ -41,16 +42,16 @@ export function Scene4() {
 
       <div className="relative z-10 flex flex-col items-center w-full h-full py-6 px-6">
 
-        {/* Top label */}
+        {/* Top: badge + screen label */}
         <div className="flex flex-col items-center mb-3 flex-shrink-0">
           <motion.span
-            className="text-[0.7rem] font-bold tracking-[0.4em] uppercase mb-2"
+            className="text-[0.65rem] font-bold tracking-[0.4em] uppercase mb-2"
             style={{ color: '#4ade80' }}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            LIVE APP · MOBILE
+            LIVE APP
           </motion.span>
 
           <AnimatePresence mode="popLayout">
@@ -67,14 +68,14 @@ export function Scene4() {
           </AnimatePresence>
         </div>
 
-        {/* Phone mockup with live iframe */}
+        {/* Phone mockup */}
         <div className="flex-1 flex items-center justify-center min-h-0">
           <motion.div
             className="relative"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            {/* Ambient glow */}
+            {/* Glow behind phone */}
             <div
               className="absolute inset-0 -z-10 blur-3xl scale-110 rounded-[3rem]"
               style={{ background: 'rgba(34,197,94,0.15)' }}
@@ -107,22 +108,24 @@ export function Scene4() {
                   >
                     <motion.div
                       className="text-4xl"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >🌾</motion.div>
-                    <p className="text-xs text-white/40 tracking-widest">LOADING APP...</p>
+                    <p className="text-[10px] tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                      LOADING...
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* Live app iframe */}
+              {/* Live iframe */}
               <iframe
                 ref={iframeRef}
                 src={origin + routes[0].path}
                 className="flex-1 w-full border-0"
-                style={{ pointerEvents: 'none', marginTop: 0 }}
+                style={{ pointerEvents: 'none' }}
                 onLoad={() => setLoaded(true)}
-                title="Mana Rythu"
+                title="Mana Rythu App"
               />
 
               {/* Home bar */}
@@ -131,7 +134,7 @@ export function Scene4() {
               </div>
             </div>
 
-            {/* Green glow puddle */}
+            {/* Glow puddle */}
             <div
               className="absolute -bottom-3 left-1/2 -translate-x-1/2 blur-2xl rounded-full"
               style={{ width: '65%', height: 20, background: 'rgba(34,197,94,0.28)' }}
@@ -139,12 +142,12 @@ export function Scene4() {
           </motion.div>
         </div>
 
-        {/* Bottom caption + dots */}
+        {/* Caption + dots */}
         <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
           <AnimatePresence mode="popLayout">
             <motion.p
               key={routeIdx}
-              className="text-[min(1.5vw,0.9rem)] text-center font-medium"
+              className="text-[min(1.5vw,0.85rem)] text-center font-medium"
               style={{ color: 'rgba(255,255,255,0.72)' }}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
