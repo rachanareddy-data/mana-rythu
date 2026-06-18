@@ -43,7 +43,7 @@ export default function Slide09Impact() {
               </div>
               <div>
                 <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1 }}>Zero commission</p>
-                <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Traditional mandis charge 10–25%. Mana Rythu charges nothing. The spread belongs to the farmer and buyer.</p>
+                <p className="font-display font-semibold mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)" }}>Traditional mandis charge 10–25%. Zero here.</p>
               </div>
             </div>
 
@@ -58,7 +58,7 @@ export default function Slide09Impact() {
               </div>
               <div>
                 <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1 }}>Live APMC price data</p>
-                <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Farmers see the actual market rate before they negotiate — negotiating with data, not guesswork.</p>
+                <p className="font-display font-semibold mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)" }}>Farmers see live mandi rates before negotiating.</p>
               </div>
             </div>
 
@@ -73,7 +73,7 @@ export default function Slide09Impact() {
               </div>
               <div>
                 <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1 }}>AI negotiation in Telugu</p>
-                <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>GPT-4o advises farmers on pricing, pest management, and logistics — in their own language.</p>
+                <p className="font-display font-semibold mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)" }}>GPT-4o advises farmers in Telugu.</p>
               </div>
             </div>
 
@@ -82,7 +82,7 @@ export default function Slide09Impact() {
         </div>
 
         <p className="font-display font-semibold" style={{ fontSize: "1.5vw", color: "rgba(255,255,255,0.22)" }}>
-          These are structural advantages of direct trade — not projections.
+          Structural advantages of direct trade — not projections.
         </p>
 
       </div>

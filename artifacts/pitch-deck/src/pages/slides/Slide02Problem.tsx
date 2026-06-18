@@ -24,8 +24,8 @@ export default function Slide02Problem() {
               </svg>
             </div>
             <p className="font-display font-extrabold" style={{ fontSize: "2vw", color: "#991b1b", lineHeight: 1.1 }}>No Price Visibility</p>
-            <p className="font-display font-normal mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.5 }}>
-              Farmers set prices blind. They don't know what buyers pay two markets away — brokers do, and use it.
+            <p className="font-display font-semibold mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.4 }}>
+              Farmers set prices blind — brokers exploit the gap.
             </p>
           </div>
 
@@ -38,8 +38,8 @@ export default function Slide02Problem() {
               </svg>
             </div>
             <p className="font-display font-extrabold" style={{ fontSize: "2vw", color: "#92400e", lineHeight: 1.1 }}>No Direct Access</p>
-            <p className="font-display font-normal mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.5 }}>
-              Brokers are the only gateway to buyers. Farmers have no choice but to accept the offered price.
+            <p className="font-display font-semibold mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.4 }}>
+              No direct buyer access — accept what's offered.
             </p>
           </div>
 
@@ -54,8 +54,8 @@ export default function Slide02Problem() {
               </svg>
             </div>
             <p className="font-display font-extrabold" style={{ fontSize: "2vw", color: "#4c1d95", lineHeight: 1.1 }}>No Accountability</p>
-            <p className="font-display font-normal mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.5 }}>
-              No receipts. No contracts. No recourse. If a broker defaults, the farmer absorbs the loss.
+            <p className="font-display font-semibold mt-[1.5vh]" style={{ fontSize: "1.4vw", color: "#6b7280", lineHeight: 1.4 }}>
+              No receipts, contracts, or recourse ever.
             </p>
           </div>
 
@@ -63,8 +63,8 @@ export default function Slide02Problem() {
 
         <div className="mt-[5vh] px-[5vw] py-[2vh] rounded-2xl" style={{ background: "#052e16" }}>
           <p className="font-display font-bold text-center text-white" style={{ fontSize: "2vw" }}>
-            The market is broken at the foundation — not at the edges.{" "}
-            <span style={{ color: "#4ade80" }}>Mana Rythu fixes the foundation.</span>
+            Foundation broken at the core.{" "}
+            <span style={{ color: "#4ade80" }}>Mana Rythu fixes it.</span>
           </p>
         </div>
 

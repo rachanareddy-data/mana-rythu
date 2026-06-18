@@ -23,7 +23,7 @@ export default function Slide05HowItWorks() {
                 <circle cx="32" cy="46" r="2" fill="#4ade80" />
               </svg>
               <p className="font-display font-bold text-white text-center" style={{ fontSize: "2vw" }}>Farmer Lists</p>
-              <p className="font-display font-normal text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>Posts produce with photos, quantity, and asking price in minutes.</p>
+              <p className="font-display font-semibold text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>Post crop — photos, quantity, and price.</p>
             </div>
           </div>
 
@@ -45,7 +45,7 @@ export default function Slide05HowItWorks() {
                 <circle cx="32" cy="56" r="3" fill="#4ade80" />
               </svg>
               <p className="font-display font-bold text-white text-center" style={{ fontSize: "2vw" }}>Chat &amp; Agree</p>
-              <p className="font-display font-normal text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>Buyer and farmer negotiate directly. AI assistant answers questions in Telugu.</p>
+              <p className="font-display font-semibold text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>Direct negotiation. AI assists in Telugu.</p>
             </div>
           </div>
 
@@ -66,7 +66,7 @@ export default function Slide05HowItWorks() {
                 <circle cx="46" cy="37" r="4" stroke="#4ade80" strokeWidth="2" fill="none" />
               </svg>
               <p className="font-display font-bold text-white text-center" style={{ fontSize: "2vw" }}>Pay &amp; Deliver</p>
-              <p className="font-display font-normal text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>UPI payment released to farmer on delivery confirmation. Safe and transparent.</p>
+              <p className="font-display font-semibold text-center mt-[1vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>UPI released on delivery. Transparent.</p>
             </div>
           </div>
 

@@ -10,13 +10,16 @@ export default function Slide04Solution() {
           <p className="font-display font-extrabold text-white mt-[1.5vh]" style={{ fontSize: "5vw", lineHeight: 0.9 }}>Mana</p>
           <p className="font-display font-extrabold" style={{ fontSize: "5vw", lineHeight: 0.9, color: "#4ade80" }}>Rythu</p>
           <p className="font-display font-semibold text-white mt-[3vh]" style={{ fontSize: "1.5vw", lineHeight: 1.5, opacity: 0.85 }}>
-            An AI-powered operating system for farmers — marketplace, intelligence, communication, and payments in one platform.
+            Marketplace. AI intelligence. Chat. Payments.
           </p>
-          <div className="mt-[4vh] rounded-2xl px-[2vw] py-[2.5vh]" style={{ background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(74,222,128,0.4)" }}>
-            <p className="font-display font-extrabold text-white" style={{ fontSize: "3.8vw", lineHeight: 1 }}>
-              <span style={{ color: "#4ade80" }}>50%</span> more
-            </p>
-            <p className="font-display font-semibold mt-[0.5vh]" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.6)" }}>average income gain for farmers</p>
+          <div className="mt-[4vh] flex flex-col gap-[1.2vh]">
+            <div className="inline-flex items-center gap-[0.8vw] rounded-xl px-[1.5vw] py-[1.2vh]" style={{ background: "rgba(74,222,128,0.15)", border: "1.5px solid rgba(74,222,128,0.4)" }}>
+              <div className="rounded-full flex-shrink-0" style={{ width: "0.6vw", height: "0.6vw", background: "#4ade80" }} />
+              <p className="font-display font-bold" style={{ fontSize: "1.3vw", color: "#4ade80" }}>Live in Telangana &amp; AP</p>
+            </div>
+            <div className="inline-flex items-center gap-[0.8vw] rounded-xl px-[1.5vw] py-[1.2vh]" style={{ background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.2)" }}>
+              <p className="font-display font-bold text-white" style={{ fontSize: "1.3vw" }}>Zero commission. Zero middlemen.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -27,7 +30,7 @@ export default function Slide04Solution() {
         {[
           {
             title: "Direct Marketplace",
-            desc: "Verified listings, direct purchase, zero broker in the chain.",
+            desc: "Verified listings. Direct purchase. Zero broker.",
             icon: (
               <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.2vw", height: "3.2vw" }}>
                 <rect x="8" y="12" width="32" height="26" rx="4" stroke="#15803d" strokeWidth="2.5" fill="none" />
@@ -40,7 +43,7 @@ export default function Slide04Solution() {
           },
           {
             title: "AI Crop Intelligence",
-            desc: "Pest detection, crop health analysis, and smart farming recommendations.",
+            desc: "Pest detection + crop health analysis.",
             icon: (
               <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.2vw", height: "3.2vw" }}>
                 <circle cx="24" cy="24" r="14" stroke="#15803d" strokeWidth="2.5" fill="none" />
@@ -53,7 +56,7 @@ export default function Slide04Solution() {
           },
           {
             title: "AI Price Intelligence",
-            desc: "Live APMC mandi benchmarks — farmers negotiate with data, not instinct.",
+            desc: "Live APMC benchmarks. Negotiate with data.",
             icon: (
               <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.2vw", height: "3.2vw" }}>
                 <path d="M8 34 L16 20 L24 26 L32 12 L40 6" stroke="#15803d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
@@ -65,7 +68,7 @@ export default function Slide04Solution() {
           },
           {
             title: "Real-Time Chat + GPT-4o",
-            desc: "Farmer-to-buyer negotiations in Telugu and English, AI-assisted.",
+            desc: "Farmer-to-buyer chat. AI-assisted. Telugu + English.",
             icon: (
               <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.2vw", height: "3.2vw" }}>
                 <rect x="6" y="10" width="22" height="16" rx="3" stroke="#15803d" strokeWidth="2.5" fill="none" />
@@ -76,8 +79,8 @@ export default function Slide04Solution() {
             ),
           },
           {
-            title: "Logistics Estimator + UPI Escrow",
-            desc: "Distance-based transport pricing across TS & AP routes. Funds held in escrow until delivery.",
+            title: "Logistics + UPI Escrow",
+            desc: "TS & AP route pricing. UPI escrow on delivery.",
             icon: (
               <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.2vw", height: "3.2vw" }}>
                 <rect x="4" y="20" width="28" height="18" rx="3" stroke="#15803d" strokeWidth="2.5" fill="none" />
@@ -94,7 +97,7 @@ export default function Slide04Solution() {
             </div>
             <div>
               <p className="font-display font-bold" style={{ fontSize: "1.8vw", color: "#052e16" }}>{title}</p>
-              <p className="font-display font-normal mt-[0.3vh]" style={{ fontSize: "1.35vw", color: "#6b7280" }}>{desc}</p>
+              <p className="font-display font-semibold mt-[0.3vh]" style={{ fontSize: "1.35vw", color: "#6b7280" }}>{desc}</p>
             </div>
           </div>
         ))}

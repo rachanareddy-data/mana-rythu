@@ -9,12 +9,12 @@ export default function SlideWhyWins() {
   ];
 
   const moats = [
-    { icon: "🌐", title: "Language moat",        desc: "Telugu-first AI — competitors are English-only, unreachable for most farmers." },
-    { icon: "📈", title: "Data flywheel",         desc: "Every transaction sharpens pricing models. Harder to replicate as it scales." },
-    { icon: "🔗", title: "Network effect",        desc: "More farmers draw more buyers. More buyers draw more farmers. Bilateral lock-in." },
-    { icon: "🧠", title: "Full-stack AI",          desc: "Crop intelligence + price intelligence in one platform — not two separate tools." },
-    { icon: "🚚", title: "Logistics integration",  desc: "Listing to last-mile cost estimate — no competitor connects all of this." },
-    { icon: "🛡", title: "Trust infrastructure",   desc: "Reputation tiers + UPI escrow — the only platform both sides can trust financially." },
+    { icon: "🌐", title: "Language moat",        desc: "Competitors English-only — farmers can't use them." },
+    { icon: "📈", title: "Data flywheel",         desc: "Gets smarter. Harder to copy at scale." },
+    { icon: "🔗", title: "Network effect",        desc: "More farmers = more buyers. Self-reinforcing." },
+    { icon: "🧠", title: "Full-stack AI",          desc: "Both AI tools unified — not two products." },
+    { icon: "🚚", title: "Logistics integration",  desc: "Farm to last mile — competitors skip this." },
+    { icon: "🛡", title: "Trust infrastructure",   desc: "Escrow + reputation tiers — both sides trust." },
   ];
 
   return (
@@ -30,13 +30,13 @@ export default function SlideWhyWins() {
 
         <div className="flex flex-col gap-[2vh]">
           {moats.map(({ icon, title, desc }) => (
-            <div key={title} className="flex items-start gap-[1.4vw]">
+            <div key={title} className="flex items-center gap-[1.4vw]">
               <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "3.5vw", height: "3.5vw", background: "#052e16" }}>
                 <span style={{ fontSize: "1.65vw" }}>{icon}</span>
               </div>
               <div>
                 <p className="font-display font-bold" style={{ fontSize: "1.55vw", color: "#052e16", lineHeight: 1 }}>{title}</p>
-                <p className="font-display font-normal mt-[0.3vh]" style={{ fontSize: "1.15vw", color: "#6b7280", lineHeight: 1.3 }}>{desc}</p>
+                <p className="font-display font-semibold mt-[0.2vh]" style={{ fontSize: "1.15vw", color: "#6b7280", lineHeight: 1.25 }}>{desc}</p>
               </div>
             </div>
           ))}
@@ -71,8 +71,8 @@ export default function SlideWhyWins() {
 
         <div className="rounded-xl px-[2vw] py-[1.6vh] mt-[2.2vh]" style={{ background: "#052e16" }}>
           <p className="font-display font-bold text-center text-white" style={{ fontSize: "1.35vw", lineHeight: 1.4 }}>
-            No competitor combines all six capabilities.{" "}
-            <span style={{ color: "#4ade80" }}>Mana Rythu is the only full-stack solution built for this market.</span>
+            No competitor has all six.{" "}
+            <span style={{ color: "#4ade80" }}>Mana Rythu is the only full-stack solution.</span>
           </p>
         </div>
       </div>

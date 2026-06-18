@@ -21,7 +21,7 @@ export default function SlideWhyNow() {
             </div>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>350M Rural Users Online</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>India's villages are connected. The digital reach is there.</p>
+              <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Villages connected — digital reach already exists.</p>
             </div>
           </div>
 
@@ -36,7 +36,7 @@ export default function SlideWhyNow() {
             </div>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>AI Now Speaks Telugu</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>GPT-4o unlocks AI guidance for non-English farmers — first time in history.</p>
+              <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>GPT-4o now works natively in Telugu.</p>
             </div>
           </div>
 
@@ -51,7 +51,7 @@ export default function SlideWhyNow() {
             </div>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>UPI Works in Villages</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Billions of rural UPI transactions monthly. Trust and rails already exist.</p>
+              <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Rural UPI transactions already at scale.</p>
             </div>
           </div>
 
@@ -65,7 +65,7 @@ export default function SlideWhyNow() {
             </div>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>Policy Tailwind</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Digital India + PM e-Marketplace are pushing agri digitisation from the top.</p>
+              <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Govt. policy driving agri digitisation nationwide.</p>
             </div>
           </div>
 
