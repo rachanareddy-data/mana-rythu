@@ -1,154 +1,175 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
-const screens = [
-  { img: 'marketplace.jpg',       label: '📱 Mobile Marketplace',  cap: 'Browse 500+ live crop listings' },
-  { img: 'farmer-dashboard2.jpg', label: '📊 Farmer Dashboard',    cap: 'Track crops, earnings & orders' },
-  { img: 'chat-ui.jpg',           label: '💬 Real-Time Chat',       cap: 'Negotiate directly with buyers' },
-  { img: 'fair-price.jpg',        label: '💰 AI Price Intel',       cap: 'Live APMC rates, Grade A/B/C pricing' },
+const routes = [
+  { path: '/marketplace',           label: '🌾 Marketplace',      cap: 'Live crop listings from farmers across TS & AP' },
+  { path: '/farmer',                label: '📊 Farmer Dashboard',  cap: 'Manage crops, track earnings — zero commission' },
+  { path: '/farmer?tab=pest',       label: '🤖 AI Pest Detection', cap: 'Upload crop photo → AI diagnosis in Telugu' },
+  { path: '/farmer?tab=transport',  label: '🚛 Logistics',         cap: 'Estimate transport costs across TS & AP' },
 ];
 
 export function Scene4() {
-  const [screenIdx, setScreenIdx] = useState(0);
-  const BASE = import.meta.env.BASE_URL;
+  const [routeIdx, setRouteIdx] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setScreenIdx(1), 7000),
-      setTimeout(() => setScreenIdx(2), 15000),
-      setTimeout(() => setScreenIdx(3), 23000),
+      setTimeout(() => setRouteIdx(1), 7500),
+      setTimeout(() => setRouteIdx(2), 15500),
+      setTimeout(() => setRouteIdx(3), 23500),
     ];
-    return () => timers.forEach(t => clearTimeout(t));
+    return () => timers.forEach(clearTimeout);
   }, []);
+
+  useEffect(() => {
+    setLoaded(false);
+    if (iframeRef.current) {
+      iframeRef.current.src = origin + routes[routeIdx].path;
+    }
+  }, [routeIdx, origin]);
 
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
       {...sceneTransitions.morphExpand}
     >
-      <CinematicBg overlay="rgba(5,20,22,0.82)" />
+      <CinematicBg overlay="rgba(4,16,18,0.80)" />
 
-      <div className="relative z-10 flex flex-col items-center w-full h-full py-8 px-8">
+      <div className="relative z-10 flex flex-col items-center w-full h-full py-6 px-6">
 
-        {/* Top: badge + screen label */}
-        <div className="flex flex-col items-center mb-4">
+        {/* Top label */}
+        <div className="flex flex-col items-center mb-3 flex-shrink-0">
           <motion.span
-            className="text-xs font-bold tracking-[0.35em] text-[#4ade80] uppercase mb-3"
-            initial={{ opacity: 0, y: -10 }}
+            className="text-[0.7rem] font-bold tracking-[0.4em] uppercase mb-2"
+            style={{ color: '#4ade80' }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            MOBILE APP
+            LIVE APP · MOBILE
           </motion.span>
 
           <AnimatePresence mode="popLayout">
             <motion.h2
-              key={`label-${screenIdx}`}
-              className="text-[2.8vw] font-black text-white text-center leading-tight"
-              initial={{ opacity: 0, y: 12 }}
+              key={routeIdx}
+              className="text-[min(3vw,1.6rem)] font-black text-white text-center leading-tight"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
             >
-              {screens[screenIdx].label}
+              {routes[routeIdx].label}
             </motion.h2>
           </AnimatePresence>
         </div>
 
-        {/* Center: Phone mockup — big and prominent */}
-        <div className="flex-1 flex items-center justify-center">
+        {/* Phone mockup with live iframe */}
+        <div className="flex-1 flex items-center justify-center min-h-0">
           <motion.div
             className="relative"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            {/* Ambient glow behind phone */}
+            {/* Ambient glow */}
             <div
-              className="absolute inset-0 rounded-[3rem] blur-2xl -z-10 scale-110"
-              style={{ background: 'rgba(34,197,94,0.18)' }}
+              className="absolute inset-0 -z-10 blur-3xl scale-110 rounded-[3rem]"
+              style={{ background: 'rgba(34,197,94,0.15)' }}
             />
 
-            {/* Phone frame */}
+            {/* Phone shell */}
             <div
-              className="relative overflow-hidden bg-black"
+              className="relative bg-black overflow-hidden flex flex-col"
               style={{
-                width: 'clamp(220px, 22vw, 310px)',
-                height: 'clamp(440px, 44vw, 620px)',
-                borderRadius: '2.5rem',
-                border: '5px solid rgba(255,255,255,0.2)',
-                boxShadow:
-                  '0 50px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06)',
+                width:  'clamp(210px, 20vw, 290px)',
+                height: 'clamp(430px, 42vw, 590px)',
+                borderRadius: '2.2rem',
+                border: '5px solid rgba(255,255,255,0.22)',
+                boxShadow: '0 40px 90px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)',
               }}
             >
               {/* Dynamic island */}
-              <div className="absolute top-0 inset-x-0 h-7 flex justify-center z-20 pt-2">
-                <div className="w-20 h-4 bg-black rounded-full" />
+              <div className="absolute top-0 inset-x-0 z-30 h-6 flex justify-center items-start pt-1.5 pointer-events-none">
+                <div className="w-[4.5rem] h-3.5 bg-black rounded-full" />
               </div>
 
-              {/* Screenshot slides */}
-              <AnimatePresence mode="popLayout">
-                <motion.img
-                  key={screenIdx}
-                  src={`${BASE}screenshots/${screens[screenIdx].img}`}
-                  className="absolute inset-0 w-full h-full object-cover object-top"
-                  initial={{ opacity: 0, x: 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -60 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 35 }}
-                />
+              {/* Loading shimmer */}
+              <AnimatePresence>
+                {!loaded && (
+                  <motion.div
+                    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3"
+                    style={{ background: '#052e16' }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <motion.div
+                      className="text-4xl"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >🌾</motion.div>
+                    <p className="text-xs text-white/40 tracking-widest">LOADING APP...</p>
+                  </motion.div>
+                )}
               </AnimatePresence>
 
+              {/* Live app iframe */}
+              <iframe
+                ref={iframeRef}
+                src={origin + routes[0].path}
+                className="flex-1 w-full border-0"
+                style={{ pointerEvents: 'none', marginTop: 0 }}
+                onLoad={() => setLoaded(true)}
+                title="Mana Rythu"
+              />
+
               {/* Home bar */}
-              <div className="absolute bottom-2 inset-x-0 flex justify-center z-20">
-                <div className="w-20 h-1 bg-white/25 rounded-full" />
+              <div className="absolute bottom-1.5 inset-x-0 flex justify-center z-30 pointer-events-none">
+                <div className="w-16 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.2)' }} />
               </div>
             </div>
 
-            {/* Glow puddle under phone */}
+            {/* Green glow puddle */}
             <div
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full blur-2xl"
-              style={{
-                width: '70%',
-                height: 24,
-                background: 'rgba(34,197,94,0.3)',
-              }}
+              className="absolute -bottom-3 left-1/2 -translate-x-1/2 blur-2xl rounded-full"
+              style={{ width: '65%', height: 20, background: 'rgba(34,197,94,0.28)' }}
             />
           </motion.div>
         </div>
 
-        {/* Bottom: caption + dot indicators */}
-        <div className="flex flex-col items-center gap-4 pb-2">
+        {/* Bottom caption + dots */}
+        <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
           <AnimatePresence mode="popLayout">
             <motion.p
-              key={`cap-${screenIdx}`}
-              className="text-[1.6vw] text-white/75 font-medium text-center"
-              initial={{ opacity: 0, y: 8 }}
+              key={routeIdx}
+              className="text-[min(1.5vw,0.9rem)] text-center font-medium"
+              style={{ color: 'rgba(255,255,255,0.72)' }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3 }}
             >
-              {screens[screenIdx].cap}
+              {routes[routeIdx].cap}
             </motion.p>
           </AnimatePresence>
 
-          {/* Dot indicators */}
           <div className="flex gap-2 items-center">
-            {screens.map((_, i) => (
+            {routes.map((_, i) => (
               <motion.div
                 key={i}
-                className="h-1.5 rounded-full"
+                className="h-1 rounded-full"
                 animate={{
-                  width: i === screenIdx ? 28 : 6,
-                  backgroundColor:
-                    i === screenIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
+                  width: i === routeIdx ? 24 : 5,
+                  backgroundColor: i === routeIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
                 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.35 }}
               />
             ))}
           </div>
         </div>
+
       </div>
     </motion.div>
   );

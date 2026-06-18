@@ -1,143 +1,186 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
-const screens = [
-  { img: 'marketplace.jpg',    label: '🌾 Marketplace',         cap: 'Direct farmer-to-buyer crop listings' },
-  { img: 'farmer-dashboard.jpg', label: '📊 Farmer Dashboard',  cap: 'Zero commission. Full transparency.' },
-  { img: 'pest-detection.jpg', label: '🤖 AI Pest Detection',   cap: 'Upload photo → Telugu AI diagnosis' },
-  { img: 'logistics.jpg',      label: '🚛 Logistics Estimator', cap: 'Transport costs across TS & AP' },
+const routes = [
+  { path: '/marketplace',    label: '🌾 Marketplace',         cap: 'Direct farmer-to-buyer crop listings, live prices' },
+  { path: '/farmer',         label: '📊 Farmer Dashboard',    cap: 'Zero commission. Full earnings transparency.' },
+  { path: '/fair-price',     label: '💰 AI Price Intelligence', cap: 'Live APMC mandi rates. Grade A / B / C pricing.' },
+  { path: '/chat',           label: '💬 Real-Time Chat',       cap: 'Farmer-buyer direct negotiation — no middlemen' },
 ];
 
 export function Scene5() {
-  const [screenIdx, setScreenIdx] = useState(0);
-  const BASE = import.meta.env.BASE_URL;
+  const [routeIdx, setRouteIdx] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setScreenIdx(1), 7000),
-      setTimeout(() => setScreenIdx(2), 15000),
-      setTimeout(() => setScreenIdx(3), 23000),
+      setTimeout(() => setRouteIdx(1), 7500),
+      setTimeout(() => setRouteIdx(2), 15500),
+      setTimeout(() => setRouteIdx(3), 23500),
     ];
-    return () => timers.forEach(t => clearTimeout(t));
+    return () => timers.forEach(clearTimeout);
   }, []);
+
+  useEffect(() => {
+    setLoaded(false);
+    if (iframeRef.current) {
+      iframeRef.current.src = origin + routes[routeIdx].path;
+    }
+  }, [routeIdx, origin]);
 
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
       {...sceneTransitions.clipPolygon}
     >
-      <CinematicBg overlay="rgba(5,20,22,0.82)" />
+      <CinematicBg overlay="rgba(4,16,18,0.80)" />
 
-      <div className="relative z-10 flex flex-col items-center w-full px-10">
-        {/* Header badge */}
-        <motion.div
-          className="flex items-center gap-3 mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <span className="text-sm font-bold tracking-[0.3em] text-[#4ade80] uppercase">
-            DESKTOP DASHBOARD
-          </span>
-          <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-        </motion.div>
+      <div className="relative z-10 flex flex-col items-center w-full h-full py-5 px-8">
 
-        {/* Label + caption */}
-        <div className="h-16 flex flex-col items-center justify-center mb-4 text-center overflow-hidden">
+        {/* Top badge + label */}
+        <div className="flex flex-col items-center mb-3 flex-shrink-0">
+          <div className="flex items-center gap-2 mb-2">
+            <span
+              className="text-[0.7rem] font-bold tracking-[0.4em] uppercase"
+              style={{ color: '#4ade80' }}
+            >
+              LIVE APP · DESKTOP
+            </span>
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: '#22c55e' }}
+            />
+          </div>
+
           <AnimatePresence mode="popLayout">
             <motion.h2
-              key={`label-${screenIdx}`}
-              className="text-[2.5vw] font-black text-white"
-              initial={{ opacity: 0, y: 15 }}
+              key={routeIdx}
+              className="text-[min(3vw,1.7rem)] font-black text-white text-center"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
             >
-              {screens[screenIdx].label}
+              {routes[routeIdx].label}
             </motion.h2>
-          </AnimatePresence>
-          <AnimatePresence mode="popLayout">
-            <motion.p
-              key={`cap-${screenIdx}`}
-              className="text-[1.4vw] text-white/60 font-medium"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              {screens[screenIdx].cap}
-            </motion.p>
           </AnimatePresence>
         </div>
 
-        {/* Browser mockup */}
-        <motion.div
-          className="w-full overflow-hidden flex flex-col"
-          style={{
-            maxWidth: 900,
-            borderRadius: '12px 12px 8px 8px',
-            border: '2px solid rgba(255,255,255,0.14)',
-            boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04)',
-          }}
-          initial={{ scale: 0.92, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-        >
-          {/* Browser chrome */}
-          <div
-            className="flex items-center px-4 gap-2 flex-shrink-0"
+        {/* Browser mockup with live iframe */}
+        <div className="flex-1 flex items-center justify-center min-h-0 w-full">
+          <motion.div
+            className="w-full flex flex-col overflow-hidden"
             style={{
-              height: 38,
-              background: 'rgba(20,20,20,0.96)',
-              borderBottom: '1px solid rgba(255,255,255,0.08)',
+              maxWidth: 'min(900px, 92vw)',
+              borderRadius: '10px 10px 8px 8px',
+              border: '2px solid rgba(255,255,255,0.13)',
+              boxShadow: '0 40px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04)',
+              height: 'min(56vh, 520px)',
             }}
+            initial={{ scale: 0.94, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-amber-400" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-            </div>
+            {/* Browser chrome */}
             <div
-              className="flex-1 mx-3 h-6 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.08)' }}
-            >
-              <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                🔒 mana-rythu.replit.app
-              </span>
-            </div>
-          </div>
-
-          {/* Screenshot area */}
-          <div className="relative bg-[#052e16] overflow-hidden" style={{ height: '52vh' }}>
-            <AnimatePresence mode="popLayout">
-              <motion.img
-                key={screenIdx}
-                src={`${BASE}screenshots/${screens[screenIdx].img}`}
-                className="absolute inset-0 w-full h-full object-cover object-top"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.7, ease: 'easeInOut' }}
-              />
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* Dot indicators */}
-        <div className="flex gap-3 mt-5">
-          {screens.map((_, i) => (
-            <motion.div
-              key={i}
-              className="h-1.5 rounded-full"
-              animate={{
-                width: i === screenIdx ? 28 : 6,
-                backgroundColor: i === screenIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
+              className="flex items-center gap-2 px-4 flex-shrink-0"
+              style={{
+                height: 38,
+                background: 'rgba(18,18,18,0.97)',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
               }}
-              transition={{ duration: 0.4 }}
-            />
-          ))}
+            >
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-amber-400" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+              </div>
+              <div
+                className="flex-1 mx-2 h-6 rounded-full flex items-center px-3 gap-2"
+                style={{ background: 'rgba(255,255,255,0.07)' }}
+              >
+                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>🔒</span>
+                <AnimatePresence mode="popLayout">
+                  <motion.span
+                    key={routeIdx}
+                    className="text-[11px] font-mono"
+                    style={{ color: 'rgba(255,255,255,0.5)' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    mana-rythu.replit.app{routes[routeIdx].path}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Live app area */}
+            <div className="relative flex-1 bg-[#052e16] overflow-hidden">
+              {/* Loading state */}
+              <AnimatePresence>
+                {!loaded && (
+                  <motion.div
+                    className="absolute inset-0 z-10 flex items-center justify-center"
+                    style={{ background: '#052e16' }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <motion.div
+                      className="text-5xl"
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >🌾</motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <iframe
+                ref={iframeRef}
+                src={origin + routes[0].path}
+                className="w-full h-full border-0"
+                style={{ pointerEvents: 'none' }}
+                onLoad={() => setLoaded(true)}
+                title="Mana Rythu Desktop"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Bottom caption + dots */}
+        <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
+          <AnimatePresence mode="popLayout">
+            <motion.p
+              key={routeIdx}
+              className="text-[min(1.5vw,0.9rem)] font-medium text-center"
+              style={{ color: 'rgba(255,255,255,0.72)' }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3 }}
+            >
+              {routes[routeIdx].cap}
+            </motion.p>
+          </AnimatePresence>
+
+          <div className="flex gap-2 items-center">
+            {routes.map((_, i) => (
+              <motion.div
+                key={i}
+                className="h-1 rounded-full"
+                animate={{
+                  width: i === routeIdx ? 24 : 5,
+                  backgroundColor: i === routeIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
+                }}
+                transition={{ duration: 0.35 }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>
