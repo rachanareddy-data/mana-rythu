@@ -1,0 +1,138 @@
+Create a CINEMATIC DEMO VIDEO for Mana Rythu with BOTH MOBILE and WEBSITE UI layouts.
+
+STRICT RULES:
+
+1. Must include cinematic background (agriculture / rural India theme).
+2. Must show BOTH:
+   - Mobile UI version (farmer app experience)
+   - Website/Desktop UI version (dashboard experience)
+3. Do NOT use plain or white background.
+4. Must use REAL project UI screenshots only.
+5. Must feel like a top hackathon winning investor demo video.
+
+---
+
+VIDEO STYLE:
+
+- Cinematic SaaS product demo
+- Modern startup pitch style (Apple + Stripe style)
+- Smooth transitions (zoom, fade, slide)
+- Background: farms, rural India, agriculture fields, sunrise
+
+---
+
+SCENES STRUCTURE:
+
+1. INTRO SCENE
+   - Mana Rythu title
+   - Subtitle: AI Operating System for Farmers
+   - Background: cinematic farmland
+
+---
+
+2. PROBLEM SCENE
+   - ₹20 farmer vs ₹40 buyer visual
+   - middlemen breakdown
+   - broken supply chain explanation
+
+---
+
+3. SOLUTION OVERVIEW
+   Show platform as system:
+   - Marketplace
+   - AI Crop Intelligence
+   - AI Price Intelligence
+   - Real-Time Chat
+   - Logistics + UPI Payments
+
+---
+
+4. MOBILE UI SECTION (IMPORTANT)
+
+Show MOBILE version screens:
+
+- Mobile Marketplace UI
+- Mobile Farmer Dashboard UI
+- Mobile Chat UI
+- Mobile AI Price Intelligence UI
+
+RULES:
+✔ phone mockup frame must be used
+✔ centered mobile screen
+✔ cinematic blurred background behind phone
+✔ smooth swipe animation
+
+---
+
+5. WEBSITE / DESKTOP UI SECTION (IMPORTANT)
+
+Show WEB dashboard screens:
+
+- Marketplace Web UI
+- Farmer Dashboard Web UI
+- AI Pest Detection Web UI
+- Logistics Estimator Web UI
+
+RULES:
+✔ full desktop layout view
+✔ clean SaaS dashboard style
+✔ zoom-in transitions
+✔ consistent spacing and alignment
+
+---
+
+6. LIVE PRODUCT HIGHLIGHT
+
+Add text overlay:
+“LIVE PRODUCT — FULL STACK IMPLEMENTED”
+
+No mockups. Only real UI.
+
+---
+
+7. IMPACT SCENE
+
+- 50% higher farmer income
+- transparent direct trade
+- AI-powered farming decisions
+
+---
+
+8. FINAL SCENE
+
+Show:
+
+140 Million Farmers
+One AI Operating System
+One Fair Market
+Built and running today
+
+---
+
+VISUAL REQUIREMENTS:
+
+- Must NOT use blank backgrounds
+- Must use agriculture cinematic theme throughout
+- Mobile + Web must be clearly distinguished
+- Must look like a VC pitch demo video
+- Must feel premium and emotional
+
+---
+
+AUDIO (IF SUPPORTED):
+
+- Soft cinematic background music
+- Inspirational tone
+- Low volume, not overpowering visuals
+
+---
+
+OUTPUT:
+
+Generate final cinematic demo video with:
+- Mobile UI section
+- Web UI section
+- Real screenshots only
+- Cinematic backgrounds
+- Smooth transitions
+- Investor-level hackathon quality

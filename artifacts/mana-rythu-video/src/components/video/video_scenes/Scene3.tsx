@@ -1,75 +1,79 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
+import { CinematicBg } from '../CinematicBg';
 
 export function Scene3() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 500),  // Particles
-      setTimeout(() => setPhase(2), 1500), // Logo & Mana Rythu
-      setTimeout(() => setPhase(3), 3500), // Tagline
-      setTimeout(() => setPhase(4), 5500), // Subtitle
+      setTimeout(() => setPhase(1), 500),
+      setTimeout(() => setPhase(2), 1700),
+      setTimeout(() => setPhase(3), 3000),
+      setTimeout(() => setPhase(4), 4500),
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
+  const features = [
+    { icon: "🌾", title: "Marketplace", desc: "Connect farmers to direct buyers" },
+    { icon: "🤖", title: "AI Crop Intel", desc: "Disease detection via photo upload" },
+    { icon: "💰", title: "Price Intelligence", desc: "Live APMC mandi rates" },
+    { icon: "💬", title: "Live Chat", desc: "Farmer-buyer negotiation" },
+    { icon: "🚛", title: "Logistics", desc: "Transport estimates TS & AP" }
+  ];
+
   return (
     <motion.div 
-      className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-[#052e16]"
-      {...sceneTransitions.clipPolygon}
+      className="absolute inset-0 flex flex-col items-center justify-center bg-[#052e16]"
+      {...sceneTransitions.morphExpand}
     >
-      {/* Particle burst */}
-      {phase >= 1 && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(30)].map((_, i) => (
+      <CinematicBg overlay="rgba(5,46,22,0.68)" />
+
+      <div className="relative z-10 w-full flex flex-col items-center px-16 text-center">
+        <motion.p
+          className="text-2xl font-bold text-[#4ade80] tracking-widest uppercase mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        >
+          Introducing
+        </motion.p>
+
+        <motion.h1
+          className="text-[8vw] font-black text-white leading-none drop-shadow-2xl"
+          initial={{ opacity: 0, scale: 0.8, y: 40 }}
+          animate={phase >= 2 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          Mana Rythu
+        </motion.h1>
+
+        <motion.p
+          className="text-[3vw] font-medium text-[#22c55e] mt-4 mb-20 drop-shadow-md"
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={phase >= 3 ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
+          transition={{ duration: 1 }}
+        >
+          — One platform. Zero middlemen.
+        </motion.p>
+
+        <div className="flex flex-wrap justify-center gap-6 w-full max-w-7xl">
+          {features.map((f, i) => (
             <motion.div
               key={i}
-              className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-[#4ade80]"
-              initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
-              animate={{ 
-                x: (Math.random() - 0.5) * 800, 
-                y: (Math.random() - 0.5) * 800, 
-                scale: Math.random() * 2,
-                opacity: [1, 0] 
-              }}
-              transition={{ duration: 2 + Math.random() * 2, ease: "easeOut" }}
-            />
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 w-[240px] flex flex-col items-center text-center shadow-xl"
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={phase >= 4 ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25, delay: phase >= 4 ? i * 0.1 : 0 }}
+            >
+              <div className="text-5xl mb-4">{f.icon}</div>
+              <h3 className="text-xl font-bold text-white mb-2">{f.title}</h3>
+              <p className="text-sm text-white/70">{f.desc}</p>
+            </motion.div>
           ))}
         </div>
-      )}
-
-      <motion.div 
-        className="flex flex-col items-center z-20"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={phase >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      >
-        <div className="text-[10vw] mb-6 drop-shadow-[0_0_40px_rgba(74,222,128,0.5)]">🌾</div>
-        <h1 className="text-[8vw] font-black text-white tracking-tighter leading-none mb-8">
-          Mana<span className="text-[#4ade80]">Rythu</span>
-        </h1>
-      </motion.div>
-
-      <motion.h2 
-        className="text-[3vw] font-bold text-white/90 z-20"
-        initial={{ opacity: 0, y: 20 }}
-        animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 1 }}
-      >
-        AI Operating System for Farmers
-      </motion.h2>
-
-      <motion.p 
-        className="text-[2vw] text-[#4ade80] mt-8 font-medium tracking-wide z-20"
-        initial={{ opacity: 0, filter: "blur(10px)" }}
-        animate={phase >= 4 ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(10px)" }}
-        transition={{ duration: 1.2 }}
-      >
-        Marketplace · AI · Chat · Logistics — one platform
-      </motion.p>
-
+      </div>
     </motion.div>
   );
 }

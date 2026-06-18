@@ -1,77 +1,118 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
+import { CinematicBg } from '../CinematicBg';
 
 export function Scene2() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 500),  // Chart layout
-      setTimeout(() => setPhase(2), 2000), // Pain 1
-      setTimeout(() => setPhase(3), 4500), // Pain 2
-      setTimeout(() => setPhase(4), 7000), // Pain 3
+      setTimeout(() => setPhase(1), 500),
+      setTimeout(() => setPhase(2), 2000),
+      setTimeout(() => setPhase(3), 5500),
+      setTimeout(() => setPhase(4), 8500),
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
+  const pains = [
+    { text: "No price transparency — farmers accept any price", hl: "transparency" },
+    { text: "No accountability — no receipts, no contracts", hl: "accountability" },
+    { text: "No direct access — always through agents", hl: "access" },
+  ];
+
   return (
     <motion.div 
-      className="absolute inset-0 flex items-center justify-center z-10 bg-[#052e16] px-16"
-      {...sceneTransitions.pushLeft}
+      className="absolute inset-0 flex flex-col items-center justify-center bg-[#052e16]"
+      {...sceneTransitions.fadeBlur}
     >
-      <div className="w-1/2 h-full flex items-center justify-center relative">
-        {/* Chain Diagram */}
-        <div className="flex flex-col items-center gap-4">
-          {['👨🏽‍🌾 Farmer', '🕴️ Broker', '🕴️ Wholesaler', '🛒 Buyer'].map((node, i) => (
-            <motion.div key={i} className="flex flex-col items-center gap-4"
-              initial={{ opacity: 0, y: -20 }}
-              animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-              transition={{ delay: i * 0.2 }}
+      <CinematicBg overlay="rgba(25,5,5,0.72)" />
+
+      <div className="relative z-10 flex flex-col items-center w-full px-16">
+        <motion.h2
+          className="text-[5vw] font-black text-white mb-16 drop-shadow-lg"
+          initial={{ opacity: 0, y: -30 }}
+          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
+          transition={{ duration: 0.8 }}
+        >
+          The Broken System
+        </motion.h2>
+
+        <div className="flex items-center justify-center gap-4 mb-16 w-full max-w-6xl">
+          <ChainNode icon="👨🏽‍🌾" label="Farmer" value="₹20" isGreen={true} show={phase >= 2} delay={0} />
+          <ChainArrow show={phase >= 2} delay={0.3} />
+          <ChainNode icon="🕴️" label="Broker" isGreen={false} show={phase >= 2} delay={0.6} />
+          <ChainArrow show={phase >= 2} delay={0.9} />
+          <ChainNode icon="🕴️" label="Trader" isGreen={false} show={phase >= 2} delay={1.2} />
+          <ChainArrow show={phase >= 2} delay={1.5} />
+          <ChainNode icon="🛒" label="Buyer" value="₹80" isGreen={true} show={phase >= 2} delay={1.8} />
+        </div>
+
+        <motion.div
+          className="bg-red-500/20 border-2 border-red-500 px-8 py-4 rounded-xl shadow-[0_0_40px_rgba(239,68,68,0.4)] mb-16"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={phase >= 3 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          <p className="text-3xl font-bold text-white">
+            <span className="text-red-400">₹60 stolen</span> by middlemen per ₹80 sale
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col gap-6 w-full max-w-4xl text-left">
+          {pains.map((pain, i) => (
+            <motion.div
+              key={i}
+              className="flex items-center gap-4 text-2xl font-medium text-white/90"
+              initial={{ opacity: 0, x: -30 }}
+              animate={phase >= 4 ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+              transition={{ delay: phase >= 4 ? i * 0.2 : 0 }}
             >
-              <div className={`px-8 py-4 rounded-xl border-2 text-2xl font-bold ${
-                i === 0 || i === 3 ? 'bg-white/10 border-white/20 text-white' : 'bg-red-500/20 border-red-500 text-red-400'
-              }`}>
-                {node}
-              </div>
-              {i < 3 && (
-                <div className="h-10 w-1 bg-white/20" />
-              )}
+              <div className="w-3 h-3 rounded-full bg-white shrink-0" />
+              <p>
+                {pain.text.split(pain.hl).map((part, index, arr) => (
+                  <span key={index}>
+                    {part}
+                    {index < arr.length - 1 && <span className="text-red-400">{pain.hl}</span>}
+                  </span>
+                ))}
+              </p>
             </motion.div>
           ))}
         </div>
-      </div>
-
-      <div className="w-1/2 h-full flex flex-col justify-center gap-12 pr-12">
-        <PainPoint 
-          text="No price visibility" 
-          show={phase >= 2} 
-        />
-        <PainPoint 
-          text="No direct market access" 
-          show={phase >= 3} 
-        />
-        <PainPoint 
-          text="No accountability, no receipts" 
-          show={phase >= 4} 
-        />
       </div>
     </motion.div>
   );
 }
 
-function PainPoint({ text, show }: { text: string, show: boolean }) {
+function ChainNode({ icon, label, value, isGreen, show, delay }: { icon: string, label: string, value?: string, isGreen: boolean, show: boolean, delay: number }) {
   return (
-    <motion.div 
-      className="bg-red-500/10 border-l-4 border-red-500 p-8 rounded-r-2xl"
-      initial={{ opacity: 0, x: 50 }}
-      animate={show ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+    <motion.div
+      className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 backdrop-blur-sm ${
+        isGreen ? 'bg-[#22c55e]/20 border-[#22c55e] shadow-[0_0_30px_rgba(34,197,94,0.3)]' : 'bg-red-500/20 border-red-500'
+      }`}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25, delay: show ? delay : 0 }}
     >
-      <div className="flex items-center gap-4">
-        <span className="text-red-500 text-3xl font-black">✕</span>
-        <h3 className="text-3xl font-bold text-white">{text}</h3>
-      </div>
+      <div className="text-5xl mb-2">{icon}</div>
+      <p className="text-xl font-bold text-white">{label}</p>
+      {value && <p className={`text-2xl font-black ${isGreen ? 'text-[#4ade80]' : 'text-red-400'}`}>{value}</p>}
+    </motion.div>
+  );
+}
+
+function ChainArrow({ show, delay }: { show: boolean, delay: number }) {
+  return (
+    <motion.div
+      className="flex-1 h-2 bg-red-500 relative rounded-full"
+      initial={{ scaleX: 0 }}
+      animate={show ? { scaleX: 1 } : { scaleX: 0 }}
+      style={{ originX: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut", delay: show ? delay : 0 }}
+    >
+      <div className="absolute right-[-4px] top-1/2 -translate-y-1/2 w-4 h-4 border-t-4 border-r-4 border-red-500 rotate-45" />
     </motion.div>
   );
 }

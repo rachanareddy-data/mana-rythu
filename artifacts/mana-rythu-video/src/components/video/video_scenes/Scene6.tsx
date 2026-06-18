@@ -1,100 +1,102 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
+import { CinematicBg } from '../CinematicBg';
 
 export function Scene6() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    // 25 seconds total
     const timers = [
-      setTimeout(() => setPhase(1), 500),   // 140M
-      setTimeout(() => setPhase(2), 2500),  // ₹30T
-      setTimeout(() => setPhase(3), 4500),  // 350M
-      setTimeout(() => setPhase(4), 8000),  // Close screen
-      setTimeout(() => setPhase(5), 11000), // Card lines
-      setTimeout(() => setPhase(6), 14000), // One Fair Market
-      setTimeout(() => setPhase(7), 17000), // Built & running
+      setTimeout(() => setPhase(1), 300),
+      setTimeout(() => setPhase(2), 1200),
+      setTimeout(() => setPhase(3), 2200),
+      setTimeout(() => setPhase(4), 3500),
+      setTimeout(() => setPhase(5), 5500),
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
+  const badges = [
+    '✓ React + Vite',
+    '✓ Express 5 API',
+    '✓ PostgreSQL + Drizzle',
+  ];
+
   return (
-    <motion.div 
-      className="absolute inset-0 flex items-center justify-center z-10 bg-[#052e16] overflow-hidden"
+    <motion.div
+      className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
       {...sceneTransitions.fadeBlur}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_60%)] opacity-30 blur-3xl pointer-events-none" />
+      <CinematicBg overlay="rgba(5,46,22,0.58)" />
 
-      {phase < 4 && (
-        <div className="flex flex-col gap-12 w-full max-w-4xl">
-          <Stat value="140M" label="Farm holdings addressable" show={phase >= 1} />
-          <Stat value="₹30T" label="India agri supply chain" show={phase >= 2} />
-          <Stat value="350M" label="Rural internet users" show={phase >= 3} />
-        </div>
-      )}
-
-      {phase >= 4 && (
-        <motion.div 
-          className="flex flex-col items-center justify-center w-full max-w-5xl text-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+      <div className="relative z-10 flex flex-col items-center text-center px-8">
+        {/* Checkmark icon */}
+        <motion.div
+          className="flex items-center justify-center rounded-full mb-8"
+          style={{
+            width: 96,
+            height: 96,
+            background: 'rgba(34,197,94,0.2)',
+            border: '2px solid rgba(34,197,94,0.5)',
+            boxShadow: '0 0 60px rgba(34,197,94,0.4)',
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={phase >= 1 ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
-          <motion.h2 
-            className="text-[5vw] font-black text-white mb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          >
-            140 Million Farmers
-          </motion.h2>
-          
-          <motion.h2 
-            className="text-[5vw] font-black text-white mb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ delay: 0.2 }}
-          >
-            One AI Operating System
-          </motion.h2>
-
-          <motion.h2 
-            className="text-[6vw] font-black text-[#4ade80] mb-12"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={phase >= 6 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          >
-            One Fair Market
-          </motion.h2>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={phase >= 7 ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <p className="text-[2vw] font-bold text-white/80 bg-white/10 px-8 py-4 rounded-full border border-white/20 mb-8 inline-block">
-              Built and running today.
-            </p>
-            <p className="text-[2vw] font-bold text-white tracking-widest uppercase opacity-60">
-              mana-rythu.replit.app
-            </p>
-          </motion.div>
+          <span className="text-5xl">✅</span>
         </motion.div>
-      )}
-    </motion.div>
-  );
-}
 
-function Stat({ value, label, show }: { value: string, label: string, show: boolean }) {
-  return (
-    <motion.div 
-      className="flex items-end justify-between border-b border-white/20 pb-4"
-      initial={{ opacity: 0, x: -50 }}
-      animate={show ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-    >
-      <h3 className="text-[6vw] font-black text-[#4ade80] leading-none">{value}</h3>
-      <p className="text-[2.5vw] font-medium text-white/80 mb-2">{label}</p>
+        <motion.h1
+          className="font-black tracking-[0.18em] uppercase text-[#4ade80]"
+          style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
+          initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+          animate={phase >= 2 ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 20, filter: 'blur(10px)' }}
+          transition={{ duration: 0.7 }}
+        >
+          LIVE PRODUCT
+        </motion.h1>
+
+        <motion.p
+          className="text-2xl text-white/80 font-medium tracking-widest mt-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.6 }}
+        >
+          FULL STACK IMPLEMENTED
+        </motion.p>
+
+        {/* Tech badges */}
+        <div className="flex flex-wrap justify-center gap-4 mt-10">
+          {badges.map((badge, i) => (
+            <motion.span
+              key={badge}
+              className="text-sm font-semibold text-white px-5 py-2 rounded-full"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(34,197,94,0.35)',
+                backdropFilter: 'blur(8px)',
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={phase >= 4 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ delay: phase >= 4 ? i * 0.12 : 0, type: 'spring', stiffness: 400, damping: 25 }}
+            >
+              {badge}
+            </motion.span>
+          ))}
+        </div>
+
+        <motion.p
+          className="mt-10 text-lg italic font-medium"
+          style={{ color: 'rgba(74,222,128,0.75)' }}
+          initial={{ opacity: 0 }}
+          animate={phase >= 5 ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 1 }}
+        >
+          No mockups. No demo data. Real product.
+        </motion.p>
+      </div>
     </motion.div>
   );
 }
