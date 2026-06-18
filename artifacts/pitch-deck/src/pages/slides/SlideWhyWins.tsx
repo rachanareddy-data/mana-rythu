@@ -1,10 +1,10 @@
 export default function SlideWhyWins() {
-  const cols = ["Marketplace", "AI Crop Intel", "Chat", "Logistics", "Telugu AI", "Pricing Intel"];
+  const cols = ["Marketplace", "AI Crop Intel", "AI Pricing", "Real-Time Chat", "Logistics", "Telugu-first AI"];
 
   const rows = [
     { name: "Mana Rythu", highlight: true,  checks: [true,  true,  true,  true,  true,  true]  },
-    { name: "eNAM",        highlight: false, checks: [true,  false, false, false, false, true]  },
-    { name: "DeHaat",      highlight: false, checks: [true,  true,  false, true,  false, false] },
+    { name: "eNAM",        highlight: false, checks: [true,  false, true,  false, false, false] },
+    { name: "DeHaat",      highlight: false, checks: [true,  true,  false, false, true,  false] },
     { name: "Agri10x",     highlight: false, checks: [true,  false, false, false, false, false] },
   ];
 

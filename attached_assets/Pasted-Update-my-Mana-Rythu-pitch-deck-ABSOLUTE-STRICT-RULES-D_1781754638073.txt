@@ -1,0 +1,120 @@
+Update my Mana Rythu pitch deck.
+
+ABSOLUTE STRICT RULES (DO NOT BREAK):
+
+1. Do NOT change design system (colors, fonts, layout, UI style).
+2. Do NOT delete any existing slides.
+3. Do NOT add new slides unless explicitly required below.
+4. ONLY improve existing slide content clarity, structure, and flow.
+5. Do NOT invent or add fake metrics, fake users, fake revenue, or fake validation.
+6. Do NOT use exaggerated claims (avoid: "first in history", "guaranteed", "10x growth", etc.).
+7. Every statement must be aligned with REAL implemented product features.
+
+PRIMARY OBJECTIVE:
+Convert this into a TOP FINALIST / WINNING hackathon pitch deck with investor-grade clarity.
+
+------------------------------------------------------
+
+REQUIRED STRUCTURE REFINEMENT:
+
+Ensure the deck follows this logical flow:
+
+Problem → Why Now → Solution → Product Overview → LIVE PRODUCT → Impact → Market Size → Why We Win → Tech Stack → Closing
+
+Fix slide numbering:
+- Must be sequential from 01 → final slide
+- Remove duplicate slide numbers
+- Ensure clean professional structure
+
+------------------------------------------------------
+
+CONTENT SIMPLIFICATION RULES:
+
+- Convert all long paragraphs into short bullet points
+- Max 3–5 bullets per slide
+- Every slide must be understandable in under 5 seconds
+- Remove repeated ideas across slides
+- Make titles sharper and more startup/investor focused
+
+------------------------------------------------------
+
+POSITIONING UPGRADE (VERY IMPORTANT):
+
+Reframe the product as:
+
+"AI-Powered Operating System for Farmers"
+
+NOT:
+- just a marketplace
+- agri platform
+- student project
+
+------------------------------------------------------
+
+LIVE PRODUCT SECTION (CRITICAL – DO NOT MODIFY SCOPE):
+
+Create/upgrade a section titled:
+
+"LIVE PRODUCT (IMPLEMENTED & RUNNING)"
+
+Include ONLY these real modules:
+
+- Marketplace (live listings, browsing, search)
+- AI Crop Intelligence (pest detection, crop health analysis)
+- AI Price Intelligence (APMC-based fair pricing)
+- Real-Time Chat (farmer ↔ buyer negotiation system)
+- Logistics Estimator (Telangana & Andhra Pradesh routes)
+- Trust System (farmer reputation tiers)
+
+RULE:
+- Do NOT add any feature that is not already implemented.
+- Do NOT add fake performance numbers or analytics.
+
+------------------------------------------------------
+
+VISUAL IMPROVEMENT REQUIREMENTS:
+
+Add placeholders only (no images needed):
+
+📸 Screenshots Section:
+- Marketplace UI
+- Farmer Dashboard
+- AI Crop Detection
+- Chat System
+- Logistics Estimator
+
+------------------------------------------------------
+
+COMPETITIVE SLIDE FIX:
+
+Only compare REAL capabilities:
+
+- Marketplace
+- AI Crop Intelligence
+- AI Pricing
+- Real-Time Chat
+- Logistics
+- Telugu-first AI
+
+Remove vague or unclear comparisons.
+Keep it factual, minimal, and strong.
+
+------------------------------------------------------
+
+FINAL SLIDE (STRICT OVERRIDE):
+
+Replace closing slide with EXACT TEXT:
+
+"140 Million Farmers
+One AI Operating System
+One Fair Market
+Built and running today"
+
+------------------------------------------------------
+
+OUTPUT FORMAT:
+
+Return ONLY the updated slide-by-slide content.
+No explanations.
+No commentary.
+No extra text.

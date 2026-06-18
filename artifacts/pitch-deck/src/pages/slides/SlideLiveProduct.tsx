@@ -47,7 +47,7 @@ export default function SlideLiveProduct() {
         <div className="text-center mb-[3vh]">
           <div className="inline-flex items-center gap-[0.7vw] mb-[1.2vh] px-[1.4vw] py-[0.7vh] rounded-full" style={{ background: "rgba(74,222,128,0.15)", border: "1.5px solid rgba(74,222,128,0.4)" }}>
             <div className="rounded-full" style={{ width: "0.6vw", height: "0.6vw", background: "#4ade80" }} />
-            <p className="font-display font-extrabold" style={{ fontSize: "1.05vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.18em" }}>Live Product (Implemented)</p>
+            <p className="font-display font-extrabold" style={{ fontSize: "1.05vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.18em" }}>Live Product (Implemented &amp; Running)</p>
           </div>
           <h2 className="font-display font-extrabold text-white" style={{ fontSize: "3.5vw", lineHeight: 1 }}>
             Built. Shipped. Working today.
