@@ -1,8 +1,3 @@
 uploads = []
 generated = []
-
-[[outputs]]
-id = "C2ktV6cynns43FXJwmzRo"
-uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
-type = "slides"
-title = "Mana Rythu — 10-Slide Pitch Deck (PPTX)"
+outputs = []

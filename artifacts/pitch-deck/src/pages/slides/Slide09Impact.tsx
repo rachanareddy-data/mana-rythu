@@ -1,49 +1,41 @@
 export default function Slide09Impact() {
-  const props = [
+  const cards = [
     {
       icon: (
-        <svg viewBox="0 0 56 56" fill="none" style={{ width: "4.5vw", height: "4.5vw" }}>
-          <circle cx="28" cy="28" r="20" stroke="#4ade80" strokeWidth="3" fill="none" />
-          <line x1="28" y1="16" x2="28" y2="32" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="28" cy="38" r="2.5" fill="#4ade80" />
+        <svg viewBox="0 0 80 80" fill="none" style={{ width: "7vw", height: "7vw" }}>
+          <text x="40" y="54" textAnchor="middle" fontSize="42" fontWeight="bold" fill="#4ade80">₹</text>
+          <path d="M18 60 L28 44 L36 52 L48 36 L62 46" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         </svg>
       ),
-      headline: "Full Price Transparency",
-      body: "Farmers see live mandi market prices before listing. No guessing what their crop is worth.",
+      headline: "Higher Farmer Income",
+      body: "Farmers keep the full market price. No commission, no deductions, no middlemen taking a cut.",
+      accent: "#22c55e",
     },
     {
       icon: (
-        <svg viewBox="0 0 56 56" fill="none" style={{ width: "4.5vw", height: "4.5vw" }}>
-          <circle cx="24" cy="22" r="14" stroke="#4ade80" strokeWidth="3" fill="none" />
-          <line x1="34" y1="32" x2="48" y2="46" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" />
-          <line x1="20" y1="22" x2="28" y2="22" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" />
-          <line x1="24" y1="18" x2="24" y2="26" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" />
+        <svg viewBox="0 0 80 80" fill="none" style={{ width: "7vw", height: "7vw" }}>
+          <circle cx="40" cy="40" r="28" stroke="#f87171" strokeWidth="3" fill="none" />
+          <line x1="18" y1="18" x2="62" y2="62" stroke="#f87171" strokeWidth="3" strokeLinecap="round" />
+          {/* Middleman icon inside */}
+          <circle cx="40" cy="34" r="7" stroke="#f87171" strokeWidth="2" fill="none" />
+          <path d="M28 54 C28 46 52 46 52 54" stroke="#f87171" strokeWidth="2" strokeLinecap="round" fill="none" />
         </svg>
       ),
-      headline: "Faster Buyer Discovery",
-      body: "A searchable live marketplace replaces cold calls and word-of-mouth. Buyers find crops by name, location, and trend.",
+      headline: "Zero Middlemen Dependency",
+      body: "Every rupee saved by cutting the chain goes directly back to the farmer who grew the food.",
+      accent: "#f87171",
     },
     {
       icon: (
-        <svg viewBox="0 0 56 56" fill="none" style={{ width: "4.5vw", height: "4.5vw" }}>
-          <text x="28" y="38" textAnchor="middle" fontSize="28" fontWeight="bold" fill="#4ade80">₹</text>
-          <path d="M10 44 L20 30 L28 36 L36 24 L46 32" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <svg viewBox="0 0 80 80" fill="none" style={{ width: "7vw", height: "7vw" }}>
+          <circle cx="40" cy="40" r="28" stroke="#60a5fa" strokeWidth="3" fill="none" />
+          <line x1="40" y1="20" x2="40" y2="42" stroke="#60a5fa" strokeWidth="3" strokeLinecap="round" />
+          <line x1="40" y1="42" x2="54" y2="54" stroke="#60a5fa" strokeWidth="3" strokeLinecap="round" />
         </svg>
       ),
-      headline: "Better Price Visibility",
-      body: "AI fair price calculator suggests a grade-based price range so farmers never undersell their harvest.",
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 56 56" fill="none" style={{ width: "4.5vw", height: "4.5vw" }}>
-          <path d="M8 36 L8 14 C8 12 10 10 12 10 L44 10 C46 10 48 12 48 14 L48 30 C48 32 46 34 44 34 L20 34 Z" fill="#4ade80" opacity="0.25" />
-          <path d="M8 36 L8 14 C8 12 10 10 12 10 L44 10 C46 10 48 12 48 14 L48 30 C48 32 46 34 44 34 L20 34 Z" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <line x1="18" y1="20" x2="38" y2="20" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" />
-          <line x1="18" y1="26" x2="30" y2="26" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      ),
-      headline: "AI Guidance in Your Language",
-      body: "GPT-4o answers farming questions in Telugu, English, and Hindi — with voice input and text-to-speech.",
+      headline: "Faster Trade Execution",
+      body: "Live listings, real-time chat, and instant negotiation. A deal that took days now closes in hours.",
+      accent: "#60a5fa",
     },
   ];
 
@@ -51,36 +43,34 @@ export default function Slide09Impact() {
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#052e16" }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.10) 0%, transparent 65%)" }} />
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[7vw]">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-[6vw]">
         <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.3vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Impact</p>
-        <h2 className="font-display font-extrabold text-white text-center mb-[5vh]" style={{ fontSize: "4.2vw", lineHeight: 1 }}>
-          Measurable value for every farmer
+        <h2 className="font-display font-extrabold text-white text-center mb-[6vh]" style={{ fontSize: "4.5vw", lineHeight: 1 }}>
+          Real change for real farmers
         </h2>
 
-        <div className="grid grid-cols-2 gap-[2vw] w-full">
-          {props.map(({ icon, headline, body }) => (
+        <div className="flex gap-[2.5vw] w-full">
+          {cards.map(({ icon, headline, body, accent }) => (
             <div
               key={headline}
-              className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.5vh]"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(74,222,128,0.2)" }}
+              className="flex-1 rounded-3xl flex flex-col items-center text-center py-[5vh] px-[2.5vw]"
+              style={{ background: "rgba(255,255,255,0.07)", border: `2px solid ${accent}22` }}
             >
               <div
-                className="rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ width: "6vw", height: "6vw", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(74,222,128,0.3)" }}
+                className="rounded-2xl flex items-center justify-center mb-[3vh]"
+                style={{ width: "11vw", height: "11vw", background: `${accent}18`, border: `1.5px solid ${accent}40` }}
               >
                 {icon}
               </div>
-              <div>
-                <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>{headline}</p>
-                <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>{body}</p>
-              </div>
+              <p className="font-display font-extrabold text-white mb-[1.5vh]" style={{ fontSize: "2.4vw", lineHeight: 1.15 }}>{headline}</p>
+              <p className="font-display font-normal" style={{ fontSize: "1.45vw", color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{body}</p>
             </div>
           ))}
         </div>
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>12</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>08</span>
       </div>
     </div>
   );
