@@ -1,37 +1,24 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
-// Mobile scene = farmer journey. Start with pest FIRST so it's visible early.
-const routes = [
-  { path: '/farmer?tab=pest',      label: '🤖 AI Pest Detection',  cap: 'Upload crop photo → AI diagnosis in Telugu' },
-  { path: '/farmer',               label: '📊 Farmer Dashboard',   cap: 'Track crops, earnings — zero commission' },
-  { path: '/farmer?tab=transport', label: '🚛 Logistics Estimator', cap: 'Estimate transport cost across TS & AP' },
-  { path: '/marketplace',          label: '🌾 Marketplace',         cap: 'Buy & sell crops directly — no middlemen' },
+const CAPTIONS = [
+  { time: 0,  label: '📊 Farmer Dashboard',    cap: 'Crops & earnings — zero commission' },
+  { time: 4,  label: '🤖 AI Pest Detection',   cap: 'Upload photo → Telugu diagnosis instantly' },
+  { time: 8,  label: '🚛 Logistics Estimator', cap: 'Transport cost across TS & AP routes' },
 ];
 
 export function Scene4() {
-  const [routeIdx, setRouteIdx] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [captionIdx, setCaptionIdx] = useState(0);
+  const [started, setStarted] = useState(false);
 
-  useEffect(() => {
-    const timers = [
-      setTimeout(() => setRouteIdx(1), 7500),
-      setTimeout(() => setRouteIdx(2), 15500),
-      setTimeout(() => setRouteIdx(3), 23500),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  useEffect(() => {
-    setLoaded(false);
-    if (iframeRef.current) {
-      iframeRef.current.src = origin + routes[routeIdx].path;
-    }
-  }, [routeIdx, origin]);
+  function handleTimeUpdate() {
+    const t = videoRef.current?.currentTime ?? 0;
+    const idx = CAPTIONS.findLastIndex(c => t >= c.time);
+    if (idx >= 0 && idx !== captionIdx) setCaptionIdx(idx);
+  }
 
   return (
     <motion.div
@@ -42,7 +29,7 @@ export function Scene4() {
 
       <div className="relative z-10 flex flex-col items-center w-full h-full py-6 px-6">
 
-        {/* Top: badge + screen label */}
+        {/* Top label */}
         <div className="flex flex-col items-center mb-3 flex-shrink-0">
           <motion.span
             className="text-[0.65rem] font-bold tracking-[0.4em] uppercase mb-2"
@@ -56,26 +43,26 @@ export function Scene4() {
 
           <AnimatePresence mode="popLayout">
             <motion.h2
-              key={routeIdx}
+              key={captionIdx}
               className="text-[min(3vw,1.6rem)] font-black text-white text-center leading-tight"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              {routes[routeIdx].label}
+              {CAPTIONS[captionIdx].label}
             </motion.h2>
           </AnimatePresence>
         </div>
 
-        {/* Phone mockup */}
+        {/* Phone mockup with recorded video */}
         <div className="flex-1 flex items-center justify-center min-h-0">
           <motion.div
             className="relative"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            {/* Glow behind phone */}
+            {/* Glow */}
             <div
               className="absolute inset-0 -z-10 blur-3xl scale-110 rounded-[3rem]"
               style={{ background: 'rgba(34,197,94,0.15)' }}
@@ -97,35 +84,39 @@ export function Scene4() {
                 <div className="w-[4.5rem] h-3.5 bg-black rounded-full" />
               </div>
 
-              {/* Loading shimmer */}
+              {/* Play overlay */}
               <AnimatePresence>
-                {!loaded && (
+                {!started && (
                   <motion.div
-                    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3"
+                    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 cursor-pointer"
                     style={{ background: '#052e16' }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
+                    onClick={() => { videoRef.current?.play(); setStarted(true); }}
                   >
                     <motion.div
                       className="text-4xl"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                      animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >🌾</motion.div>
-                    <p className="text-[10px] tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                      LOADING...
+                    <p className="text-[10px] tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      TAP TO PLAY
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* Live iframe */}
-              <iframe
-                ref={iframeRef}
-                src={origin + routes[0].path}
-                className="flex-1 w-full border-0"
-                style={{ pointerEvents: 'none' }}
-                onLoad={() => setLoaded(true)}
-                title="Mana Rythu App"
+              {/* Recorded video */}
+              <video
+                ref={videoRef}
+                src="/mana-rythu-video/farmer-demo.mp4"
+                className="flex-1 w-full object-cover"
+                muted
+                playsInline
+                autoPlay
+                loop
+                onTimeUpdate={handleTimeUpdate}
+                onPlay={() => setStarted(true)}
+                style={{ objectPosition: 'top center' }}
               />
 
               {/* Home bar */}
@@ -146,7 +137,7 @@ export function Scene4() {
         <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
           <AnimatePresence mode="popLayout">
             <motion.p
-              key={routeIdx}
+              key={captionIdx}
               className="text-[min(1.5vw,0.85rem)] text-center font-medium"
               style={{ color: 'rgba(255,255,255,0.72)' }}
               initial={{ opacity: 0, y: 6 }}
@@ -154,25 +145,24 @@ export function Scene4() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.3 }}
             >
-              {routes[routeIdx].cap}
+              {CAPTIONS[captionIdx].cap}
             </motion.p>
           </AnimatePresence>
 
           <div className="flex gap-2 items-center">
-            {routes.map((_, i) => (
+            {CAPTIONS.map((_, i) => (
               <motion.div
                 key={i}
                 className="h-1 rounded-full"
                 animate={{
-                  width: i === routeIdx ? 24 : 5,
-                  backgroundColor: i === routeIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
+                  width: i === captionIdx ? 24 : 5,
+                  backgroundColor: i === captionIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
                 }}
                 transition={{ duration: 0.35 }}
               />
             ))}
           </div>
         </div>
-
       </div>
     </motion.div>
   );

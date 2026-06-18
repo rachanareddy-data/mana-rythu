@@ -1,37 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
-// Desktop scene = buyer + platform features (no overlap with mobile scene)
-const routes = [
-  { path: '/marketplace', label: '🌾 Live Marketplace',        cap: 'Crops listed by real farmers — buy directly' },
-  { path: '/fair-price',  label: '💰 AI Price Intelligence',   cap: 'Live APMC mandi rates. Grade A / B / C pricing.' },
-  { path: '/chat',        label: '💬 Real-Time Chat',           cap: 'Farmer ↔ Buyer direct negotiation, no agents' },
-  { path: '/farmer',      label: '📊 Full Dashboard View',     cap: 'Complete earnings & crop management overview' },
+const CAPTIONS = [
+  { time: 0, label: '🌾 Live Marketplace',       cap: 'Real farmers, real crops — buy directly' },
+  { time: 4, label: '💰 AI Price Intelligence',  cap: 'Live APMC mandi rates. Grade A/B/C pricing.' },
+  { time: 8, label: '💬 Real-Time Chat',          cap: 'Farmer ↔ Buyer direct negotiation, no agents' },
 ];
 
 export function Scene5() {
-  const [routeIdx, setRouteIdx] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [captionIdx, setCaptionIdx] = useState(0);
 
-  useEffect(() => {
-    const timers = [
-      setTimeout(() => setRouteIdx(1), 7500),
-      setTimeout(() => setRouteIdx(2), 15500),
-      setTimeout(() => setRouteIdx(3), 23500),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  useEffect(() => {
-    setLoaded(false);
-    if (iframeRef.current) {
-      iframeRef.current.src = origin + routes[routeIdx].path;
-    }
-  }, [routeIdx, origin]);
+  function handleTimeUpdate() {
+    const t = videoRef.current?.currentTime ?? 0;
+    const idx = CAPTIONS.findLastIndex(c => t >= c.time);
+    if (idx >= 0 && idx !== captionIdx) setCaptionIdx(idx);
+  }
 
   return (
     <motion.div
@@ -42,36 +28,30 @@ export function Scene5() {
 
       <div className="relative z-10 flex flex-col items-center w-full h-full py-5 px-8">
 
-        {/* Top: badge + label — NO mention of website */}
+        {/* Badge */}
         <div className="flex flex-col items-center mb-3 flex-shrink-0">
           <div className="flex items-center gap-2 mb-2">
-            <span
-              className="text-[0.65rem] font-bold tracking-[0.4em] uppercase"
-              style={{ color: '#4ade80' }}
-            >
+            <span className="text-[0.65rem] font-bold tracking-[0.4em] uppercase" style={{ color: '#4ade80' }}>
               LIVE PLATFORM
             </span>
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: '#22c55e' }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e' }} />
           </div>
 
           <AnimatePresence mode="popLayout">
             <motion.h2
-              key={routeIdx}
+              key={captionIdx}
               className="text-[min(3vw,1.7rem)] font-black text-white text-center"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              {routes[routeIdx].label}
+              {CAPTIONS[captionIdx].label}
             </motion.h2>
           </AnimatePresence>
         </div>
 
-        {/* Browser mockup */}
+        {/* Browser mockup with recorded video */}
         <div className="flex-1 flex items-center justify-center min-h-0 w-full">
           <motion.div
             className="w-full flex flex-col overflow-hidden"
@@ -107,7 +87,7 @@ export function Scene5() {
                 <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>🔒</span>
                 <AnimatePresence mode="popLayout">
                   <motion.span
-                    key={routeIdx}
+                    key={captionIdx}
                     className="text-[11px] font-mono truncate"
                     style={{ color: 'rgba(255,255,255,0.5)' }}
                     initial={{ opacity: 0 }}
@@ -115,38 +95,26 @@ export function Scene5() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    mana-rythu.replit.app{routes[routeIdx].path}
+                    {captionIdx === 0 ? 'mana-rythu.replit.app/marketplace' :
+                     captionIdx === 1 ? 'mana-rythu.replit.app/fair-price' :
+                     'mana-rythu.replit.app/chat'}
                   </motion.span>
                 </AnimatePresence>
               </div>
             </div>
 
-            {/* Live iframe area */}
-            <div className="relative flex-1 bg-[#052e16] overflow-hidden">
-              <AnimatePresence>
-                {!loaded && (
-                  <motion.div
-                    className="absolute inset-0 z-10 flex items-center justify-center"
-                    style={{ background: '#052e16' }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <motion.div
-                      className="text-5xl"
-                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >🌾</motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <iframe
-                ref={iframeRef}
-                src={origin + routes[0].path}
-                className="w-full h-full border-0"
-                style={{ pointerEvents: 'none' }}
-                onLoad={() => setLoaded(true)}
-                title="Mana Rythu Platform"
+            {/* Recorded video */}
+            <div className="relative flex-1 overflow-hidden bg-[#052e16]">
+              <video
+                ref={videoRef}
+                src="/mana-rythu-video/platform-demo.mp4"
+                className="w-full h-full object-cover"
+                muted
+                playsInline
+                autoPlay
+                loop
+                onTimeUpdate={handleTimeUpdate}
+                style={{ objectPosition: 'top center' }}
               />
             </div>
           </motion.div>
@@ -156,7 +124,7 @@ export function Scene5() {
         <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
           <AnimatePresence mode="popLayout">
             <motion.p
-              key={routeIdx}
+              key={captionIdx}
               className="text-[min(1.5vw,0.9rem)] font-medium text-center"
               style={{ color: 'rgba(255,255,255,0.72)' }}
               initial={{ opacity: 0, y: 6 }}
@@ -164,18 +132,18 @@ export function Scene5() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.3 }}
             >
-              {routes[routeIdx].cap}
+              {CAPTIONS[captionIdx].cap}
             </motion.p>
           </AnimatePresence>
 
           <div className="flex gap-2 items-center">
-            {routes.map((_, i) => (
+            {CAPTIONS.map((_, i) => (
               <motion.div
                 key={i}
                 className="h-1 rounded-full"
                 animate={{
-                  width: i === routeIdx ? 24 : 5,
-                  backgroundColor: i === routeIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
+                  width: i === captionIdx ? 24 : 5,
+                  backgroundColor: i === captionIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
                 }}
                 transition={{ duration: 0.35 }}
               />
