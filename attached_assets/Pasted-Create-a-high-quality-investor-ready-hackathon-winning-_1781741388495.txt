@@ -1,0 +1,119 @@
+Create a high-quality, investor-ready, hackathon-winning pitch deck presentation for my project called "Mana Rythu".
+
+The presentation must look like a TOP 1% startup pitch (Y Combinator / TechCrunch style).
+
+IMPORTANT REQUIREMENTS:
+- Clean, modern, minimal design
+- Consistent green agriculture theme (#16a34a, #22c55e, white, dark green)
+- Strong storytelling flow
+- No clutter or long paragraphs
+- Every slide must be visual + impactful
+- Mobile-friendly design (simple layouts)
+- Add icons, diagrams, and flow visuals where needed
+
+PROJECT CONTEXT:
+Mana Rythu is an AI-powered agriculture platform that connects farmers directly with buyers, removing middlemen and increasing farmer income. It provides marketplace, real-time chat, AI assistant, and price intelligence.
+
+---
+
+CREATE EXACTLY THESE SLIDES:
+
+1. TITLE SLIDE
+- Mana Rythu
+- Tagline: "Cutting Middlemen. Empowering Farmers."
+- Subtitle: AI-powered farmer-to-buyer ecosystem
+
+---
+
+2. PROBLEM SLIDE
+Show clear pain points:
+- Farmers lose 30–40% income due to middlemen
+- No price transparency
+- Market demand mismatch
+- Buyers face unstable supply
+
+Add strong visual comparison (Farmer vs Market gap)
+
+---
+
+3. SOLUTION SLIDE
+- Direct farmer-to-buyer platform
+- AI-powered guidance system
+- Real-time negotiation chat
+- Transparent pricing ecosystem
+
+Use simple flow diagram:
+Farmer → Mana Rythu → Buyer
+
+---
+
+4. PRODUCT FEATURES SLIDE
+Show 4 main features only:
+- Marketplace (crop listings)
+- Real-time Chat (negotiation)
+- AI Farming Assistant (GPT powered)
+- Price Intelligence System
+
+Add icons for each feature
+
+---
+
+5. HOW IT WORKS SLIDE
+Step flow:
+1. Farmer lists crop
+2. Buyer views listing
+3. Chat negotiation
+4. AI assists pricing
+5. Deal completed
+
+Use a horizontal step-by-step visual
+
+---
+
+6. IMPACT SLIDE
+Show measurable impact:
+- Higher farmer income
+- Reduced middlemen dependency
+- Faster trade execution
+- Transparent pricing system
+
+Use 3–4 impact cards with icons
+
+---
+
+7. TECH STACK SLIDE
+React, Node.js, Express, PostgreSQL, OpenAI API, Tailwind CSS
+
+Show as clean tech badges
+
+---
+
+8. MARKET OPPORTUNITY SLIDE
+- 150M+ farmers in India
+- Large agriculture supply chain market
+- Growing agri-tech adoption
+
+---
+
+9. VISION SLIDE
+- Build India’s digital agriculture backbone
+- AI-driven farming ecosystem
+- Smart, fair and transparent market
+
+---
+
+10. FINAL SLIDE
+- "Empowering Farmers Through Technology"
+- Contact / GitHub link
+- Clean closing design with green gradient
+
+---
+
+DESIGN STYLE:
+- Green gradient theme
+- White space heavy design
+- Bold typography
+- Minimal text
+- Startup pitch style like Y Combinator decks
+
+Make it visually stunning and presentation ready for hackathon judges and investors.

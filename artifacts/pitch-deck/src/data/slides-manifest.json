@@ -4,7 +4,7 @@
     "position": 1,
     "filepath": "src/pages/slides/Slide01Title.tsx",
     "title": "Mana Rythu",
-    "description": "Title slide — farm to buyer, no middlemen",
+    "description": "Cutting Middlemen. Empowering Farmers. — AI-powered farmer-to-buyer ecosystem",
     "speakerNotes": ""
   },
   {
@@ -72,8 +72,24 @@
     "speakerNotes": ""
   },
   {
-    "id": "b1c2d3e4-0010-4000-8000-000000000014",
+    "id": "b1c2d3e4-0010-4000-8000-000000000020",
     "position": 10,
+    "filepath": "src/pages/slides/SlideMarketOpportunity.tsx",
+    "title": "Market Opportunity",
+    "description": "140M+ farm holdings, ₹30T+ agri supply chain, 350M+ rural internet users",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b1c2d3e4-0011-4000-8000-000000000021",
+    "position": 11,
+    "filepath": "src/pages/slides/SlideVision.tsx",
+    "title": "Vision",
+    "description": "Build India's digital agriculture backbone — AI-driven, fair, inclusive",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b1c2d3e4-0010-4000-8000-000000000014",
+    "position": 12,
     "filepath": "src/pages/slides/SlideBusinessModel.tsx",
     "title": "Business Model",
     "description": "Future revenue: commission, premium accounts, logistics, financial services",
@@ -81,7 +97,7 @@
   },
   {
     "id": "b1c2d3e4-0011-4000-8000-000000000015",
-    "position": 11,
+    "position": 13,
     "filepath": "src/pages/slides/SlideCompetitiveAdvantage.tsx",
     "title": "Competitive Advantage",
     "description": "No one else combines all 5: marketplace, pest AI, price AI, multilingual, chat",
@@ -89,7 +105,7 @@
   },
   {
     "id": "a1b2c3d4-0009-4000-8000-000000000009",
-    "position": 12,
+    "position": 14,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
     "title": "Impact",
     "description": "Transparency, faster discovery, price visibility, multilingual AI guidance",
@@ -97,7 +113,7 @@
   },
   {
     "id": "a1b2c3d4-0010-4000-8000-000000000010",
-    "position": 13,
+    "position": 15,
     "filepath": "src/pages/slides/Slide10Demo.tsx",
     "title": "Live Demo",
     "description": "Real app screenshots — all features functional",
@@ -105,7 +121,7 @@
   },
   {
     "id": "a1b2c3d4-0011-4000-8000-000000000011",
-    "position": 14,
+    "position": 16,
     "filepath": "src/pages/slides/Slide11Roadmap.tsx",
     "title": "Roadmap",
     "description": "Five phases: Launch → Payments → Live APIs → Prediction → Mobile",
@@ -113,7 +129,7 @@
   },
   {
     "id": "b1c2d3e4-0015-4000-8000-000000000016",
-    "position": 15,
+    "position": 17,
     "filepath": "src/pages/slides/SlideWhyWins.tsx",
     "title": "Why Mana Rythu Wins",
     "description": "5 reasons: real product, AI tools, multilingual, direct connection, local focus",
@@ -121,10 +137,10 @@
   },
   {
     "id": "a1b2c3d4-0012-4000-8000-000000000012",
-    "position": 16,
+    "position": 18,
     "filepath": "src/pages/slides/Slide12Close.tsx",
     "title": "Thank You",
-    "description": "Built. Live. Ready.",
+    "description": "Empowering Farmers Through Technology — Built. Live. Ready.",
     "speakerNotes": ""
   }
 ]
