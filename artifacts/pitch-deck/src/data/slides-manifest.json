@@ -40,8 +40,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0006-4000-8000-000000000006",
+    "id": "a1b2c3d4-0008-4000-8000-000000000008",
     "position": 6,
+    "filepath": "src/pages/slides/SlideLiveProduct.tsx",
+    "title": "Live Product — Built and Running",
+    "description": "Six real workflows users perform today in the live product",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0006-4000-8000-000000000006",
+    "position": 7,
     "filepath": "src/pages/slides/Slide06Features.tsx",
     "title": "Six Capabilities",
     "description": "6 features: Marketplace, AI Crop Intel, AI Price Intel, Real-Time Chat, Logistics, Trust System",
@@ -49,26 +57,18 @@
   },
   {
     "id": "a1b2c3d4-0007-4000-8000-000000000007",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/Slide05HowItWorks.tsx",
     "title": "How It Works",
     "description": "Three steps: Farmer Lists → Chat & Agree → Pay & Deliver",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0008-4000-8000-000000000008",
-    "position": 8,
-    "filepath": "src/pages/slides/SlideLiveProduct.tsx",
-    "title": "Live Product — Built and Running",
-    "description": "All 6 features shown implemented and functional in the live product",
-    "speakerNotes": ""
-  },
-  {
     "id": "a1b2c3d4-0009-4000-8000-000000000009",
     "position": 9,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
-    "title": "Impact",
-    "description": "50% more farmer income, 30% cheaper for buyers, 2× price visibility",
+    "title": "Why Direct Trade Works",
+    "description": "The structural case: zero commission, live price data, direct connection",
     "speakerNotes": ""
   },
   {
