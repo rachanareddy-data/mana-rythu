@@ -58,7 +58,7 @@ export default function Slide09Impact() {
               </div>
               <div>
                 <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1 }}>Live APMC price data</p>
-                <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Farmers see the actual market rate before they negotiate — for the first time in history.</p>
+                <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.25vw", color: "rgba(255,255,255,0.5)", lineHeight: 1.4 }}>Farmers see the actual market rate before they negotiate — negotiating with data, not guesswork.</p>
               </div>
             </div>
 

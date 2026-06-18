@@ -1,20 +1,20 @@
 export default function SlideWhyWins() {
-  const cols = ["Marketplace", "AI Intelligence", "Real-Time Chat", "Logistics", "Telugu-first AI"];
+  const cols = ["Marketplace", "AI Crop Intel", "Chat", "Logistics", "Telugu AI", "Pricing Intel"];
 
   const rows = [
-    { name: "Mana Rythu", highlight: true,  checks: [true,  true,  true,  true,  true]  },
-    { name: "eNAM",        highlight: false, checks: [true,  false, false, false, false] },
-    { name: "DeHaat",      highlight: false, checks: [true,  true,  false, true,  false] },
-    { name: "Agri10x",     highlight: false, checks: [true,  false, false, false, false] },
+    { name: "Mana Rythu", highlight: true,  checks: [true,  true,  true,  true,  true,  true]  },
+    { name: "eNAM",        highlight: false, checks: [true,  false, false, false, false, true]  },
+    { name: "DeHaat",      highlight: false, checks: [true,  true,  false, true,  false, false] },
+    { name: "Agri10x",     highlight: false, checks: [true,  false, false, false, false, false] },
   ];
 
   const moats = [
-    { icon: "🌐", title: "Language moat",       desc: "Telugu-first AI — competitors are English-only, unreachable for most farmers." },
-    { icon: "📈", title: "Data flywheel",        desc: "Every transaction sharpens pricing models. Harder to replicate as it scales." },
-    { icon: "🔗", title: "Network effect",       desc: "More farmers draw more buyers. More buyers draw more farmers. Bilateral lock-in." },
-    { icon: "🧠", title: "Full-stack AI",         desc: "Crop intelligence + price intelligence in one platform — not two separate tools." },
-    { icon: "🚚", title: "Logistics integration", desc: "Listing to last-mile cost estimate — no competitor connects all of this." },
-    { icon: "🛡", title: "Trust infrastructure",  desc: "Reputation tiers + UPI escrow — the only platform both sides can trust financially." },
+    { icon: "🌐", title: "Language moat",        desc: "Telugu-first AI — competitors are English-only, unreachable for most farmers." },
+    { icon: "📈", title: "Data flywheel",         desc: "Every transaction sharpens pricing models. Harder to replicate as it scales." },
+    { icon: "🔗", title: "Network effect",        desc: "More farmers draw more buyers. More buyers draw more farmers. Bilateral lock-in." },
+    { icon: "🧠", title: "Full-stack AI",          desc: "Crop intelligence + price intelligence in one platform — not two separate tools." },
+    { icon: "🚚", title: "Logistics integration",  desc: "Listing to last-mile cost estimate — no competitor connects all of this." },
+    { icon: "🛡", title: "Trust infrastructure",   desc: "Reputation tiers + UPI escrow — the only platform both sides can trust financially." },
   ];
 
   return (
@@ -28,15 +28,15 @@ export default function SlideWhyWins() {
           Six moats.<br />Built in, not bolted on.
         </h2>
 
-        <div className="flex flex-col gap-[2.2vh]">
+        <div className="flex flex-col gap-[2vh]">
           {moats.map(({ icon, title, desc }) => (
             <div key={title} className="flex items-start gap-[1.4vw]">
-              <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "3.6vw", height: "3.6vw", background: "#052e16" }}>
-                <span style={{ fontSize: "1.7vw" }}>{icon}</span>
+              <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "3.5vw", height: "3.5vw", background: "#052e16" }}>
+                <span style={{ fontSize: "1.65vw" }}>{icon}</span>
               </div>
               <div>
-                <p className="font-display font-bold" style={{ fontSize: "1.6vw", color: "#052e16", lineHeight: 1 }}>{title}</p>
-                <p className="font-display font-normal mt-[0.3vh]" style={{ fontSize: "1.2vw", color: "#6b7280", lineHeight: 1.35 }}>{desc}</p>
+                <p className="font-display font-bold" style={{ fontSize: "1.55vw", color: "#052e16", lineHeight: 1 }}>{title}</p>
+                <p className="font-display font-normal mt-[0.3vh]" style={{ fontSize: "1.15vw", color: "#6b7280", lineHeight: 1.3 }}>{desc}</p>
               </div>
             </div>
           ))}
@@ -44,24 +44,24 @@ export default function SlideWhyWins() {
       </div>
 
       {/* Right: competitive table */}
-      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pr-[5vw] pl-[2vw]" style={{ width: "54vw" }}>
+      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pr-[4.5vw] pl-[2vw]" style={{ width: "54vw" }}>
         <div className="rounded-2xl overflow-hidden" style={{ border: "1.5px solid #e5e7eb" }}>
-          <div className="px-[2vw] py-[1.5vh]" style={{ background: "#052e16" }}>
+          <div className="px-[2vw] py-[1.4vh]" style={{ background: "#052e16" }}>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.4vw" }}>Competitive Landscape</p>
           </div>
           {/* Header */}
-          <div className="flex px-[2vw] py-[1.2vh]" style={{ borderBottom: "1px solid #e5e7eb", background: "#f0fdf4" }}>
-            <p className="font-display font-bold" style={{ fontSize: "1.15vw", color: "#052e16", flex: 1.6 }}>Platform</p>
+          <div className="flex px-[2vw] py-[1.1vh]" style={{ borderBottom: "1px solid #e5e7eb", background: "#f0fdf4" }}>
+            <p className="font-display font-bold" style={{ fontSize: "1.05vw", color: "#052e16", flex: 1.5 }}>Platform</p>
             {cols.map((col) => (
-              <p key={col} className="font-display font-bold text-center" style={{ fontSize: "1.05vw", color: "#052e16", flex: 1, lineHeight: 1.2 }}>{col}</p>
+              <p key={col} className="font-display font-bold text-center" style={{ fontSize: "0.95vw", color: "#052e16", flex: 1, lineHeight: 1.2 }}>{col}</p>
             ))}
           </div>
           {/* Rows */}
           {rows.map(({ name, highlight, checks }) => (
-            <div key={name} className="flex px-[2vw] py-[1.8vh]" style={{ borderBottom: "1px solid #e5e7eb", background: highlight ? "#dcfce7" : "white" }}>
-              <p className="font-display font-bold" style={{ fontSize: "1.2vw", color: highlight ? "#15803d" : "#374151", flex: 1.6 }}>{name}</p>
+            <div key={name} className="flex px-[2vw] py-[1.6vh]" style={{ borderBottom: "1px solid #e5e7eb", background: highlight ? "#dcfce7" : "white" }}>
+              <p className="font-display font-bold" style={{ fontSize: "1.15vw", color: highlight ? "#15803d" : "#374151", flex: 1.5 }}>{name}</p>
               {checks.map((has, i) => (
-                <p key={i} className="font-display font-bold text-center" style={{ fontSize: "1.5vw", color: has ? "#16a34a" : "#d1d5db", flex: 1 }}>
+                <p key={i} className="font-display font-bold text-center" style={{ fontSize: "1.4vw", color: has ? "#16a34a" : "#d1d5db", flex: 1 }}>
                   {has ? "✓" : "—"}
                 </p>
               ))}
@@ -69,9 +69,9 @@ export default function SlideWhyWins() {
           ))}
         </div>
 
-        <div className="rounded-xl px-[2vw] py-[1.8vh] mt-[2.5vh]" style={{ background: "#052e16" }}>
-          <p className="font-display font-bold text-center text-white" style={{ fontSize: "1.4vw", lineHeight: 1.4 }}>
-            No competitor combines all five capabilities.{" "}
+        <div className="rounded-xl px-[2vw] py-[1.6vh] mt-[2.2vh]" style={{ background: "#052e16" }}>
+          <p className="font-display font-bold text-center text-white" style={{ fontSize: "1.35vw", lineHeight: 1.4 }}>
+            No competitor combines all six capabilities.{" "}
             <span style={{ color: "#4ade80" }}>Mana Rythu is the only full-stack solution built for this market.</span>
           </p>
         </div>

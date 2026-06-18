@@ -40,19 +40,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0008-4000-8000-000000000008",
+    "id": "a1b2c3d4-0006-4000-8000-000000000006",
     "position": 6,
-    "filepath": "src/pages/slides/SlideLiveProduct.tsx",
-    "title": "Live Product — Built and Running",
-    "description": "Six real workflows users perform today in the live product",
+    "filepath": "src/pages/slides/Slide06Features.tsx",
+    "title": "Six Capabilities",
+    "description": "Product overview: Marketplace, AI Crop Intel, AI Price Intel, Real-Time Chat, Logistics, Trust System",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0006-4000-8000-000000000006",
+    "id": "a1b2c3d4-0008-4000-8000-000000000008",
     "position": 7,
-    "filepath": "src/pages/slides/Slide06Features.tsx",
-    "title": "Six Capabilities",
-    "description": "6 features: Marketplace, AI Crop Intel, AI Price Intel, Real-Time Chat, Logistics, Trust System",
+    "filepath": "src/pages/slides/SlideLiveProduct.tsx",
+    "title": "Live Product — Built and Running",
+    "description": "LIVE PRODUCT (IMPLEMENTED) — six real workflows with screenshot placeholders",
     "speakerNotes": ""
   },
   {
@@ -68,7 +68,7 @@
     "position": 9,
     "filepath": "src/pages/slides/Slide09Impact.tsx",
     "title": "Why Direct Trade Works",
-    "description": "The structural case: zero commission, live price data, direct connection",
+    "description": "Zero commission, live APMC price data, AI in Telugu",
     "speakerNotes": ""
   },
   {
@@ -99,7 +99,7 @@
     "id": "a1b2c3d4-0013-4000-8000-000000000013",
     "position": 13,
     "filepath": "src/pages/slides/Slide12Close.tsx",
-    "title": "140M Farmers. One AI Copilot. One Fair Price.",
+    "title": "140M Farmers. One AI Operating System. One Fair Market.",
     "description": "Closing slide — OS vision statement and presenter contact",
     "speakerNotes": ""
   }
