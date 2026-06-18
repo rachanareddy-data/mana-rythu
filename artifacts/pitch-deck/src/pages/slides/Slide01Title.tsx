@@ -24,15 +24,15 @@ export default function Slide01Title() {
 
         {/* Tagline */}
         <p className="font-display font-extrabold leading-tight" style={{ fontSize: "3.6vw", color: "#052e16", lineHeight: 1.15 }}>
-          Cutting Middlemen.<br />
-          <span style={{ color: "#16a34a" }}>Empowering Farmers.</span>
+          Cut Middlemen.<br />
+          <span style={{ color: "#16a34a" }}>Empower Farmers.</span>
         </p>
 
         {/* Subtitle */}
         <div className="flex items-center gap-[1vw] mt-[2.5vh]">
           <div style={{ width: "3px", height: "3.5vh", background: "#22c55e", borderRadius: "2px", flexShrink: 0 }} />
           <p className="font-display font-semibold" style={{ fontSize: "1.7vw", color: "#374151", lineHeight: 1.3 }}>
-            AI-powered farmer-to-buyer ecosystem
+            AI-powered Farmer-to-Buyer Platform
           </p>
         </div>
 

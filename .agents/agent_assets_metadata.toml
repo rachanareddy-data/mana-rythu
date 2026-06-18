@@ -2,19 +2,7 @@ uploads = []
 generated = []
 
 [[outputs]]
-id = "BogpliYoD92gzVXWmuuiJ"
+id = "C2ktV6cynns43FXJwmzRo"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
 type = "slides"
-title = "Mana Rythu Pitch Deck — 16 Slides (PPTX)"
-
-[[outputs]]
-id = "xW3TXmDTA05OO99EFhNmh"
-uri = "file://.local/outputs/Asset-Manager.pdf"
-type = "pdf"
-title = "Asset Manager.pdf"
-
-[[outputs]]
-id = "nVsgAe40rznX1TfUcmMgX"
-uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pdf"
-type = "pdf"
-title = "Mana Rythu Pitch Deck.pdf"
+title = "Mana Rythu — 10-Slide Pitch Deck (PPTX)"
