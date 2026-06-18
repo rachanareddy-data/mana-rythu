@@ -18,3 +18,9 @@ id = "dOYnSke1-Muezw-OVwteN"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck-v2.pptx"
 type = "slides"
 title = "Mana Rythu Pitch Deck v2 (PPTX)"
+
+[[outputs]]
+id = "qM1Ke6XNrh-3Mohyt6mHm"
+uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck-v3.pptx"
+type = "slides"
+title = "Mana Rythu Pitch Deck v3 — Investor Grade (PPTX)"

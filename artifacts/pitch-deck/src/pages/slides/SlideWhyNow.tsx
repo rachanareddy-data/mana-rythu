@@ -4,14 +4,14 @@ export default function SlideWhyNow() {
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.1) 0%, transparent 65%)" }} />
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[7vw]">
-        <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.3vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Why Now?</p>
-        <h2 className="font-display font-extrabold text-white text-center mb-[5vh]" style={{ fontSize: "4.5vw", lineHeight: 1 }}>
-          The timing is perfect
+        <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.2vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Why Now</p>
+        <h2 className="font-display font-extrabold text-white text-center mb-[5.5vh]" style={{ fontSize: "4.5vw", lineHeight: 1 }}>
+          Three forces — finally aligned
         </h2>
 
         <div className="grid grid-cols-2 gap-[2vw] w-full">
 
-          <div className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.5vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
+          <div className="rounded-2xl flex items-center gap-[2.5vw] px-[2.5vw] py-[3vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
             <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "5.5vw", height: "5.5vw", background: "#16a34a" }}>
               <svg viewBox="0 0 56 56" fill="none" style={{ width: "4vw", height: "4vw" }}>
                 <rect x="16" y="4" width="24" height="40" rx="4" stroke="white" strokeWidth="2.5" fill="none" />
@@ -20,12 +20,12 @@ export default function SlideWhyNow() {
               </svg>
             </div>
             <div>
-              <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>Rural India Is Now Digital</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>350M+ rural internet users. India's villages are online — and ready for digital agriculture.</p>
+              <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>350M Rural Users Online</p>
+              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>India's villages are connected. The digital reach is there.</p>
             </div>
           </div>
 
-          <div className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.5vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
+          <div className="rounded-2xl flex items-center gap-[2.5vw] px-[2.5vw] py-[3vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
             <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "5.5vw", height: "5.5vw", background: "#7c3aed" }}>
               <svg viewBox="0 0 56 56" fill="none" style={{ width: "4vw", height: "4vw" }}>
                 <rect x="6" y="12" width="28" height="20" rx="4" stroke="white" strokeWidth="2.5" fill="none" />
@@ -35,12 +35,12 @@ export default function SlideWhyNow() {
               </svg>
             </div>
             <div>
-              <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>AI Enables Real-Time Pricing</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>GPT-4o now supports Telugu, Hindi, and English. AI guidance is no longer just for English speakers.</p>
+              <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>AI Now Speaks Telugu</p>
+              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>GPT-4o unlocks AI guidance for non-English farmers — first time in history.</p>
             </div>
           </div>
 
-          <div className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.5vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
+          <div className="rounded-2xl flex items-center gap-[2.5vw] px-[2.5vw] py-[3vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
             <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "5.5vw", height: "5.5vw", background: "#0891b2" }}>
               <svg viewBox="0 0 56 56" fill="none" style={{ width: "4vw", height: "4vw" }}>
                 <rect x="6" y="14" width="44" height="28" rx="5" stroke="white" strokeWidth="2.5" fill="none" />
@@ -50,12 +50,12 @@ export default function SlideWhyNow() {
               </svg>
             </div>
             <div>
-              <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>Digital Payments Are Mainstream</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>UPI processes billions of transactions monthly — even in rural Telangana &amp; AP.</p>
+              <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>UPI Works in Villages</p>
+              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Billions of rural UPI transactions monthly. Trust and rails already exist.</p>
             </div>
           </div>
 
-          <div className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.5vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
+          <div className="rounded-2xl flex items-center gap-[2.5vw] px-[2.5vw] py-[3vh]" style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
             <div className="rounded-xl flex items-center justify-center flex-shrink-0" style={{ width: "5.5vw", height: "5.5vw", background: "#d97706" }}>
               <svg viewBox="0 0 56 56" fill="none" style={{ width: "4vw", height: "4vw" }}>
                 <path d="M28 6 L8 20 L8 48 L48 48 L48 20 Z" stroke="white" strokeWidth="2.5" strokeLinejoin="round" fill="none" />
@@ -64,8 +64,8 @@ export default function SlideWhyNow() {
               </svg>
             </div>
             <div>
-              <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>Govt. Pushing Agri Digitisation</p>
-              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>Digital India, PM e-Marketplace, and state agri schemes are actively digitising farm supply chains.</p>
+              <p className="font-display font-bold text-white" style={{ fontSize: "2vw", lineHeight: 1 }}>Policy Tailwind</p>
+              <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.3vw", color: "rgba(255,255,255,0.55)" }}>Digital India + PM e-Marketplace are pushing agri digitisation from the top.</p>
             </div>
           </div>
 

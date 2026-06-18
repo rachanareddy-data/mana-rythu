@@ -13,33 +13,52 @@ export default function Slide01Title() {
           </svg>
           <p className="font-display font-extrabold text-white" style={{ fontSize: "7.5vw", lineHeight: 0.9 }}>Mana</p>
           <p className="font-display font-extrabold" style={{ fontSize: "7.5vw", lineHeight: 0.9, color: "#4ade80" }}>Rythu</p>
+          <p className="font-display font-semibold text-white mt-[3vh]" style={{ fontSize: "1.5vw", opacity: 0.5, letterSpacing: "0.05em" }}>మన రైతు</p>
         </div>
       </div>
-      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pl-[5vw] pr-[5vw]" style={{ width: "52vw" }}>
-        <p className="font-display font-extrabold leading-tight" style={{ fontSize: "3.6vw", color: "#052e16", lineHeight: 1.15 }}>
-          Cut Middlemen.<br />
-          <span style={{ color: "#16a34a" }}>Empower Farmers.</span>
+
+      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pl-[5vw] pr-[6vw]" style={{ width: "52vw" }}>
+
+        <p className="font-display font-extrabold" style={{ fontSize: "3.8vw", color: "#052e16", lineHeight: 1.1 }}>
+          Farm to buyer.
+          <br />
+          <span style={{ color: "#16a34a" }}>Direct. Fair. Now.</span>
         </p>
-        <div className="flex items-center gap-[1vw] mt-[2.5vh]">
-          <div style={{ width: "3px", height: "3.5vh", background: "#22c55e", borderRadius: "2px", flexShrink: 0 }} />
-          <p className="font-display font-semibold" style={{ fontSize: "1.7vw", color: "#374151", lineHeight: 1.3 }}>
-            AI-powered Farmer-to-Buyer Platform
-          </p>
-        </div>
-        <p className="font-display font-normal mt-[2vh]" style={{ fontSize: "1.55vw", color: "#9ca3af" }}>
-          Telangana &amp; Andhra Pradesh
+
+        <p className="font-display font-normal mt-[2.5vh]" style={{ fontSize: "1.8vw", color: "#6b7280", lineHeight: 1.5 }}>
+          An AI-powered marketplace connecting Telangana &amp; AP farmers directly to buyers — no brokers, no price manipulation.
         </p>
-        <div className="flex flex-wrap gap-[1vw] mt-[3.5vh]">
-          <span className="font-display font-semibold px-[1.2vw] py-[0.6vh] rounded-full" style={{ fontSize: "1.2vw", background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}>Marketplace</span>
-          <span className="font-display font-semibold px-[1.2vw] py-[0.6vh] rounded-full" style={{ fontSize: "1.2vw", background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}>Real-time Chat</span>
-          <span className="font-display font-semibold px-[1.2vw] py-[0.6vh] rounded-full" style={{ fontSize: "1.2vw", background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}>AI Assistant</span>
-          <span className="font-display font-semibold px-[1.2vw] py-[0.6vh] rounded-full" style={{ fontSize: "1.2vw", background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0" }}>Price Intelligence</span>
+
+        <div className="mt-[5vh] pt-[4vh]" style={{ borderTop: "1.5px solid #e5e7eb" }}>
+          <div className="flex items-center gap-[1.2vw] mb-[1.5vh]">
+            <div style={{ width: "3px", height: "3.5vh", background: "#22c55e", borderRadius: "2px", flexShrink: 0 }} />
+            <div>
+              <p className="font-display font-bold" style={{ fontSize: "1.9vw", color: "#15803d" }}>Rachana Baddam</p>
+              <p className="font-display font-normal" style={{ fontSize: "1.45vw", color: "#9ca3af" }}>M.S. Data Science · Saint Peter's University</p>
+            </div>
+          </div>
         </div>
-        <div className="mt-[4.5vh] pt-[3vh]" style={{ borderTop: "1px solid #e5e7eb" }}>
-          <p className="font-display font-semibold" style={{ fontSize: "1.8vw", color: "#15803d" }}>Rachana Baddam</p>
-          <p className="font-display font-normal mt-[0.5vh]" style={{ fontSize: "1.5vw", color: "#9ca3af" }}>M.S. Data Science · Saint Peter's University</p>
+
+        <div className="flex items-center gap-[2.5vw] mt-[3vh]">
+          <div className="flex items-center gap-[0.7vw]">
+            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
+            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>Marketplace</p>
+          </div>
+          <div className="flex items-center gap-[0.7vw]">
+            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
+            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>AI Chat</p>
+          </div>
+          <div className="flex items-center gap-[0.7vw]">
+            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
+            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>Price Intel</p>
+          </div>
+          <div className="flex items-center gap-[0.7vw]">
+            <div className="rounded-full" style={{ width: "0.8vw", height: "0.8vw", background: "#22c55e", flexShrink: 0 }} />
+            <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#6b7280" }}>UPI Payments</p>
+          </div>
         </div>
       </div>
+
       <div className="absolute bottom-[3vh] right-[3vw]">
         <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>01</span>
       </div>

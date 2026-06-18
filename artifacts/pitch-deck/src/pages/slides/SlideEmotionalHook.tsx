@@ -10,50 +10,44 @@ export default function SlideEmotionalHook() {
         </div>
       </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[12vw]">
-        <p className="font-display font-semibold mb-[3vh] tracking-widest" style={{ fontSize: "1.2vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.25em" }}>
-          The Reality
-        </p>
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-[10vw]">
 
-        <h1 className="font-display font-extrabold text-center text-white" style={{ fontSize: "6.5vw", lineHeight: 1.08, maxWidth: "80vw" }}>
-          India's farmers grow
+        <h1 className="font-display font-extrabold text-center text-white" style={{ fontSize: "7vw", lineHeight: 1.05, maxWidth: "80vw" }}>
+          India's farmers
           <br />
-          <span style={{ color: "#4ade80" }}>your food.</span>
+          grow <span style={{ color: "#4ade80" }}>your food.</span>
           <br />
-          Middlemen take
+          Middlemen keep
           <br />
-          <span style={{ WebkitTextStroke: "2px #22c55e", color: "transparent" }}>their money.</span>
+          <span style={{ WebkitTextStroke: "2px rgba(255,255,255,0.6)", color: "transparent" }}>their money.</span>
         </h1>
 
-        <div style={{ width: "6vw", height: "2px", background: "rgba(34,197,94,0.35)", margin: "4.5vh 0" }} />
+        <div style={{ width: "8vw", height: "2px", background: "rgba(34,197,94,0.3)", margin: "5vh 0" }} />
 
-        <div className="flex items-center justify-center gap-[8vw]">
+        <div className="flex items-end justify-center gap-[6vw]">
           <div className="flex flex-col items-center">
-            <p className="font-display font-extrabold" style={{ fontSize: "5.5vw", lineHeight: 1, color: "#4ade80" }}>₹20</p>
-            <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.5vw", color: "rgba(255,255,255,0.45)" }}>farmer earns</p>
+            <p className="font-display font-extrabold" style={{ fontSize: "7vw", lineHeight: 1, color: "#4ade80" }}>₹20</p>
+            <p className="font-display font-semibold mt-[1vh]" style={{ fontSize: "1.6vw", color: "rgba(255,255,255,0.4)" }}>farmer earns per kg</p>
           </div>
 
-          <div className="flex flex-col items-center gap-[0.8vh]">
-            <svg viewBox="0 0 60 24" fill="none" style={{ width: "7vw" }}>
-              <line x1="4" y1="12" x2="52" y2="12" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" />
-              <polyline points="43,5 53,12 43,19" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <div className="flex flex-col items-center pb-[2vh]">
+            <svg viewBox="0 0 80 32" fill="none" style={{ width: "10vw" }}>
+              <line x1="4" y1="16" x2="70" y2="16" stroke="#dc2626" strokeWidth="3" strokeLinecap="round" />
+              <polyline points="60,8 72,16 60,24" stroke="#dc2626" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
-            <p className="font-display font-bold" style={{ fontSize: "1.2vw", color: "#dc2626" }}>2–3 middlemen</p>
+            <p className="font-display font-bold mt-[1.2vh]" style={{ fontSize: "1.4vw", color: "#dc2626" }}>2–3 middlemen</p>
           </div>
 
           <div className="flex flex-col items-center">
-            <p className="font-display font-extrabold" style={{ fontSize: "5.5vw", lineHeight: 1, color: "white" }}>₹40</p>
-            <p className="font-display font-semibold mt-[0.8vh]" style={{ fontSize: "1.5vw", color: "rgba(255,255,255,0.45)" }}>buyer pays</p>
+            <p className="font-display font-extrabold" style={{ fontSize: "7vw", lineHeight: 1, color: "rgba(255,255,255,0.7)" }}>₹40</p>
+            <p className="font-display font-semibold mt-[1vh]" style={{ fontSize: "1.6vw", color: "rgba(255,255,255,0.4)" }}>buyer pays per kg</p>
           </div>
         </div>
 
-        <p className="font-display font-semibold text-center mt-[5vh]" style={{ fontSize: "1.8vw", color: "rgba(255,255,255,0.35)" }}>
-          Every rupee the middleman takes is a rupee stolen from the farmer who fed us.
-        </p>
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.12)" }}>02</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.1)" }}>02</span>
       </div>
     </div>
   );

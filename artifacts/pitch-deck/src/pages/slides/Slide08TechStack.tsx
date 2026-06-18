@@ -5,14 +5,14 @@ export default function Slide08TechStack() {
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[7vw]">
 
-        <div className="text-center mb-[5vh]">
-          <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.3vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Tech Stack</p>
+        <div className="text-center mb-[5.5vh]">
+          <p className="font-display font-semibold mb-[1.2vh]" style={{ fontSize: "1.2vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Tech Stack</p>
           <h2 className="font-display font-extrabold text-white" style={{ fontSize: "4vw", lineHeight: 1 }}>
-            Built to production standards
+            Built. Shipped. Running today.
           </h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-[2vw] w-full">
+        <div className="grid grid-cols-4 gap-[2vw] w-full mb-[2.5vw]">
 
           <div className="rounded-2xl p-[2.5vw] flex flex-col items-center text-center" style={{ background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
             <svg viewBox="0 0 56 56" fill="none" style={{ width: "5vw", height: "5vw", marginBottom: "1.5vh" }}>
@@ -23,7 +23,7 @@ export default function Slide08TechStack() {
               <ellipse cx="28" cy="28" rx="18" ry="7" stroke="#61DAFB" strokeWidth="2.5" fill="none" transform="rotate(120 28 28)" />
             </svg>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.7vw" }}>React + Vite</p>
-            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.5)" }}>Frontend — fast, typesafe SPA</p>
+            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.45)" }}>Typesafe SPA frontend</p>
           </div>
 
           <div className="rounded-2xl p-[2.5vw] flex flex-col items-center text-center" style={{ background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
@@ -32,7 +32,7 @@ export default function Slide08TechStack() {
               <path d="M18 36 L18 22 L28 36 L38 22 L38 36" stroke="#68A063" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </svg>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.7vw" }}>Node / Express 5</p>
-            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.5)" }}>REST API — OpenAPI spec-first</p>
+            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.45)" }}>OpenAPI spec-first REST API</p>
           </div>
 
           <div className="rounded-2xl p-[2.5vw] flex flex-col items-center text-center" style={{ background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
@@ -44,7 +44,7 @@ export default function Slide08TechStack() {
               <line x1="48" y1="16" x2="48" y2="40" stroke="#336791" strokeWidth="2.5" />
             </svg>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.7vw" }}>PostgreSQL + Drizzle</p>
-            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.5)" }}>Relational DB with typed ORM</p>
+            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.45)" }}>Typed ORM, relational DB</p>
           </div>
 
           <div className="rounded-2xl p-[2.5vw] flex flex-col items-center text-center" style={{ background: "rgba(255,255,255,0.07)", border: "1.5px solid rgba(255,255,255,0.12)" }}>
@@ -53,12 +53,12 @@ export default function Slide08TechStack() {
               <path d="M20 36 C20 28 28 16 36 20 C40 22 38 30 32 32 C26 34 24 28 28 24" stroke="#10a37f" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             </svg>
             <p className="font-display font-bold text-white" style={{ fontSize: "1.7vw" }}>GPT-4o</p>
-            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.5)" }}>AI chat — Telugu &amp; English</p>
+            <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.45)" }}>Telugu + English AI chat</p>
           </div>
 
         </div>
 
-        <div className="grid grid-cols-3 gap-[2vw] mt-[2.5vw] w-full">
+        <div className="grid grid-cols-3 gap-[2vw] w-full">
 
           <div className="rounded-2xl p-[2vw] flex items-center gap-[1.5vw]" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
             <svg viewBox="0 0 40 40" fill="none" style={{ width: "3.5vw", height: "3.5vw", flexShrink: 0 }}>
@@ -68,7 +68,7 @@ export default function Slide08TechStack() {
             </svg>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "1.5vw" }}>TypeScript</p>
-              <p className="font-display font-normal" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.45)" }}>End-to-end type safety</p>
+              <p className="font-display font-normal" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.4)" }}>End-to-end type safety</p>
             </div>
           </div>
 
@@ -80,7 +80,7 @@ export default function Slide08TechStack() {
             </svg>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "1.5vw" }}>Orval Codegen</p>
-              <p className="font-display font-normal" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.45)" }}>Auto-generated API hooks</p>
+              <p className="font-display font-normal" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.4)" }}>Auto-generated API hooks</p>
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function Slide08TechStack() {
             </svg>
             <div>
               <p className="font-display font-bold text-white" style={{ fontSize: "1.5vw" }}>WebSocket Chat</p>
-              <p className="font-display font-normal" style={{ fontSize: "1.15vw", color: "rgba(255,255,255,0.45)" }}>Real-time messaging layer</p>
+              <p className="font-display font-normal" style={{ fontSize: "1.1vw", color: "rgba(255,255,255,0.4)" }}>Real-time messaging layer</p>
             </div>
           </div>
 
