@@ -1,94 +1,95 @@
 export default function SlideWhyWins() {
-  const points = [
-    {
-      title: "Direct Farmer-to-Buyer System",
-      detail: "Zero intermediaries. Farmers list, buyers discover, both negotiate and close — in real time.",
-      color: "#16a34a",
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.5vw", height: "3.5vw" }}>
-          <circle cx="12" cy="16" r="8" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <circle cx="36" cy="16" r="8" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <path d="M2 42c0-8 4-10 10-10" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          <path d="M46 42c0-8-4-10-10-10" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          <line x1="20" y1="28" x2="28" y2="28" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" />
-          <polyline points="24,24 28,28 24,32" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        </svg>
-      ),
-    },
-    {
-      title: "AI-First Agriculture Platform",
-      detail: "GPT-4o for pest detection from photos, fair price advice, and a 24/7 farming assistant.",
-      color: "#7c3aed",
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.5vw", height: "3.5vw" }}>
-          <rect x="4" y="12" width="26" height="20" rx="4" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <circle cx="12" cy="22" r="3" fill="#4ade80" />
-          <circle cx="20" cy="22" r="3" fill="#4ade80" />
-          <path d="M28 16 C33 12 42 16 42 24 C42 30 39 32 36 33 L37 39 L30 34" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        </svg>
-      ),
-    },
-    {
-      title: "Regional Language Support",
-      detail: "Telugu, Hindi, and English — built in from day one. The AI responds in the farmer's own language.",
-      color: "#0891b2",
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.5vw", height: "3.5vw" }}>
-          <circle cx="24" cy="24" r="18" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <path d="M12 24 C14 14 34 14 36 24 C34 34 14 34 12 24" stroke="#4ade80" strokeWidth="2" fill="none" />
-          <line x1="24" y1="6" x2="24" y2="42" stroke="#4ade80" strokeWidth="2" />
-          <line x1="6" y1="24" x2="42" y2="24" stroke="#4ade80" strokeWidth="2" strokeDasharray="4 3" />
-        </svg>
-      ),
-    },
-    {
-      title: "Real-Time Negotiation Engine",
-      detail: "Live WebSocket chat for farmers and buyers to negotiate directly — no phone calls, no brokers.",
-      color: "#d97706",
-      icon: (
-        <svg viewBox="0 0 48 48" fill="none" style={{ width: "3.5vw", height: "3.5vw" }}>
-          <path d="M6 34 L6 12 C6 10 8 8 10 8 L38 8 C40 8 42 10 42 12 L42 28 C42 30 40 32 38 32 L18 32 Z" stroke="#4ade80" strokeWidth="2.5" fill="none" />
-          <line x1="14" y1="18" x2="34" y2="18" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" />
-          <line x1="14" y1="24" x2="26" y2="24" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-  ];
-
   return (
-    <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#052e16" }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(34,197,94,0.12) 0%, transparent 65%)" }} />
+    <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#ffffff" }}>
+      <div className="absolute top-0 left-0 right-0 h-[0.8vh]" style={{ background: "linear-gradient(90deg, #15803d 0%, #22c55e 100%)" }} />
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[7vw]">
-        <p className="font-display font-semibold mb-[1vh]" style={{ fontSize: "1.3vw", color: "#4ade80", textTransform: "uppercase", letterSpacing: "0.2em" }}>Why Mana Rythu</p>
-        <h2 className="font-display font-extrabold text-white text-center mb-[5vh]" style={{ fontSize: "4.2vw", lineHeight: 1 }}>
-          No one else does all four
+      <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-center pl-[7vw] pr-[5vw]" style={{ width: "50vw" }}>
+        <p className="font-display font-semibold mb-[1.5vh]" style={{ fontSize: "1.3vw", color: "#15803d", textTransform: "uppercase", letterSpacing: "0.15em" }}>Why Mana Rythu Wins</p>
+        <h2 className="font-display font-extrabold" style={{ fontSize: "4.5vw", color: "#052e16", lineHeight: 1.05 }}>
+          Built from the inside out
         </h2>
+        <p className="font-display font-normal mt-[2.5vh]" style={{ fontSize: "1.6vw", color: "#6b7280", lineHeight: 1.5 }}>
+          This platform was designed knowing Telangana's farmers — their language, their pain, their phone. That focus is the moat.
+        </p>
 
-        <div className="grid grid-cols-2 gap-[2vw] w-full">
-          {points.map(({ title, detail, color, icon }) => (
-            <div
-              key={title}
-              className="rounded-2xl flex items-start gap-[2vw] px-[2.5vw] py-[2.8vh]"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(74,222,128,0.18)" }}
-            >
-              <div
-                className="rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ width: "5.5vw", height: "5.5vw", background: color }}
-              >
-                {icon}
-              </div>
-              <div>
-                <p className="font-display font-bold text-white" style={{ fontSize: "1.8vw", lineHeight: 1.2 }}>{title}</p>
-                <p className="font-display font-normal mt-[0.8vh]" style={{ fontSize: "1.35vw", color: "rgba(255,255,255,0.6)", lineHeight: 1.4 }}>{detail}</p>
-              </div>
+        <div className="mt-[4vh] flex flex-col gap-[2vh]">
+          <div className="flex items-center gap-[1.5vw]">
+            <div className="rounded-full flex-shrink-0" style={{ width: "2.2vw", height: "2.2vw", background: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg viewBox="0 0 20 20" fill="none" style={{ width: "1.3vw", height: "1.3vw" }}>
+                <polyline points="4,10 8,14 16,6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-          ))}
+            <p className="font-display font-semibold" style={{ fontSize: "1.6vw", color: "#374151" }}>Telugu-first AI experience</p>
+          </div>
+          <div className="flex items-center gap-[1.5vw]">
+            <div className="rounded-full flex-shrink-0" style={{ width: "2.2vw", height: "2.2vw", background: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg viewBox="0 0 20 20" fill="none" style={{ width: "1.3vw", height: "1.3vw" }}>
+                <polyline points="4,10 8,14 16,6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <p className="font-display font-semibold" style={{ fontSize: "1.6vw", color: "#374151" }}>Farmer-first product design</p>
+          </div>
+          <div className="flex items-center gap-[1.5vw]">
+            <div className="rounded-full flex-shrink-0" style={{ width: "2.2vw", height: "2.2vw", background: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg viewBox="0 0 20 20" fill="none" style={{ width: "1.3vw", height: "1.3vw" }}>
+                <polyline points="4,10 8,14 16,6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <p className="font-display font-semibold" style={{ fontSize: "1.6vw", color: "#374151" }}>Live market price transparency</p>
+          </div>
+          <div className="flex items-center gap-[1.5vw]">
+            <div className="rounded-full flex-shrink-0" style={{ width: "2.2vw", height: "2.2vw", background: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg viewBox="0 0 20 20" fill="none" style={{ width: "1.3vw", height: "1.3vw" }}>
+                <polyline points="4,10 8,14 16,6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <p className="font-display font-semibold" style={{ fontSize: "1.6vw", color: "#374151" }}>Full-stack: marketplace + chat + AI</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center pr-[7vw] pl-[4vw]" style={{ width: "50vw" }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: "1.5px solid #e5e7eb" }}>
+          <div className="px-[2vw] py-[1.5vh]" style={{ background: "#052e16" }}>
+            <p className="font-display font-bold text-white" style={{ fontSize: "1.5vw" }}>Competitive Landscape</p>
+          </div>
+          <div style={{ background: "#f9fafb" }}>
+            <div className="flex px-[2vw] py-[1.2vh]" style={{ borderBottom: "1px solid #e5e7eb", background: "#f0fdf4" }}>
+              <p className="font-display font-bold" style={{ fontSize: "1.35vw", color: "#052e16", flex: 2 }}>Platform</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.35vw", color: "#052e16", flex: 1 }}>Telugu AI</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.35vw", color: "#052e16", flex: 1 }}>Direct P2P</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.35vw", color: "#052e16", flex: 1 }}>Live Prices</p>
+            </div>
+            <div className="flex px-[2vw] py-[1.5vh]" style={{ borderBottom: "1px solid #e5e7eb", background: "#dcfce7" }}>
+              <p className="font-display font-bold" style={{ fontSize: "1.35vw", color: "#15803d", flex: 2 }}>Mana Rythu</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.6vw", color: "#16a34a", flex: 1 }}>✓</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.6vw", color: "#16a34a", flex: 1 }}>✓</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.6vw", color: "#16a34a", flex: 1 }}>✓</p>
+            </div>
+            <div className="flex px-[2vw] py-[1.5vh]" style={{ borderBottom: "1px solid #e5e7eb" }}>
+              <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#374151", flex: 2 }}>eNAM</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.6vw", color: "#16a34a", flex: 1 }}>✓</p>
+            </div>
+            <div className="flex px-[2vw] py-[1.5vh]" style={{ borderBottom: "1px solid #e5e7eb" }}>
+              <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#374151", flex: 2 }}>DeHaat</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+            </div>
+            <div className="flex px-[2vw] py-[1.5vh]">
+              <p className="font-display font-semibold" style={{ fontSize: "1.35vw", color: "#374151", flex: 2 }}>Agri10x</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+              <p className="font-display font-bold text-center" style={{ fontSize: "1.6vw", color: "#16a34a", flex: 1 }}>✓</p>
+              <p className="font-display font-normal text-center" style={{ fontSize: "1.6vw", color: "#d1d5db", flex: 1 }}>—</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>10</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>10</span>
       </div>
     </div>
   );

@@ -4,95 +4,103 @@
     "position": 1,
     "filepath": "src/pages/slides/Slide01Title.tsx",
     "title": "Mana Rythu",
-    "description": "Cut Middlemen. Empower Farmers. — AI-powered Farmer-to-Buyer Ecosystem",
-    "speakerNotes": ""
-  },
-  {
-    "id": "c1d2e3f4-0002-4000-8000-000000000022",
-    "position": 2,
-    "filepath": "src/pages/slides/SlideEmotionalHook.tsx",
-    "title": "The Human Story",
-    "description": "A farmer's income depends on people he never meets — ₹20 vs ₹40 visual",
+    "description": "Title slide — platform name, tagline, and presenter info",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0002-4000-8000-000000000002",
-    "position": 3,
-    "filepath": "src/pages/slides/Slide02Problem.tsx",
-    "title": "Problem",
-    "description": "Farmers lose 30–40% income to middlemen, no price transparency, supply mismatch",
+    "position": 2,
+    "filepath": "src/pages/slides/SlideEmotionalHook.tsx",
+    "title": "The Middleman Problem",
+    "description": "Emotional hook — farmer earns ₹20, buyer pays ₹40, middlemen take the rest",
     "speakerNotes": ""
   },
   {
-    "id": "b1c2d3e4-0003-4000-8000-000000000013",
-    "position": 4,
-    "filepath": "src/pages/slides/SlideWhyNow.tsx",
-    "title": "Why Now?",
-    "description": "350M+ rural internet users, AI in local languages, UPI growth, govt digital push",
+    "id": "a1b2c3d4-0003-4000-8000-000000000003",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide02Problem.tsx",
+    "title": "Who Profits From Your Harvest?",
+    "description": "Problem slide — visualising the supply chain value extraction",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0004-4000-8000-000000000004",
+    "position": 4,
+    "filepath": "src/pages/slides/SlideWhyNow.tsx",
+    "title": "Why Now?",
+    "description": "Market timing — rural internet, AI in Telugu, UPI, government digitisation",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0005-4000-8000-000000000005",
     "position": 5,
     "filepath": "src/pages/slides/Slide04Solution.tsx",
-    "title": "Solution",
-    "description": "Direct farmer-to-buyer marketplace with AI and real-time chat",
+    "title": "The Solution",
+    "description": "Mana Rythu — direct farmer-to-buyer marketplace with AI chat and price intelligence",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0006-4000-8000-000000000006",
     "position": 6,
     "filepath": "src/pages/slides/Slide06Features.tsx",
-    "title": "Product Features",
-    "description": "Marketplace, Real-time Chat, AI Assistant, Price Intelligence",
+    "title": "Platform Features",
+    "description": "6 core features: Farmer Portal, Buyer Marketplace, Real-time Chat, Price Intelligence, Multilingual AI, Payments",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0005-4000-8000-000000000005",
+    "id": "a1b2c3d4-0007-4000-8000-000000000007",
     "position": 7,
     "filepath": "src/pages/slides/Slide05HowItWorks.tsx",
     "title": "How It Works",
-    "description": "5-step flow: List → View → Chat → AI Pricing → Deal",
-    "speakerNotes": ""
-  },
-  {
-    "id": "a1b2c3d4-0009-4000-8000-000000000009",
-    "position": 8,
-    "filepath": "src/pages/slides/Slide09Impact.tsx",
-    "title": "Impact",
-    "description": "Higher Income · Zero Middlemen · Faster Trade — 3 big cards",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b1c2d3e4-0010-4000-8000-000000000020",
-    "position": 9,
-    "filepath": "src/pages/slides/SlideMarketOpportunity.tsx",
-    "title": "Market Size",
-    "description": "140M+ farm holdings, ₹30T+ agri supply chain, 350M+ rural internet users",
-    "speakerNotes": ""
-  },
-  {
-    "id": "b1c2d3e4-0015-4000-8000-000000000016",
-    "position": 10,
-    "filepath": "src/pages/slides/SlideWhyWins.tsx",
-    "title": "Why Mana Rythu",
-    "description": "4 differentiators: direct marketplace, AI-first, regional language, real-time negotiation",
+    "description": "Three steps: Farmer Lists → Chat & Agree → Pay & Deliver",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0008-4000-8000-000000000008",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide09Impact.tsx",
+    "title": "Impact",
+    "description": "Three impact cards: 50% more income, 30% lower prices, 2× price visibility",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0009-4000-8000-000000000009",
+    "position": 9,
+    "filepath": "src/pages/slides/SlideMarketOpportunity.tsx",
+    "title": "Market Size",
+    "description": "₹30T agri supply chain, 140M farm holdings, 350M rural internet users",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0010-4000-8000-000000000010",
+    "position": 10,
+    "filepath": "src/pages/slides/SlideWhyWins.tsx",
+    "title": "Why Mana Rythu Wins",
+    "description": "Competitive advantages and comparison table vs eNAM, DeHaat, Agri10x",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0011-4000-8000-000000000011",
     "position": 11,
     "filepath": "src/pages/slides/Slide08TechStack.tsx",
     "title": "Tech Stack",
-    "description": "React, Node.js, Express, PostgreSQL, OpenAI GPT-4o, Tailwind CSS",
+    "description": "React + Vite, Node/Express 5, PostgreSQL + Drizzle, GPT-4o, TypeScript, Orval, WebSocket",
     "speakerNotes": ""
   },
   {
     "id": "a1b2c3d4-0012-4000-8000-000000000012",
     "position": 12,
+    "filepath": "src/pages/slides/Slide10Demo.tsx",
+    "title": "Live Platform",
+    "description": "App demo with screenshots — home, marketplace, fair price tool, chat",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0013-4000-8000-000000000013",
+    "position": 13,
     "filepath": "src/pages/slides/Slide12Close.tsx",
-    "title": "Vision",
-    "description": "Empowering Farmers Through Technology — GitHub + Live demo",
+    "title": "Let's Give Farmers Their Due",
+    "description": "Closing slide — vision statement, presenter contact, and social",
     "speakerNotes": ""
   }
 ]
