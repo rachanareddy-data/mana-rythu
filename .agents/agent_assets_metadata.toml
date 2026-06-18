@@ -1,5 +1,16 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "QP-SWwUt5j4TUtOFAPfoj"
+uri = "file://artifacts/mana-rythu-video/public/images/texture-green.png"
+type = "image"
+title = "green topographic texture"
+
+[[generated]]
+id = "loqzYuhRD3_JJqmJNVnB5"
+uri = "file://artifacts/mana-rythu-video/public/images/sprout.png"
+type = "image"
+title = "soil with sprout"
 
 [[outputs]]
 id = "yGMhNjqIhVfD9rsXaVHHq"
@@ -24,3 +35,9 @@ id = "qM1Ke6XNrh-3Mohyt6mHm"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck-v3.pptx"
 type = "slides"
 title = "Mana Rythu Pitch Deck v3 — Investor Grade (PPTX)"
+
+[[outputs]]
+id = "ErRFZIRc3nrYAZfeikN3S"
+uri = "file://artifacts/mana-rythu-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"

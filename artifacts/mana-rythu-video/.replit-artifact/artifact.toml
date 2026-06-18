@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/mana-rythu-video/"
+title = "Mana Rythu Demo Video"
+version = "1.0.0"
+id = "artifacts/mana-rythu-video"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/mana-rythu-video/" ]
+localPort = 25499
+
+[services.development]
+run = "pnpm --filter @workspace/mana-rythu-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/mana-rythu-video", "run", "build" ]
+publicDir = "artifacts/mana-rythu-video/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25499"
+BASE_PATH = "/mana-rythu-video/"
