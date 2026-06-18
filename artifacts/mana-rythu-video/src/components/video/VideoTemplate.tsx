@@ -9,21 +9,21 @@ import { Scene5 } from './video_scenes/Scene5';
 import { Scene6 } from './video_scenes/Scene6';
 
 export const SCENE_DURATIONS: Record<string, number> = {
-  intro: 6000,
-  problem: 10000,
-  marketplace: 12000,
-  chat: 12000,
-  impact: 10000,
-  closing: 10000,
+  hook:       15000,
+  problem:    30000,
+  marketplace: 45000,
+  ai_chat:    30000,
+  price_order: 30000,
+  impact:     30000,
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
-  intro: Scene1,
+  hook: Scene1,
   problem: Scene2,
   marketplace: Scene3,
-  chat: Scene4,
-  impact: Scene5,
-  closing: Scene6,
+  ai_chat: Scene4,
+  price_order: Scene5,
+  impact: Scene6,
 };
 
 const SCENE_START_SEC: Record<string, number> = (() => {

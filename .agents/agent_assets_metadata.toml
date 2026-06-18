@@ -12,6 +12,18 @@ uri = "file://artifacts/mana-rythu-video/public/images/sprout.png"
 type = "image"
 title = "soil with sprout"
 
+[[generated]]
+id = "JGa8Cjch37iiuAmoJhF7q"
+uri = "file://artifacts/mana-rythu-video/public/images/aerial-farmland.png"
+type = "image"
+title = "Aerial farmland golden hour"
+
+[[generated]]
+id = "xEmE81sJipV-_-F9muLJ6"
+uri = "file://artifacts/mana-rythu-video/public/images/farmer-phone.png"
+type = "image"
+title = "Farmer using smartphone"
+
 [[outputs]]
 id = "yGMhNjqIhVfD9rsXaVHHq"
 uri = "file://.local/outputs/Mana-Rythu-Pitch-Deck.pptx"
