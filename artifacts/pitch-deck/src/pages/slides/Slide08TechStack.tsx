@@ -101,7 +101,7 @@ export default function Slide08TechStack() {
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>11</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>12</span>
       </div>
     </div>
   );

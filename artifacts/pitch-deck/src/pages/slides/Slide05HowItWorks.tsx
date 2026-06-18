@@ -80,7 +80,7 @@ export default function Slide05HowItWorks() {
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>07</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.18)" }}>08</span>
       </div>
     </div>
   );

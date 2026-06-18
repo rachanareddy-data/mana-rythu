@@ -75,7 +75,7 @@ export default function Slide06Features() {
       </div>
 
       <div className="absolute bottom-[3vh] right-[3vw]">
-        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>06</span>
+        <span className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "#d1d5db" }}>07</span>
       </div>
     </div>
   );
