@@ -9,12 +9,12 @@ import { Scene5 } from './video_scenes/Scene5';
 import { Scene6 } from './video_scenes/Scene6';
 
 export const SCENE_DURATIONS: Record<string, number> = {
-  hook:       15000,
-  problem:    30000,
-  marketplace: 45000,
+  hook:       8000,
+  problem:    12000,
+  marketplace: 10000,
   ai_chat:    30000,
-  price_order: 30000,
-  impact:     30000,
+  price_order: 25000,
+  impact:     25000,
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
@@ -72,39 +72,18 @@ export default function VideoTemplate({
   }, [currentSceneKey, baseSceneKey, muted]);
 
   return (
-    <div className="w-full h-screen overflow-hidden relative bg-bg-dark text-text-inverse font-display">
-      {/* Persistent Background Video */}
-      <motion.video
-        src={`${import.meta.env.BASE_URL}videos/farmland.mp4`}
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
-        autoPlay
-        muted
-        loop
-        playsInline
-        animate={{ opacity: sceneIndex === 5 || sceneIndex === 0 ? 0.3 : 0.1, scale: 1.1 }}
-        transition={{ duration: 2, ease: "easeInOut" }}
-      />
-
-      {/* Persistent Texture Overlay */}
-      <motion.img
-        src={`${import.meta.env.BASE_URL}images/texture-green.png`}
-        className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-overlay"
-        animate={{ scale: [1, 1.05, 1], opacity: [0.1, 0.15, 0.1] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      />
-
-      {/* Persistent Shapes / Motifs */}
-      <motion.div
-        className="absolute w-[80vw] h-[80vw] rounded-full blur-[100px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, var(--color-primary) 0%, transparent 70%)' }}
-        animate={{
-          x: ['-20vw', '50vw', '10vw', '70vw', '30vw', '50vw'][sceneIndex],
-          y: ['-20vh', '10vh', '50vh', '-10vh', '40vh', '20vh'][sceneIndex],
-          scale: [1, 1.5, 0.8, 1.2, 1.5, 1][sceneIndex],
-          opacity: [0.3, 0.2, 0.4, 0.2, 0.3, 0.4][sceneIndex]
-        }}
-        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-      />
+    <div className="w-full h-screen overflow-hidden relative bg-[#052e16] text-white font-display">
+      {/* Persistent Background Effects */}
+      <div className="absolute inset-0">
+        <motion.div className="absolute w-[600px] h-[600px] rounded-full opacity-10 blur-[100px]"
+          style={{ background: 'radial-gradient(circle, #22c55e, transparent)' }}
+          animate={{ x: ['-10%', '60%', '20%'], y: ['10%', '50%', '30%'], scale: [1, 1.3, 0.9] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
+        <motion.div className="absolute w-[400px] h-[400px] rounded-full opacity-10 blur-[80px] right-0 bottom-0"
+          style={{ background: 'radial-gradient(circle, #4ade80, transparent)' }}
+          animate={{ x: ['10%', '-40%', '5%'], y: ['-10%', '-50%', '-20%'] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }} />
+      </div>
 
       <AnimatePresence mode="popLayout">
         {SceneComponent && <SceneComponent key={currentSceneKey} />}
