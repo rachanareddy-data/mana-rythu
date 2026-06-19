@@ -30,9 +30,10 @@ export function Scene7() {
     >
       <CinematicBg overlay="rgba(5,46,22,0.60)" />
 
-      <div className="relative z-10 flex flex-col items-center w-full max-w-5xl px-12">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-5xl px-4 sm:px-8 lg:px-12">
         <motion.h2
-          className="text-[4vw] font-bold text-[#22c55e] mb-12 tracking-wide"
+          className="font-bold text-[#22c55e] mb-8 sm:mb-12 tracking-wide text-center"
+          style={{ fontSize: 'clamp(1.3rem, 4vw, 2.5rem)' }}
           initial={{ opacity: 0, y: -20 }}
           animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
           transition={{ duration: 0.7 }}
@@ -40,12 +41,14 @@ export function Scene7() {
           The Impact
         </motion.h2>
 
-        <div className="flex flex-wrap justify-center gap-6 w-full">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 w-full">
           {stats.map((s, i) => (
             <motion.div
               key={i}
-              className="flex-1 min-w-[240px] max-w-[300px] flex flex-col items-center text-center rounded-3xl p-8"
+              className="flex flex-col items-center text-center rounded-3xl p-5 sm:p-8 w-full sm:w-auto"
               style={{
+                minWidth: 'min(200px, 100%)',
+                maxWidth: 'min(300px, 100%)',
                 background: 'rgba(255,255,255,0.08)',
                 backdropFilter: 'blur(12px)',
                 border: '1px solid rgba(255,255,255,0.18)',
@@ -56,26 +59,26 @@ export function Scene7() {
               transition={{ type: 'spring', stiffness: 280, damping: 25 }}
             >
               <h3
-                className="font-black leading-none mb-3"
-                style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', color: '#4ade80' }}
+                className="font-black leading-none mb-2 sm:mb-3"
+                style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#4ade80' }}
               >
                 {s.value}
               </h3>
-              <p className="text-xl font-bold text-white mb-1">{s.label}</p>
-              <p className="text-sm text-white/55 leading-snug">{s.sub}</p>
+              <p className="font-bold text-white mb-1" style={{ fontSize: 'clamp(0.85rem, 2vw, 1.25rem)' }}>{s.label}</p>
+              <p className="text-white/55 leading-snug" style={{ fontSize: 'clamp(0.7rem, 1.2vw, 0.875rem)' }}>{s.sub}</p>
             </motion.div>
           ))}
         </div>
 
-        {/* Impact lines */}
-        <div className="flex flex-col items-center gap-3 mt-12">
+        <div className="flex flex-col items-center gap-2 sm:gap-3 mt-8 sm:mt-12 px-2">
           {[
             '50% higher income for farmers through direct sales',
             '100% transparent trade — receipts, contracts, real-time pricing',
           ].map((line, i) => (
             <motion.p
               key={i}
-              className="text-[1.4vw] font-medium text-white text-center"
+              className="font-medium text-white text-center"
+              style={{ fontSize: 'clamp(0.75rem, 1.4vw, 0.9rem)' }}
               initial={{ opacity: 0, y: 10 }}
               animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               transition={{ delay: i * 0.2, duration: 0.7 }}

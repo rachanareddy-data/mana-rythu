@@ -11949,13 +11949,13 @@
       ],
       "vulnerabilities": [
         {
-          "ghsaId": "GHSA-fx2h-pf6j-xcff",
-          "severity": "HIGH",
+          "ghsaId": "GHSA-v6wh-96g9-6wx3",
+          "severity": "MODERATE",
           "range": ">=8.0.0 <8.0.16 || >=7.0.0 <7.3.5 || <6.4.3"
         },
         {
-          "ghsaId": "GHSA-v6wh-96g9-6wx3",
-          "severity": "MODERATE",
+          "ghsaId": "GHSA-fx2h-pf6j-xcff",
+          "severity": "HIGH",
           "range": ">=8.0.0 <8.0.16 || >=7.0.0 <7.3.5 || <6.4.3"
         }
       ],
@@ -11966,7 +11966,7 @@
       "version": "7.3.3",
       "reachability": [
         {
-          "ghsa_id": "GHSA-fx2h-pf6j-xcff",
+          "ghsa_id": "GHSA-v6wh-96g9-6wx3",
           "reachability": [
             {
               "type": "undeterminable_reachability",
@@ -11992,7 +11992,7 @@
           "activation_status": "activated_with_human_review"
         },
         {
-          "ghsa_id": "GHSA-v6wh-96g9-6wx3",
+          "ghsa_id": "GHSA-fx2h-pf6j-xcff",
           "reachability": [
             {
               "type": "undeterminable_reachability",
@@ -13625,7 +13625,7 @@
       "version": "5.0.14"
     }
   ],
-  "tier1ReachabilityScanId": "d8a64868-0526-4c85-ab71-2815163491b2",
+  "tier1ReachabilityScanId": "7c282a36-1bfa-4417-b732-dd765cc76dd7",
   "workspaceDiagnostics": [
     {
       "subprojectPath": "artifacts/mana-rythu-video",
