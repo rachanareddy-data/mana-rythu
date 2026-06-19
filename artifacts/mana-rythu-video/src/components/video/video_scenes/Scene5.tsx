@@ -1,155 +1,150 @@
-import { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
 
-const CAPTIONS = [
-  { time: 0, label: '🌾 Live Marketplace',       cap: 'Real farmers, real crops — buy directly' },
-  { time: 4, label: '💰 AI Price Intelligence',  cap: 'Live APMC mandi rates. Grade A/B/C pricing.' },
-  { time: 8, label: '💬 Real-Time Chat',          cap: 'Farmer ↔ Buyer direct negotiation, no agents' },
+const steps = [
+  {
+    icon: '🌾',
+    step: '01',
+    title: 'Farmer Lists Crop',
+    desc: 'Post crops with photo, quantity & price in under 2 minutes',
+    color: 'rgba(34,197,94,0.2)',
+    border: '#22c55e',
+    glow: 'rgba(34,197,94,0.3)',
+  },
+  {
+    icon: '🤖',
+    step: '02',
+    title: 'AI Matches Buyers',
+    desc: 'Smart algorithm connects to verified buyers at fair APMC rates',
+    color: 'rgba(59,130,246,0.2)',
+    border: '#3b82f6',
+    glow: 'rgba(59,130,246,0.3)',
+  },
+  {
+    icon: '💰',
+    step: '03',
+    title: 'Direct UPI Payment',
+    desc: 'Farmer receives full price — zero agents, zero commission',
+    color: 'rgba(251,191,36,0.2)',
+    border: '#fbbf24',
+    glow: 'rgba(251,191,36,0.3)',
+  },
 ];
 
 export function Scene5() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [captionIdx, setCaptionIdx] = useState(0);
+  const [phase, setPhase] = useState(0);
 
-  function handleTimeUpdate() {
-    const t = videoRef.current?.currentTime ?? 0;
-    const idx = CAPTIONS.findLastIndex(c => t >= c.time);
-    if (idx >= 0 && idx !== captionIdx) setCaptionIdx(idx);
-  }
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setPhase(1), 400),
+      setTimeout(() => setPhase(2), 1200),
+      setTimeout(() => setPhase(3), 2400),
+      setTimeout(() => setPhase(4), 3600),
+      setTimeout(() => setPhase(5), 6000),
+    ];
+    return () => timers.forEach(t => clearTimeout(t));
+  }, []);
 
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
-      {...sceneTransitions.clipPolygon}
+      {...sceneTransitions.morphExpand}
     >
-      <CinematicBg overlay="rgba(4,16,18,0.80)" />
+      <CinematicBg overlay="rgba(5,46,22,0.68)" />
 
-      <div className="relative z-10 flex flex-col items-center w-full h-full py-5 px-8">
+      <div className="relative z-10 flex flex-col items-center w-full px-4 sm:px-8 text-center">
 
-        {/* Badge */}
-        <div className="flex flex-col items-center mb-3 flex-shrink-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[0.65rem] font-bold tracking-[0.4em] uppercase" style={{ color: '#4ade80' }}>
-              LIVE PLATFORM
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#22c55e' }} />
-          </div>
+        {/* Label */}
+        <motion.p
+          className="font-bold text-[#4ade80] tracking-widest uppercase mb-3"
+          style={{ fontSize: 'clamp(0.65rem, 1.8vw, 1rem)' }}
+          initial={{ opacity: 0, y: -16 }}
+          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
+          transition={{ duration: 0.6 }}
+        >
+          How It Works
+        </motion.p>
 
-          <AnimatePresence mode="popLayout">
-            <motion.h2
-              key={captionIdx}
-              className="text-[min(3vw,1.7rem)] font-black text-white text-center"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {CAPTIONS[captionIdx].label}
-            </motion.h2>
-          </AnimatePresence>
-        </div>
+        {/* Headline */}
+        <motion.h2
+          className="font-black text-white leading-tight mb-3"
+          style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.2rem)' }}
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={phase >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.88 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+        >
+          3 Steps. Zero Middlemen.
+        </motion.h2>
 
-        {/* Browser mockup with recorded video */}
-        <div className="flex-1 flex items-center justify-center min-h-0 w-full">
-          <motion.div
-            className="w-full flex flex-col overflow-hidden"
-            style={{
-              maxWidth: 'min(900px, 92vw)',
-              borderRadius: '10px 10px 8px 8px',
-              border: '2px solid rgba(255,255,255,0.13)',
-              boxShadow: '0 40px 90px rgba(0,0,0,0.8)',
-              height: 'min(56vh, 520px)',
-            }}
-            initial={{ scale: 0.94, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-          >
-            {/* Browser chrome */}
-            <div
-              className="flex items-center gap-2 px-4 flex-shrink-0"
+        <motion.p
+          className="text-white/65 mb-8 sm:mb-12"
+          style={{ fontSize: 'clamp(0.75rem, 1.8vw, 1.1rem)' }}
+          initial={{ opacity: 0 }}
+          animate={phase >= 2 ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
+          From farm to buyer in minutes — not weeks.
+        </motion.p>
+
+        {/* Steps */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-stretch justify-center gap-4 sm:gap-6 w-full max-w-4xl">
+          {steps.map((s, i) => (
+            <motion.div
+              key={i}
+              className="relative flex flex-col items-center text-center rounded-2xl p-5 sm:p-7 w-full sm:w-auto sm:flex-1"
               style={{
-                height: 38,
-                background: 'rgba(18,18,18,0.97)',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                background: s.color,
+                border: `2px solid ${s.border}`,
+                boxShadow: `0 0 40px ${s.glow}`,
+                backdropFilter: 'blur(10px)',
               }}
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              animate={phase >= 3 + i ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 22 }}
             >
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-amber-400" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-              </div>
+              {/* Step number */}
               <div
-                className="flex-1 mx-2 h-6 rounded-full flex items-center px-3 gap-2"
-                style={{ background: 'rgba(255,255,255,0.07)' }}
+                className="absolute top-3 right-3 text-[10px] font-black tracking-widest opacity-40"
+                style={{ color: s.border }}
               >
-                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>🔒</span>
-                <AnimatePresence mode="popLayout">
-                  <motion.span
-                    key={captionIdx}
-                    className="text-[11px] font-mono truncate"
-                    style={{ color: 'rgba(255,255,255,0.5)' }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {captionIdx === 0 ? 'mana-rythu.replit.app/marketplace' :
-                     captionIdx === 1 ? 'mana-rythu.replit.app/fair-price' :
-                     'mana-rythu.replit.app/chat'}
-                  </motion.span>
-                </AnimatePresence>
+                {s.step}
               </div>
-            </div>
 
-            {/* Recorded video */}
-            <div className="relative flex-1 overflow-hidden bg-[#052e16]">
-              <video
-                ref={videoRef}
-                src="/mana-rythu-video/platform-demo.mp4"
-                className="w-full h-full object-cover"
-                muted
-                playsInline
-                autoPlay
-                loop
-                onTimeUpdate={handleTimeUpdate}
-                style={{ objectPosition: 'top center' }}
-              />
-            </div>
-          </motion.div>
+              {/* Icon */}
+              <div className="text-4xl sm:text-5xl mb-3">{s.icon}</div>
+
+              <h3 className="font-bold text-white mb-2" style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)' }}>
+                {s.title}
+              </h3>
+              <p className="text-white/65 leading-snug" style={{ fontSize: 'clamp(0.7rem, 1.4vw, 0.875rem)' }}>
+                {s.desc}
+              </p>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Caption + dots */}
-        <div className="flex flex-col items-center gap-3 flex-shrink-0 pt-3">
-          <AnimatePresence mode="popLayout">
-            <motion.p
-              key={captionIdx}
-              className="text-[min(1.5vw,0.9rem)] font-medium text-center"
-              style={{ color: 'rgba(255,255,255,0.72)' }}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.3 }}
-            >
-              {CAPTIONS[captionIdx].cap}
-            </motion.p>
-          </AnimatePresence>
-
-          <div className="flex gap-2 items-center">
-            {CAPTIONS.map((_, i) => (
-              <motion.div
-                key={i}
-                className="h-1 rounded-full"
-                animate={{
-                  width: i === captionIdx ? 24 : 5,
-                  backgroundColor: i === captionIdx ? '#22c55e' : 'rgba(255,255,255,0.3)',
-                }}
-                transition={{ duration: 0.35 }}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Bottom tagline */}
+        <motion.div
+          className="mt-8 sm:mt-12 flex items-center gap-3 rounded-full px-6 py-2.5"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(34,197,94,0.4)',
+            backdropFilter: 'blur(8px)',
+          }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: 0.8 }}
+        >
+          <span className="text-lg sm:text-xl">🚀</span>
+          <span
+            className="font-semibold text-white/85"
+            style={{ fontSize: 'clamp(0.7rem, 1.6vw, 1rem)' }}
+          >
+            Live on Replit · Real farmers · Real crops · Real money
+          </span>
+        </motion.div>
       </div>
     </motion.div>
   );
