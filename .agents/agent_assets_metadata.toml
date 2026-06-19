@@ -53,3 +53,9 @@ id = "ErRFZIRc3nrYAZfeikN3S"
 uri = "file://artifacts/mana-rythu-video/public/audio/bg_music.mp3"
 type = "audio"
 title = "background music"
+
+[[outputs]]
+id = "sq-5BEFs2J-r3CBUZ8JlV"
+uri = "file://mana-rythu-demo.mp4"
+type = "video"
+title = "Mana Rythu Demo Video (MP4)"
