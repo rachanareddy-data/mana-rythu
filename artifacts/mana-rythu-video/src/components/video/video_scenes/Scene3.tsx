@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconWheat, IconRobot, IconMoney, IconChat, IconTruck } from '../VideoIcons';
 
 export function Scene3() {
   const [phase, setPhase] = useState(0);
@@ -17,11 +18,11 @@ export function Scene3() {
   }, []);
 
   const features = [
-    { icon: "🌾", title: "Marketplace", desc: "Connect farmers to direct buyers" },
-    { icon: "🤖", title: "AI Crop Intel", desc: "Disease detection via photo upload" },
-    { icon: "💰", title: "Price Intelligence", desc: "Live APMC mandi rates" },
-    { icon: "💬", title: "Live Chat", desc: "Farmer-buyer negotiation" },
-    { icon: "🚛", title: "Logistics", desc: "Transport estimates TS & AP" }
+    { Icon: IconWheat,  title: "Marketplace",        desc: "Connect farmers to direct buyers",      color: "#22c55e" },
+    { Icon: IconRobot,  title: "AI Crop Intel",       desc: "Disease detection via photo upload",   color: "#a78bfa" },
+    { Icon: IconMoney,  title: "Price Intelligence",  desc: "Live APMC mandi rates",               color: "#fbbf24" },
+    { Icon: IconChat,   title: "Live Chat",           desc: "Farmer-buyer negotiation",             color: "#38bdf8" },
+    { Icon: IconTruck,  title: "Logistics",           desc: "Transport estimates TS & AP",          color: "#fb923c" },
   ];
 
   return (
@@ -62,7 +63,7 @@ export function Scene3() {
         </motion.p>
 
         <div className="flex flex-wrap justify-center gap-3 sm:gap-6 w-full max-w-7xl">
-          {features.map((f, i) => (
+          {features.map(({ Icon, title, desc, color }, i) => (
             <motion.div
               key={i}
               className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20 flex flex-col items-center text-center shadow-xl"
@@ -71,9 +72,11 @@ export function Scene3() {
               animate={phase >= 4 ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
               transition={{ type: "spring", stiffness: 300, damping: 25, delay: phase >= 4 ? i * 0.1 : 0 }}
             >
-              <div className="text-3xl sm:text-5xl mb-2 sm:mb-4">{f.icon}</div>
-              <h3 className="font-bold text-white mb-1" style={{ fontSize: 'clamp(0.8rem, 1.8vw, 1.25rem)' }}>{f.title}</h3>
-              <p className="text-white/70" style={{ fontSize: 'clamp(0.65rem, 1.2vw, 0.9rem)' }}>{f.desc}</p>
+              <div className="mb-2 sm:mb-4">
+                <Icon size={44} color={color} strokeWidth={1.6} />
+              </div>
+              <h3 className="font-bold text-white mb-1" style={{ fontSize: 'clamp(0.8rem, 1.8vw, 1.25rem)' }}>{title}</h3>
+              <p className="text-white/70" style={{ fontSize: 'clamp(0.65rem, 1.2vw, 0.9rem)' }}>{desc}</p>
             </motion.div>
           ))}
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconFarmer, IconPerson, IconCart } from '../VideoIcons';
 
 export function Scene2() {
   const [phase, setPhase] = useState(0);
@@ -23,10 +24,10 @@ export function Scene2() {
   ];
 
   const nodes = [
-    { icon: "👨🏽‍🌾", label: "Farmer", value: "₹20", isGreen: true, delay: 0 },
-    { icon: "🕴️", label: "Broker", isGreen: false, delay: 0.3 },
-    { icon: "🕴️", label: "Trader", isGreen: false, delay: 0.6 },
-    { icon: "🛒", label: "Buyer", value: "₹80", isGreen: true, delay: 0.9 },
+    { IconComp: IconFarmer,  label: "Farmer",  value: "₹20", isGreen: true,  delay: 0 },
+    { IconComp: IconPerson,  label: "Broker",  isGreen: false, delay: 0.3 },
+    { IconComp: IconPerson,  label: "Trader",  isGreen: false, delay: 0.6 },
+    { IconComp: IconCart,    label: "Buyer",   value: "₹80", isGreen: true,  delay: 0.9 },
   ];
 
   return (
@@ -49,13 +50,13 @@ export function Scene2() {
 
         {/* Desktop: horizontal chain */}
         <div className="hidden sm:flex items-center justify-center gap-3 lg:gap-4 mb-10 sm:mb-16 w-full max-w-6xl">
-          <ChainNode icon="👨🏽‍🌾" label="Farmer" value="₹20" isGreen={true} show={phase >= 2} delay={0} />
+          <ChainNode Icon={IconFarmer} label="Farmer" value="₹20" isGreen={true} show={phase >= 2} delay={0} />
           <ChainArrow show={phase >= 2} delay={0.3} />
-          <ChainNode icon="🕴️" label="Broker" isGreen={false} show={phase >= 2} delay={0.6} />
+          <ChainNode Icon={IconPerson} label="Broker" isGreen={false} show={phase >= 2} delay={0.6} />
           <ChainArrow show={phase >= 2} delay={0.9} />
-          <ChainNode icon="🕴️" label="Trader" isGreen={false} show={phase >= 2} delay={1.2} />
+          <ChainNode Icon={IconPerson} label="Trader" isGreen={false} show={phase >= 2} delay={1.2} />
           <ChainArrow show={phase >= 2} delay={1.5} />
-          <ChainNode icon="🛒" label="Buyer" value="₹80" isGreen={true} show={phase >= 2} delay={1.8} />
+          <ChainNode Icon={IconCart}   label="Buyer"  value="₹80" isGreen={true} show={phase >= 2} delay={1.8} />
         </div>
 
         {/* Mobile: 2×2 grid */}
@@ -63,7 +64,7 @@ export function Scene2() {
           {nodes.map((n) => (
             <MobileChainNode
               key={n.label}
-              icon={n.icon}
+              Icon={n.IconComp}
               label={n.label}
               value={n.value}
               isGreen={n.isGreen}
@@ -111,7 +112,9 @@ export function Scene2() {
   );
 }
 
-function ChainNode({ icon, label, value, isGreen, show, delay }: { icon: string, label: string, value?: string, isGreen: boolean, show: boolean, delay: number }) {
+type IconComponent = React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+
+function ChainNode({ Icon, label, value, isGreen, show, delay }: { Icon: IconComponent, label: string, value?: string, isGreen: boolean, show: boolean, delay: number }) {
   return (
     <motion.div
       className={`flex flex-col items-center justify-center p-3 lg:p-6 rounded-2xl border-2 backdrop-blur-sm ${
@@ -121,17 +124,17 @@ function ChainNode({ icon, label, value, isGreen, show, delay }: { icon: string,
       animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
       transition={{ type: "spring", stiffness: 300, damping: 25, delay: show ? delay : 0 }}
     >
-      <div className="text-3xl lg:text-5xl mb-1 lg:mb-2">{icon}</div>
-      <p className="text-sm lg:text-xl font-bold text-white">{label}</p>
+      <Icon size={40} color={isGreen ? "#4ade80" : "#f87171"} strokeWidth={1.6} />
+      <p className="text-sm lg:text-xl font-bold text-white mt-1 lg:mt-2">{label}</p>
       {value && <p className={`text-base lg:text-2xl font-black ${isGreen ? 'text-[#4ade80]' : 'text-red-400'}`}>{value}</p>}
     </motion.div>
   );
 }
 
-function MobileChainNode({ icon, label, value, isGreen, show, delay }: { icon: string, label: string, value?: string, isGreen: boolean, show: boolean, delay: number }) {
+function MobileChainNode({ Icon, label, value, isGreen, show, delay }: { Icon: IconComponent, label: string, value?: string, isGreen: boolean, show: boolean, delay: number }) {
   return (
     <motion.div
-      className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 backdrop-blur-sm w-[calc(50%-6px)]`}
+      className="flex flex-col items-center justify-center p-3 rounded-xl border-2 backdrop-blur-sm w-[calc(50%-6px)]"
       style={isGreen
         ? { background: 'rgba(34,197,94,0.2)', borderColor: '#22c55e', boxShadow: '0 0 20px rgba(34,197,94,0.25)' }
         : { background: 'rgba(239,68,68,0.2)', borderColor: 'rgb(239,68,68)' }
@@ -140,8 +143,8 @@ function MobileChainNode({ icon, label, value, isGreen, show, delay }: { icon: s
       animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
       transition={{ type: "spring", stiffness: 300, damping: 25, delay: show ? delay : 0 }}
     >
-      <div className="text-2xl mb-1">{icon}</div>
-      <p className="text-xs font-bold text-white">{label}</p>
+      <Icon size={28} color={isGreen ? "#4ade80" : "#f87171"} strokeWidth={1.6} />
+      <p className="text-xs font-bold text-white mt-1">{label}</p>
       {value && <p className={`text-sm font-black ${isGreen ? 'text-[#4ade80]' : 'text-red-400'}`}>{value}</p>}
     </motion.div>
   );

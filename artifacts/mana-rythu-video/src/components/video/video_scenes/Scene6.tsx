@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconCheck } from '../VideoIcons';
 
 export function Scene6() {
   const [phase, setPhase] = useState(0);
@@ -31,7 +32,7 @@ export function Scene6() {
       <CinematicBg overlay="rgba(5,46,22,0.58)" />
 
       <div className="relative z-10 flex flex-col items-center text-center px-8">
-        {/* Checkmark icon */}
+        {/* Checkmark icon — SVG, always renders */}
         <motion.div
           className="flex items-center justify-center rounded-full mb-8"
           style={{
@@ -45,7 +46,7 @@ export function Scene6() {
           animate={phase >= 1 ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
-          <span className="text-5xl">✅</span>
+          <IconCheck size={52} color="#22c55e" strokeWidth={2.5} />
         </motion.div>
 
         <motion.h1
@@ -67,7 +68,6 @@ export function Scene6() {
           FULL STACK IMPLEMENTED
         </motion.p>
 
-        {/* Tech badges */}
         <div className="flex flex-wrap justify-center gap-4 mt-10">
           {badges.map((badge, i) => (
             <motion.span

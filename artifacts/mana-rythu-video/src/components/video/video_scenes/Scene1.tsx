@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconWheat, IconRobot, IconChat, IconTruck, IconCard } from '../VideoIcons';
 
 export function Scene1() {
   const [phase, setPhase] = useState(0);
@@ -17,11 +18,11 @@ export function Scene1() {
   }, []);
 
   const pills = [
-    { icon: '🌾', text: 'Marketplace' },
-    { icon: '🤖', text: 'AI Intelligence' },
-    { icon: '💬', text: 'Real-Time Chat' },
-    { icon: '🚛', text: 'Logistics' },
-    { icon: '💳', text: 'UPI Payments' },
+    { Icon: IconWheat,  text: 'Marketplace' },
+    { Icon: IconRobot,  text: 'AI Intelligence' },
+    { Icon: IconChat,   text: 'Real-Time Chat' },
+    { Icon: IconTruck,  text: 'Logistics' },
+    { Icon: IconCard,   text: 'UPI Payments' },
   ];
 
   return (
@@ -55,16 +56,16 @@ export function Scene1() {
         </motion.p>
 
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8 sm:mt-12 px-2 sm:px-8">
-          {pills.map((pill, i) => (
+          {pills.map(({ Icon, text }, i) => (
             <motion.div
-              key={pill.text}
+              key={text}
               className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-3 sm:px-6 py-2 sm:py-3 rounded-full"
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={phase >= 3 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
               transition={{ type: "spring", stiffness: 400, damping: 25, delay: phase >= 3 ? i * 0.15 : 0 }}
             >
-              <span className="text-base sm:text-2xl">{pill.icon}</span>
-              <span className="text-xs sm:text-xl font-bold text-white">{pill.text}</span>
+              <Icon size={20} color="#4ade80" />
+              <span className="text-xs sm:text-xl font-bold text-white">{text}</span>
             </motion.div>
           ))}
         </div>
@@ -76,7 +77,7 @@ export function Scene1() {
           animate={phase >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 1 }}
         >
-          Built for 140M farmers across Telangana & AP
+          Built for 140M farmers across Telangana &amp; AP
         </motion.div>
       </div>
     </motion.div>

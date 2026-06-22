@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconGlobe } from '../VideoIcons';
 
 const lines = [
   { text: '140 Million Farmers',       color: 'text-white' },
@@ -33,10 +34,8 @@ export function Scene8() {
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
       {...sceneTransitions.fadeBlur}
     >
-      {/* Lightest overlay — let farmland breathe */}
       <CinematicBg overlay="rgba(5,46,22,0.45)" />
 
-      {/* Floating green particles */}
       {particles.map((i) => (
         <motion.div
           key={i}
@@ -64,7 +63,6 @@ export function Scene8() {
       ))}
 
       <div className="relative z-10 flex flex-col items-center text-center px-8">
-        {/* Sprout icon */}
         <motion.img
           src={`${BASE}images/sprout.png`}
           alt="Mana Rythu"
@@ -75,7 +73,6 @@ export function Scene8() {
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         />
 
-        {/* Four lines */}
         <div className="flex flex-col items-center gap-2">
           {lines.map((line, i) => (
             <motion.h2
@@ -94,7 +91,6 @@ export function Scene8() {
           ))}
         </div>
 
-        {/* Domain badge */}
         <AnimatePresence>
           {phase >= 6 && (
             <motion.div
@@ -108,7 +104,7 @@ export function Scene8() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             >
-              <span>🌐</span>
+              <IconGlobe size={24} color="#4ade80" strokeWidth={1.8} />
               <span>mana-rythu.replit.app</span>
             </motion.div>
           )}

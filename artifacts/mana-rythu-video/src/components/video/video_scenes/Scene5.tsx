@@ -2,31 +2,35 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
+import { IconWheat, IconRobot, IconMoney, IconRocket } from '../VideoIcons';
 
 const steps = [
   {
-    icon: '🌾',
+    Icon: IconWheat,
     step: '01',
     title: 'Farmer Lists Crop',
     desc: 'Post crops with photo, quantity & price in under 2 minutes',
+    iconColor: '#22c55e',
     color: 'rgba(34,197,94,0.2)',
     border: '#22c55e',
     glow: 'rgba(34,197,94,0.3)',
   },
   {
-    icon: '🤖',
+    Icon: IconRobot,
     step: '02',
     title: 'AI Matches Buyers',
     desc: 'Smart algorithm connects to verified buyers at fair APMC rates',
+    iconColor: '#93c5fd',
     color: 'rgba(59,130,246,0.2)',
     border: '#3b82f6',
     glow: 'rgba(59,130,246,0.3)',
   },
   {
-    icon: '💰',
+    Icon: IconMoney,
     step: '03',
     title: 'Direct UPI Payment',
     desc: 'Farmer receives full price — zero agents, zero commission',
+    iconColor: '#fde68a',
     color: 'rgba(251,191,36,0.2)',
     border: '#fbbf24',
     glow: 'rgba(251,191,36,0.3)',
@@ -56,7 +60,6 @@ export function Scene5() {
 
       <div className="relative z-10 flex flex-col items-center w-full px-4 sm:px-8 text-center">
 
-        {/* Label */}
         <motion.p
           className="font-bold text-[#4ade80] tracking-widest uppercase mb-3"
           style={{ fontSize: 'clamp(0.65rem, 1.8vw, 1rem)' }}
@@ -67,7 +70,6 @@ export function Scene5() {
           How It Works
         </motion.p>
 
-        {/* Headline */}
         <motion.h2
           className="font-black text-white leading-tight mb-3"
           style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.2rem)' }}
@@ -88,7 +90,6 @@ export function Scene5() {
           From farm to buyer in minutes — not weeks.
         </motion.p>
 
-        {/* Steps */}
         <div className="flex flex-col sm:flex-row items-center sm:items-stretch justify-center gap-4 sm:gap-6 w-full max-w-4xl">
           {steps.map((s, i) => (
             <motion.div
@@ -104,17 +105,15 @@ export function Scene5() {
               animate={phase >= 3 + i ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 280, damping: 22 }}
             >
-              {/* Step number */}
               <div
                 className="absolute top-3 right-3 text-[10px] font-black tracking-widest opacity-40"
                 style={{ color: s.border }}
               >
                 {s.step}
               </div>
-
-              {/* Icon */}
-              <div className="text-4xl sm:text-5xl mb-3">{s.icon}</div>
-
+              <div className="mb-3">
+                <s.Icon size={48} color={s.iconColor} strokeWidth={1.6} />
+              </div>
               <h3 className="font-bold text-white mb-2" style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)' }}>
                 {s.title}
               </h3>
@@ -125,7 +124,6 @@ export function Scene5() {
           ))}
         </div>
 
-        {/* Bottom tagline */}
         <motion.div
           className="mt-8 sm:mt-12 flex items-center gap-3 rounded-full px-6 py-2.5"
           style={{
@@ -137,7 +135,7 @@ export function Scene5() {
           animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
           transition={{ duration: 0.8 }}
         >
-          <span className="text-lg sm:text-xl">🚀</span>
+          <IconRocket size={22} color="#4ade80" strokeWidth={1.8} />
           <span
             className="font-semibold text-white/85"
             style={{ fontSize: 'clamp(0.7rem, 1.6vw, 1rem)' }}
