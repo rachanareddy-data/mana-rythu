@@ -34,7 +34,12 @@ export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerRe
   const totalScenes = sceneKeys.length;
   const durationsArray = useRef(Object.values(durations)).current;
 
-  const [currentScene, setCurrentScene] = useState(0);
+  const startIndex = (() => {
+    if (typeof window === 'undefined') return 0;
+    const v = parseInt(new URLSearchParams(window.location.search).get('start') ?? '0', 10);
+    return isNaN(v) ? 0 : Math.max(0, Math.min(v, sceneKeys.length - 1));
+  })();
+  const [currentScene, setCurrentScene] = useState(startIndex);
   const [hasEnded, setHasEnded] = useState(false);
 
   // Start recording on mount
