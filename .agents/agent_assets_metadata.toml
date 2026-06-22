@@ -59,3 +59,15 @@ id = "sq-5BEFs2J-r3CBUZ8JlV"
 uri = "file://mana-rythu-demo.mp4"
 type = "video"
 title = "Mana Rythu Demo Video — Download MP4"
+
+[[outputs]]
+id = "eIsRCxpu6zuJtd_OkncJR"
+uri = "file://Asset-Manager-Jun-18-21-07-06.mp4"
+type = "video"
+title = "Mana Rythu Animation — Version 1 (123 MB)"
+
+[[outputs]]
+id = "rypdiGYK62xcRDkDM2lYr"
+uri = "file://Asset-Manager-Jun-18-21-19-38.mp4"
+type = "video"
+title = "Mana Rythu Animation — Version 2 High Quality (261 MB)"
