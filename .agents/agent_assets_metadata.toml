@@ -71,3 +71,9 @@ id = "rypdiGYK62xcRDkDM2lYr"
 uri = "file://Asset-Manager-Jun-18-21-19-38.mp4"
 type = "video"
 title = "Mana Rythu Animation — Version 2 High Quality (261 MB)"
+
+[[outputs]]
+id = "rnOIc7UNgdoYzi8AlS81k"
+uri = "file://mana-rythu-demo-fixed.mp4"
+type = "video"
+title = "Mana Rythu Demo — Fixed (Mobile Demo Playing)"

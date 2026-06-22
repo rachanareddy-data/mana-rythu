@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sceneTransitions } from '@/lib/video/animations';
 import { CinematicBg } from '../CinematicBg';
@@ -13,6 +13,13 @@ export function Scene4() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [captionIdx, setCaptionIdx] = useState(0);
   const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    setStarted(true);
+    v.play().catch(() => setStarted(true));
+  }, []);
 
   function handleTimeUpdate() {
     const t = videoRef.current?.currentTime ?? 0;
