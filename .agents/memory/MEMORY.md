@@ -1,2 +1,0 @@
-- [Orval codegen conflict fix](orval-codegen-conflicts.md) — inline request body schemas cause duplicate exports; always use named $ref components.
-- [Chat messages endpoint](chat-messages-endpoint.md) — uses query params not path params to avoid GetMessagesParams duplicate export in codegen.
