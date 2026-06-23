@@ -2,7 +2,6 @@ export default function Slide12Close() {
   return (
     <div className="w-screen h-screen overflow-hidden relative font-display" style={{ background: "#052e16" }}>
       <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 45%, rgba(34,197,94,0.2) 0%, transparent 60%)" }} />
-
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[10vw]">
 
         <svg viewBox="0 0 100 100" fill="none" style={{ width: "5vw", height: "5vw", marginBottom: "3vh" }}>
@@ -50,12 +49,11 @@ export default function Slide12Close() {
               <path d="M12 2 C16 6 16 18 12 22" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" fill="none" />
               <line x1="2" y1="12" x2="22" y2="12" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <p className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.4)" }}>mana-rythu.replit.app</p>
+            <p className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.4)" }}>https://mana-rythu-ai.replit.app/</p>
           </div>
         </div>
 
       </div>
-
       <div className="absolute bottom-[3vh] left-[3vw] right-[3vw] flex items-center justify-between">
         <div className="flex gap-[0.5vw]">
           <div style={{ width: "1.5vw", height: "0.3vh", background: "#22c55e", borderRadius: "2px" }} />
