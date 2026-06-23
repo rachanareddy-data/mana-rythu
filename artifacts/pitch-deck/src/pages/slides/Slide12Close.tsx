@@ -49,7 +49,7 @@ export default function Slide12Close() {
               <path d="M12 2 C16 6 16 18 12 22" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" fill="none" />
               <line x1="2" y1="12" x2="22" y2="12" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <p className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.4)" }}>https://mana-rythu-ai.replit.app/</p>
+            <p className="font-display font-semibold" style={{ fontSize: "1.4vw", color: "rgba(255,255,255,0.4)" }}>https://mana-rythu.replit.app/</p>
           </div>
         </div>
 
